@@ -1,131 +1,156 @@
 <!DOCTYPE html>
 <html dir="rtl" lang="ar">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>أسرتي على الطاعة - محمد ياسين</title>
-    <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
-    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
-    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Changa:wght@400;700&display=swap');
-        body { font-family: 'Changa', sans-serif; background: #e0e5ec; padding: 15px; color: #444; }
-        .neu-flat { background: #e0e5ec; box-shadow: 12px 12px 24px #a3b1c6, -12px -12px 24px #ffffff; border-radius: 30px; }
-        .neu-inset { background: #e0e5ec; box-shadow: inset 8px 8px 16px #a3b1c6, inset -8px -8px 16px #ffffff; border-radius: 20px; }
-        .neu-btn { background: #e0e5ec; box-shadow: 6px 6px 12px #a3b1c6, -6px -6px 12px #ffffff; transition: 0.2s; border-radius: 12px; }
-        .neu-btn:active { box-shadow: inset 4px 4px 8px #a3b1c6, inset -4px -4px 8px #ffffff; transform: scale(0.95); }
-        select { background: transparent; border: none; outline: none; width: 100%; font-weight: bold; text-align: center; cursor: pointer; appearance: none; -webkit-appearance: none; }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>أسرتي على الطاعة - محمد ياسين</title>
+
+<script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+<script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+<script src="https://cdn.tailwindcss.com"></script>
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Changa:wght@400;700&display=swap');
+body { font-family:'Changa',sans-serif;background:#e0e5ec;padding:15px;color:#444 }
+.neu-flat { background:#e0e5ec; box-shadow:12px 12px 24px #a3b1c6,-12px -12px 24px #fff; border-radius:30px }
+.neu-inset { background:#e0e5ec; box-shadow:inset 8px 8px 16px #a3b1c6,inset -8px -8px 16px #fff; border-radius:20px }
+.neu-btn { background:#e0e5ec; box-shadow:6px 6px 12px #a3b1c6,-6px -6px 12px #fff; transition:.2s; border-radius:12px }
+.neu-btn:active { box-shadow:inset 4px 4px 8px #a3b1c6,inset -4px -4px 8px #fff; transform:scale(.95) }
+select{background:transparent;border:none;outline:none;width:100%;font-weight:bold;text-align:center}
+</style>
 </head>
+
 <body>
-    <div id="root"></div>
-    <script type="text/babel">
-        const { useState, useEffect } = React;
+<div id="root"></div>
 
-        function App() {
-            const users = ['محمد', 'شيماء', 'أحمد', 'ياسين'];
-            const men = ['محمد', 'أحمد', 'ياسين'];
-            const [date, setDate] = useState(new Date().toISOString().split('T')[0]);
-            
-            // تخزين البيانات في ذاكرة المتصفح لتعمل فوراً
-            const [data, setData] = useState(() => {
-                const saved = localStorage.getItem('yasin_worship_v1');
-                return saved ? JSON.parse(saved) : {};
-            });
+<!-- Firebase -->
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+import { getFirestore, doc, setDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-            useEffect(() => {
-                localStorage.setItem('yasin_worship_v1', JSON.stringify(data));
-            }, [data]);
+const firebaseConfig = {
+  apiKey: "AIzaSyDba3kZK5ibQEIRRjVIHL7JIOHixX_7rVs",
+  authDomain: "ebada-656e1.firebaseapp.com",
+  projectId: "ebada-656e1",
+  storageBucket: "ebada-656e1.firebasestorage.app",
+  messagingSenderId: "705608653939",
+  appId: "1:705608653939:web:5ab3609a6f7ccc8675de06"
+};
 
-            const isFriday = new Date(date).getDay() === 5;
-            const prayers = ["صلاة الفجر", isFriday ? "صلاة الجمعة" : "صلاة الظهر", "صلاة العصر", "صلاة المغرب", "صلاة العشاء"];
-            const others = ["سنة الفجر", "أذكار الصباح", "الضحى", "سورة الكهف", "٤ ركعات قبل الظهر", "ركعتان بعد الظهر", "أذكار المساء", "ركعتان بعد المغرب", "ركعتان بعد العشاء", "سورة الملك", "الشفع والوتر", "القيام", "الورد", "أذكار النوم"].filter(i => isFriday || i !== "سورة الكهف");
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
 
-            const update = (u, t, val) => {
-                setData(prev => ({
-                    ...prev,
-                    [date]: { ...prev[date], [u]: { ...prev[date]?.[u], [t]: val } }
-                }));
-            };
+window.docRef = doc(db, "worship", "family");
+window.setDoc = setDoc;
+window.onSnapshot = onSnapshot;
+</script>
 
-            const scores = users.map(u => ({
-                name: u,
-                count: Object.values(data[date]?.[u] || {}).filter(v => v === true || (v && v !== "")).length
-            })).sort((a,b) => b.count - a.count);
+<!-- React App -->
+<script type="text/babel">
+const { useState, useEffect } = React;
 
-            return (
-                <div className="max-w-md mx-auto space-y-8">
-                    <header className="neu-flat p-8 text-center border-b-8 border-blue-500">
-                        <h1 className="text-2xl font-bold text-slate-700">🏠 أسرتي على الطاعة</h1>
-                        <p className="text-[10px] text-blue-600 font-bold mt-2">تصميم محمد ياسين - الإصدار الثابت</p>
-                        <div className="neu-inset mt-6 p-2">
-                            <input type="date" value={date} onChange={e => setDate(e.target.value)} className="w-full text-center font-bold bg-transparent outline-none"/>
-                        </div>
-                    </header>
+function App(){
+  const users=['محمد','شيماء','أحمد','ياسين'];
+  const men=['محمد','أحمد','ياسين'];
+  const [date,setDate]=useState(new Date().toISOString().split('T')[0]);
+  const [data,setData]=useState({});
 
-                    <div className="neu-flat p-3 overflow-hidden">
-                        <table className="w-full text-right border-separate border-spacing-y-2">
-                            <thead>
-                                <tr className="text-[10px] text-slate-400">
-                                    <th className="pr-4">العبادة</th>
-                                    {users.map(u => <th key={u} className="text-center">{u}</th>)}
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {prayers.map(p => (
-                                    <tr key={p}>
-                                        <td className="p-3 text-xs font-bold text-slate-700 border-r-4 border-blue-500 rounded-r-lg">{p}</td>
-                                        {users.map(u => (
-                                            <td key={u} className="p-1">
-                                                <div className="neu-inset p-1">
-                                                    <select value={data[date]?.[u]?.[p] || ""} onChange={e => update(u, p, e.target.value)}>
-                                                        <option value="">--</option>
-                                                        {men.includes(u) ? <><option value="مسجد">مسجد</option><option value="فرد">فرد</option></> : <option value="حاضر">حاضر</option>}
-                                                        <option value="قضاء">قضاء</option>
-                                                    </select>
-                                                </div>
-                                            </td>
-                                        ))}
-                                    </tr>
-                                ))}
-                                {others.map(t => (
-                                    <tr key={t}>
-                                        <td className="p-3 text-[11px] text-slate-500 italic">{t}</td>
-                                        {users.map(u => (
-                                            <td key={u} className="p-1">
-                                                <button onClick={() => update(u, t, !data[date]?.[u]?.[t])} className="w-12 h-12 neu-btn mx-auto flex items-center justify-center">
-                                                    <span className="text-xl font-bold text-emerald-600">{data[date]?.[u]?.[t] ? "✓" : ""}</span>
-                                                </button>
-                                            </td>
-                                        ))}
-                                    </tr>
-                                ))}
-                            </tbody>
-                        </table>
-                    </div>
+  useEffect(()=>{
+    return onSnapshot(window.docRef,(snap)=>{
+      if(snap.exists()) setData(snap.data());
+    });
+  },[]);
 
-                    <div className="neu-flat p-8">
-                        <h2 className="text-center font-bold text-slate-700 mb-6 text-lg">🏆 لوحة الشرف</h2>
-                        <div className="space-y-4">
-                            {scores.map((s, i) => (
-                                <div key={s.name} className={`flex items-center justify-between p-4 ${i===0 ? 'neu-inset' : 'neu-btn'}`}>
-                                    <span className="font-bold">{i+1}. {s.name}</span>
-                                    <span className="neu-flat px-4 py-1 text-xs font-bold text-blue-600">{s.count}</span>
-                                </div>
-                            ))}
-                        </div>
-                    </div>
+  const save = (newData)=>{
+    window.setDoc(window.docRef,newData);
+  };
 
-                    <footer className="py-10 text-center font-bold text-slate-400 text-xs">
-                        حقوق التصميم محفوظة @ محمد ياسين 2026
-                    </footer>
-                </div>
-            );
-        }
+  const update=(u,t,val)=>{
+    const newData={
+      ...data,
+      [date]:{...data[date],[u]:{...data[date]?.[u],[t]:val}}
+    };
+    setData(newData);
+    save(newData);
+  };
 
-        const root = ReactDOM.createRoot(document.getElementById('root'));
-        root.render(<App />);
-    </script>
+  const isFriday=new Date(date).getDay()===5;
+  const prayers=["صلاة الفجر",isFriday?"صلاة الجمعة":"صلاة الظهر","صلاة العصر","صلاة المغرب","صلاة العشاء"];
+  const others=["سنة الفجر","أذكار الصباح","الضحى","سورة الكهف","٤ ركعات قبل الظهر","ركعتان بعد الظهر","أذكار المساء","ركعتان بعد المغرب","ركعتان بعد العشاء","سورة الملك","الشفع والوتر","القيام","الورد","أذكار النوم"].filter(i=>isFriday||i!=="سورة الكهف");
+
+  const scores=users.map(u=>({
+    name:u,
+    count:Object.values(data[date]?.[u]||{}).filter(v=>v).length
+  })).sort((a,b)=>b.count-a.count);
+
+  return (
+    <div className="max-w-md mx-auto space-y-8">
+      <header className="neu-flat p-8 text-center">
+        <h1 className="text-2xl font-bold">🏠 أسرتي على الطاعة</h1>
+        <div className="neu-inset mt-4 p-2">
+          <input type="date" value={date} onChange={e=>setDate(e.target.value)} className="w-full text-center font-bold bg-transparent"/>
+        </div>
+      </header>
+
+      <div className="neu-flat p-3">
+        <table className="w-full">
+          <tbody>
+          {prayers.map(p=>(
+            <tr key={p}>
+              <td className="font-bold">{p}</td>
+              {users.map(u=>(
+                <td key={u}>
+                  <select value={data[date]?.[u]?.[p]||""} onChange={e=>update(u,p,e.target.value)}>
+                    <option value="">--</option>
+                    {men.includes(u)
+                      ? <>
+                          <option value="مسجد">مسجد</option>
+                          <option value="فرد">فرد</option>
+                        </>
+                      : <option value="حاضر">حاضر</option>}
+                    <option value="قضاء">قضاء</option>
+                  </select>
+                </td>
+              ))}
+            </tr>
+          ))}
+          {others.map(t=>(
+            <tr key={t}>
+              <td className="text-sm text-slate-500">{t}</td>
+              {users.map(u=>(
+                <td key={u}>
+                  <button onClick={()=>update(u,t,!data[date]?.[u]?.[t])}
+                    className="w-10 h-10 neu-btn mx-auto">
+                    {data[date]?.[u]?.[t]?"✓":""}
+                  </button>
+                </td>
+              ))}
+            </tr>
+          ))}
+          </tbody>
+        </table>
+      </div>
+
+      <div className="neu-flat p-6">
+        <h2 className="text-center font-bold mb-4">🏆 لوحة الشرف</h2>
+        {scores.map((s,i)=>(
+          <div key={s.name} className="flex justify-between mb-2">
+            <span>{i+1}. {s.name}</span>
+            <span>{s.count}</span>
+          </div>
+        ))}
+      </div>
+
+      <footer className="text-center text-xs text-slate-400">
+        حقوق التصميم محفوظة © محمد ياسين 2026
+      </footer>
+    </div>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(<App/>);
+</script>
+
 </body>
 </html>
