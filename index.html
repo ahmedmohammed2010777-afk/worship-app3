@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>أسرتي على الطاعة - النسخة المطورة</title>
+<title>أسرتي على الطاعة - النسخة الشاملة</title>
 
 <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
 <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
@@ -17,8 +17,7 @@ body { font-family:'Changa',sans-serif;background:#e0e5ec;padding:10px;color:#44
 .neu-inset { background:#e0e5ec; box-shadow:inset 6px 6px 12px #a3b1c6, inset -6px -6px 12px #fff; border-radius:15px }
 .neu-btn { background:#e0e5ec; box-shadow:4px 4px 8px #a3b1c6, -4px -4px 8px #fff; transition:all 0.2s ease; border-radius:10px }
 .neu-btn:active { box-shadow:inset 3px 3px 6px #a3b1c6, inset -3px -3px 6px #fff; transform:scale(0.96) }
-.active-check { color: #059669; font-weight: bold; text-shadow: 0 0 5px rgba(5,150,105,0.2) }
-select { background:transparent; border:none; outline:none; font-weight:bold; cursor:pointer; color: #2563eb }
+select { background:transparent; border:none; outline:none; font-weight:bold; cursor:pointer; color: #2563eb; appearance: none; text-align: center; width: 100% }
 </style>
 </head>
 
@@ -53,7 +52,8 @@ const hadiths = [
   "«أحب الأعمال إلى الله أدومها وإن قل»",
   "«من سلك طريقاً يلتمس فيه علماً سهل الله له طريقاً إلى الجنة»",
   "«كلمتان خفيفتان على اللسان، ثقيلتان في الميزان: سبحان الله وبحمده»",
-  "«خيركم من تعلم القرآن وعلمه»"
+  "«خيركم من تعلم القرآن وعلمه»",
+  "«اتق الله حيثما كنت، وأتبع السيئة الحسنة تمحها»"
 ];
 
 function App(){
@@ -65,9 +65,7 @@ function App(){
   const latestData = useRef({});
 
   useEffect(() => {
-    // اختيار حديث عشوائي عند الفتح
     setHadith(hadiths[Math.floor(Math.random() * hadiths.length)]);
-    
     const unsubscribe = window.onSnapshot(window.docRef, (snap) => {
       if (snap.exists()) {
         const cloudData = snap.data();
@@ -87,16 +85,25 @@ function App(){
     catch (e) { console.error(e); }
   };
 
+  const isFriday = new Date(date).getDay() === 5;
+  
+  // قائمة الصلوات المفروضة
+  const prayers = ["صلاة الفجر", isFriday ? "صلاة الجمعة" : "صلاة الظهر", "صلاة العصر", "صلاة المغرب", "صلاة العشاء"];
+  
+  // قائمة السنن والرواتب (كاملة كما كانت في كودك الأصلي)
+  const others = [
+    "سنة الفجر", "أذكار الصباح", "الضحى", "سورة الكهف", 
+    "٤ ركعات قبل الظهر", "ركعتان بعد الظهر", "أذكار المساء", 
+    "ركعتان بعد المغرب", "ركعتان بعد العشاء", "سورة الملك", 
+    "الشفع والوتر", "القيام", "الورد", "أذكار النوم"
+  ].filter(i => isFriday || i !== "سورة الكهف");
+
   const getMotivation = (count) => {
     if (count === 0) return "بانتظار همتك.. 🚀";
-    if (count < 5) return "بداية طيبة، استمر! 🌱";
-    if (count < 10) return "أحسنت، أنت فخرنا! ⭐";
+    if (count < 6) return "بداية طيبة، استمر! 🌱";
+    if (count < 12) return "أحسنت، أنت فخرنا! ⭐";
     return "ما شاء الله، بطل الطاعة! 🏆";
   };
-
-  const isFriday = new Date(date).getDay() === 5;
-  const prayers = ["صلاة الفجر", isFriday ? "صلاة الجمعة" : "صلاة الظهر", "صلاة العصر", "صلاة المغرب", "صلاة العشاء"];
-  const others = ["سنة الفجر", "أذكار الصباح", "الضحى", "سورة الكهف", "أذكار المساء", "سورة الملك", "الشفع والوتر", "الورد"].filter(i => isFriday || i !== "سورة الكهف");
 
   const scores = users.map(u => ({
     name: u,
@@ -107,79 +114,79 @@ function App(){
     <div className="max-w-md mx-auto space-y-6 pb-12">
       <header className="neu-card p-6 text-center">
         <h1 className="text-2xl font-bold text-blue-700 mb-1">🏠 عائلة محمد ياسين</h1>
-        <p className="text-xs text-slate-400 mb-4 tracking-widest">محراب الطاعة</p>
-        
-        <div className="neu-inset p-3 mb-4 bg-white/30 italic text-sm text-blue-800">
+        <div className="neu-inset p-3 my-4 bg-white/30 italic text-sm text-blue-800">
            {hadith}
         </div>
-
-        <div className="neu-inset p-1">
+        <div className="neu-inset p-1 text-blue-900">
           <input type="date" value={date} onChange={e => setDate(e.target.value)} 
             className="w-full text-center font-bold bg-transparent outline-none p-2 cursor-pointer"/>
         </div>
       </header>
 
       <div className="neu-card p-4 overflow-hidden">
-        <div className="flex justify-around mb-4 border-b border-white/40 pb-2 text-[10px] font-bold text-slate-400">
-          <span className="w-1/3 text-right">العبادة</span>
-          {users.map(u => <span key={u} className="w-1/6">{u}</span>)}
-        </div>
-        
+        <h3 className="text-center font-bold mb-4 text-blue-600 border-b border-white/40 pb-2">الصلوات المفروضة</h3>
         <div className="space-y-4">
           {prayers.map(p => (
-            <div key={p} className="flex items-center justify-around text-sm">
+            <div key={p} className="flex items-center justify-between text-sm">
               <span className="w-1/3 text-right font-bold text-slate-600">{p}</span>
-              {users.map(u => (
-                <div key={u} className="w-1/6 flex justify-center">
-                  <select className="text-[10px]" value={data[date]?.[u]?.[p] || ""} onChange={e => update(u, p, e.target.value)}>
-                    <option value="">--</option>
-                    {men.includes(u) ? <><option value="مسجد">🕌</option><option value="فرد">🏠</option></> : <option value="حاضر">✅</option>}
-                    <option value="قضاء">⏳</option>
-                  </select>
-                </div>
-              ))}
+              <div className="flex-1 flex justify-around">
+                {users.map(u => (
+                  <div key={u} className="w-10 text-center">
+                    <select value={data[date]?.[u]?.[p] || ""} onChange={e => update(u, p, e.target.value)}>
+                      <option value="">--</option>
+                      {men.includes(u) ? <><option value="مسجد">🕌</option><option value="فرد">🏠</option></> : <option value="حاضر">✅</option>}
+                      <option value="قضاء">⏳</option>
+                    </select>
+                  </div>
+                ))}
+              </div>
             </div>
           ))}
-          
-          <div className="h-px bg-white/50 my-4"></div>
+        </div>
 
+        <div className="h-px bg-white/50 my-6 shadow-inner"></div>
+
+        <h3 className="text-center font-bold mb-4 text-blue-600 border-b border-white/40 pb-2">السنن والأذكار</h3>
+        <div className="space-y-4">
           {others.map(t => (
-            <div key={t} className="flex items-center justify-around text-[11px]">
-              <span className="w-1/3 text-right text-slate-500">{t}</span>
-              {users.map(u => (
-                <div key={u} className="w-1/6 flex justify-center">
-                  <button onClick={() => update(u, t, !data[date]?.[u]?.[t])}
-                    className="w-8 h-8 neu-btn flex items-center justify-center">
+            <div key={t} className="flex items-center justify-between text-[11px]">
+              <span className="w-1/3 text-right text-slate-500 font-medium">{t}</span>
+              <div className="flex-1 flex justify-around">
+                {users.map(u => (
+                  <button key={u} onClick={() => update(u, t, !data[date]?.[u]?.[t])}
+                    className="w-8 h-8 neu-btn flex items-center justify-center transition-all">
                     {data[date]?.[u]?.[t] ? "✔️" : ""}
                   </button>
-                </div>
-              ))}
+                ))}
+              </div>
             </div>
           ))}
         </div>
       </div>
 
       <div className="space-y-4">
-        <h2 className="text-center font-bold text-slate-600">📊 ترتيب الهمم اليوم</h2>
+        <h2 className="text-center font-bold text-slate-600 flex items-center justify-center gap-2">
+          🏆 لوحة الشرف اليومية
+        </h2>
         {scores.map((s, i) => (
-          <div key={s.name} className="neu-card p-4 flex items-center justify-between transition-all hover:scale-[1.02]">
+          <div key={s.name} className="neu-card p-4 flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <span className={`w-8 h-8 flex items-center justify-center rounded-full font-bold ${i===0?'bg-yellow-400 text-white':'bg-blue-100 text-blue-600'}`}>{i+1}</span>
+              <span className={`w-8 h-8 flex items-center justify-center rounded-full font-bold shadow-sm ${i===0?'bg-yellow-400 text-white':'bg-blue-100 text-blue-600'}`}>{i+1}</span>
               <div>
                 <p className="font-bold text-sm">{s.name}</p>
-                <p className="text-[10px] text-blue-500">{getMotivation(s.count)}</p>
+                <p className="text-[10px] text-blue-500 font-medium">{getMotivation(s.count)}</p>
               </div>
             </div>
             <div className="text-right">
               <span className="text-xl font-bold text-blue-700">{s.count}</span>
-              <span className="text-[10px] block text-slate-400">عمل صالح</span>
+              <span className="text-[10px] block text-slate-400 uppercase tracking-tighter">نقطة طاعة</span>
             </div>
           </div>
         ))}
       </div>
 
-      <footer className="text-center text-[10px] text-slate-400 opacity-60">
-        تم التطوير بحب لعائلة ياسين ©️ 2026
+      <footer className="text-center text-[10px] text-slate-400 pb-4">
+        حقوق التصميم محفوظة ©️ عائلة ياسين 2026
       </footer>
     </div>
   );
