@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>أسرتي على الطاعة - التتويج الشهري</title>
+<title>أسرتي على الطاعة</title>
 
 <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
 <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
@@ -13,14 +13,14 @@
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Changa:wght@400;700&display=swap');
 body { font-family:'Changa',sans-serif;background:#e0e5ec;padding:10px;color:#444;min-height:100vh }
-.neu-card { background:#e0e5ec; box-shadow:9px 9px 16px #a3b1c6, -9px -9px 16px #fff; border-radius:25px; border: 1px solid rgba(255,255,255,0.3) }
+.neu-card { background:#e0e5ec; box-shadow:9px 9px 16px #a3b1c6, -9px -9px 16px #fff; border-radius:25px; border: 1px solid rgba(255,255,255,0.3); margin-bottom: 20px; }
 .neu-inset { background:#e0e5ec; box-shadow:inset 6px 6px 12px #a3b1c6, inset -6px -6px 12px #fff; border-radius:15px }
 .neu-btn { background:#e0e5ec; box-shadow:4px 4px 8px #a3b1c6, -4px -4px 8px #fff; transition:all 0.2s ease; border-radius:10px }
 .neu-btn:active { box-shadow:inset 3px 3px 6px #a3b1c6, inset -3px -3px 6px #fff; transform:scale(0.92) }
 select { background:transparent; border:none; outline:none; font-weight:bold; cursor:pointer; color: #2563eb; width: 100%; text-align: center; }
-.trophy-gold { filter: drop-shadow(0 0 15px rgba(251, 191, 36, 0.8)); font-size: 80px; }
-.animate-shine { background: linear-gradient(90deg, transparent, rgba(255,255,255,0.5), transparent); background-size: 200% 100%; animation: shine 3s infinite; }
-@keyframes shine { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+.trophy-1 { font-size: 60px; filter: drop-shadow(0 0 12px #fbbf24); }
+.trophy-2 { font-size: 45px; filter: drop-shadow(0 0 10px #94a3b8); }
+.trophy-3 { font-size: 35px; filter: drop-shadow(0 0 8px #d97706); }
 </style>
 </head>
 
@@ -50,11 +50,20 @@ window.onSnapshot = onSnapshot;
 <script type="text/babel">
 const { useState, useEffect, useRef } = React;
 
+const hadiths = [
+  "«خياركم خياركم لأهلهم»",
+  "«أحب الأعمال إلى الله أدومها وإن قل»",
+  "«من سلك طريقاً يلتمس فيه علماً سهل الله له طريقاً إلى الجنة»",
+  "«كلمتان خفيفتان على اللسان، ثقيلتان في الميزان: سبحان الله وبحمده»",
+  "«خيركم من تعلم القرآن وعلمه»"
+];
+
 function App(){
   const users = ['محمد','شيماء','أحمد','ياسين'];
   const men = ['محمد','أحمد','ياسين'];
   const [date, setDate] = useState(new Date().toISOString().split('T')[0]);
   const [data, setData] = useState({});
+  const [hadith] = useState(hadiths[Math.floor(Math.random() * hadiths.length)]);
   const latestData = useRef({});
 
   useEffect(() => {
@@ -80,82 +89,76 @@ function App(){
     return score;
   };
 
-  const isLastDayOfMonth = () => {
-    const d = new Date(date);
-    return new Date(d.getFullYear(), d.getMonth() + 1, 0).getDate() === d.getDate();
-  };
-
-  const getMonthlyReport = () => {
-    const monthPrefix = date.substring(0, 7);
-    return users.map(u => {
-      let totalPoints = 0;
-      let totalTasksPossible = 0;
-      let tasksCompleted = 0;
-      
-      Object.keys(data).filter(d => d.startsWith(monthPrefix)).forEach(d => {
-        const isFri = new Date(d).getDay() === 5;
-        const countPossible = 5 + (isFri ? 14 : 13); // عدد المهام الممكنة يومياً
-        totalTasksPossible += countPossible;
-        
-        totalPoints += calculateScore(u, data[d]);
-        tasksCompleted += Object.values(data[d]?.[u] || {}).filter(v => v).length;
-      });
-      
-      const percentage = totalTasksPossible > 0 ? Math.round((tasksCompleted / totalTasksPossible) * 100) : 0;
-      return { name: u, totalPoints, percentage };
-    }).sort((a,b) => b.totalPoints - a.totalPoints);
-  };
-
   const update = async (user, task, val) => {
     const newData = { ...latestData.current, [date]: { ...latestData.current[date], [user]: { ...latestData.current[date]?.[user], [task]: val } } };
     try { await window.setDoc(window.docRef, newData); } catch (e) {}
   };
 
-  const monthlyData = getMonthlyReport();
-  const monthHero = monthlyData[0];
   const isFriday = new Date(date).getDay() === 5;
   const prayers = ["صلاة الفجر", isFriday ? "صلاة الجمعة" : "صلاة الظهر", "صلاة العصر", "صلاة المغرب", "صلاة العشاء"];
   const others = ["سنة الفجر", "أذكار الصباح", "الضحى", "سورة الكهف", "٤ قبل الظهر", "٢ بعد الظهر", "أذكار المساء", "٢ بعد المغرب", "٢ بعد العشاء", "سورة الملك", "الشفع والوتر", "القيام", "الورد", "أذكار النوم"].filter(i => isFriday || i !== "سورة الكهف");
+  
+  const dayScores = users.map(u => {
+    const score = calculateScore(u, data[date]);
+    const done = Object.values(data[date]?.[u] || {}).filter(v => v).length;
+    const progress = Math.round((done / (prayers.length + others.length)) * 100);
+    return { name: u, score, progress };
+  }).sort((a,b) => b.score - a.score);
 
   return (
-    <div className="max-w-md mx-auto space-y-6 pb-20">
+    <div className="max-w-md mx-auto pb-10">
+      {/* العنوان والحديث */}
       <header className="neu-card p-6 text-center">
-        <h1 className="text-2xl font-bold text-blue-700">🏆 عائلة ياسين</h1>
-        <div className="neu-inset p-1 mt-4">
-          <input type="date" value={date} onChange={e => setDate(e.target.value)} 
-            className="w-full text-center font-bold bg-transparent outline-none p-2 text-blue-900 cursor-pointer"/>
+        <h1 className="text-2xl font-bold text-blue-800 mb-4">أسرتي على الطاعة</h1>
+        <div className="neu-inset p-3 mb-4 italic text-sm text-blue-700 leading-relaxed">{hadith}</div>
+        <div className="neu-inset p-1">
+          <input type="date" value={date} onChange={e => setDate(e.target.value)} className="w-full text-center font-bold bg-transparent outline-none p-2 text-blue-900 cursor-pointer"/>
         </div>
       </header>
 
-      {/* التقرير الختامي للشهر - يظهر فقط في آخر يوم من الشهر */}
-      {isLastDayOfMonth() && (
-        <div className="neu-card p-8 bg-gradient-to-b from-yellow-100 to-white border-2 border-yellow-400 overflow-hidden relative">
-          <div className="animate-shine absolute inset-0 pointer-events-none"></div>
-          <div className="text-center relative z-10">
-            <h2 className="text-xl font-black text-yellow-800 mb-4">👑 بطل الشهر الموفق 👑</h2>
-            <div className="trophy-gold mb-4 animate-bounce">🏆</div>
-            <p className="text-4xl font-black text-yellow-600 mb-2">{monthHero.name}</p>
-            <p className="text-sm font-bold text-yellow-700 italic mb-6">"هنيئاً لك هذا الغرس المبارك، ثبتك الله وزادك هدى"</p>
-            
-            <div className="space-y-3">
-              <h3 className="text-right text-xs font-bold text-slate-500 border-b pb-1">تقرير إنجاز العائلة:</h3>
-              {monthlyData.map(m => (
-                <div key={m.name} className="flex justify-between items-center text-sm font-bold bg-white/50 p-2 rounded-lg">
-                  <span>{m.name}</span>
-                  <div className="flex gap-4">
-                    <span className="text-blue-600">{m.percentage}% إنجاز</span>
-                    <span className="text-yellow-600">{m.totalPoints} نقطة</span>
-                  </div>
-                </div>
-              ))}
-            </div>
+      {/* منصة التتويج */}
+      <div className="neu-card p-6">
+        <h2 className="text-center font-bold mb-10 text-slate-500">🏆 لوحة الشرف اليومية</h2>
+        <div className="flex justify-center items-end gap-2 h-64 border-b-2 border-white/50 mb-8">
+          {/* المركز 2 */}
+          <div className="flex flex-col items-center w-1/3">
+            <span className="trophy-2">🥈</span>
+            <span className="text-[10px] font-bold mb-1">{dayScores[1]?.name}</span>
+            <div className="bg-slate-300 w-full rounded-t-lg shadow-lg flex items-end justify-center pb-2 text-white font-bold" style={{height: '80px'}}>2</div>
+          </div>
+          {/* المركز 1 */}
+          <div className="flex flex-col items-center w-1/3">
+            <span className="trophy-1 animate-bounce">🏆</span>
+            <span className="text-xs font-bold mb-1 text-yellow-600">{dayScores[0]?.name}</span>
+            <div className="bg-yellow-400 w-full rounded-t-lg shadow-2xl flex items-end justify-center pb-2 text-white font-black" style={{height: '130px'}}>1</div>
+          </div>
+          {/* المركز 3 */}
+          <div className="flex flex-col items-center w-1/3">
+            <span className="trophy-3">🥉</span>
+            <span className="text-[10px] font-bold mb-1">{dayScores[2]?.name}</span>
+            <div className="bg-orange-400 w-full rounded-t-lg shadow-md flex items-end justify-center pb-2 text-white font-bold" style={{height: '50px'}}>3</div>
           </div>
         </div>
-      )}
 
-      {/* جدول الإدخال اليومي */}
+        {/* نسب الإنجاز */}
+        <div className="space-y-4">
+          {dayScores.map(s => (
+            <div key={s.name} className="neu-inset p-3">
+              <div className="flex justify-between items-center mb-1 text-xs font-bold">
+                <span>{s.name}</span>
+                <span className="text-blue-600">{s.progress}% إنجاز</span>
+              </div>
+              <div className="w-full bg-gray-200 h-2 rounded-full overflow-hidden">
+                <div className="bg-blue-500 h-full transition-all duration-1000" style={{width: `${s.progress}%`}}></div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* الجدول الرئيسي */}
       <div className="neu-card p-4 overflow-x-auto">
-        <table className="w-full">
+        <table className="w-full text-center">
           <thead>
             <tr>
               <th className="text-right text-[10px] text-blue-900 pb-3">العبادة</th>
@@ -165,9 +168,9 @@ function App(){
           <tbody>
             {prayers.map(p => (
               <tr key={p} className="border-b border-white/20">
-                <td className="py-3 text-[10px] font-bold text-slate-600">{p}</td>
+                <td className="py-3 text-right text-[10px] font-bold text-slate-600">{p}</td>
                 {users.map(u => (
-                  <td key={u} className="px-1 text-center">
+                  <td key={u} className="px-1">
                     <div className="neu-inset p-1">
                       <select value={data[date]?.[u]?.[p] || ""} onChange={e => update(u, p, e.target.value)}>
                         <option value="">--</option>
@@ -181,11 +184,10 @@ function App(){
             ))}
             {others.map(t => (
               <tr key={t} className="border-b border-white/10">
-                <td className="py-2 text-[9px] text-slate-500 font-medium">{t}</td>
+                <td className="py-2 text-right text-[9px] text-slate-500">{t}</td>
                 {users.map(u => (
-                  <td key={u} className="text-center">
-                    <button onClick={() => update(u, t, !data[date]?.[u]?.[t])}
-                      className="w-7 h-7 neu-btn mx-auto flex items-center justify-center text-[10px]">
+                  <td key={u} className="text-center px-1">
+                    <button onClick={() => update(u, t, !data[date]?.[u]?.[t])} className="w-7 h-7 neu-btn mx-auto flex items-center justify-center">
                       {data[date]?.[u]?.[t] ? "✔️" : ""}
                     </button>
                   </td>
