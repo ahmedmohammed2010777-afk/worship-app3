@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>أسرتي على الطاعة - تصميم محمد ياسين</title>
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Changa:wght@400;700&display=swap');
+        body { font-family: 'Changa', sans-serif; background: #e0e5ec; padding: 15px; }
+        
+        /* تصميم مجسم بارز جداً 3D */
+        .neu-flat { background: #e0e5ec; box-shadow: 10px 10px 20px #a3b1c6, -10px -10px 20px #ffffff; border-radius: 25px; }
+        .neu-pressed { background: #e0e5ec; box-shadow: inset 8px 8px 16px #a3b1c6, inset -8px -8px 16px #ffffff; border-radius: 15px; }
+        .neu-btn { background: #e0e5ec; box-shadow: 6px 6px 12px #a3b1c6, -6px -6px 12px #ffffff; transition: 0.2s; border-radius: 12px; }
+        .neu-btn:active { box-shadow: inset 4px 4px 8px #a3b1c6, inset -4px -4px 8px #ffffff; transform: scale(0.95); }
+        
+        select { background: transparent; border: none; outline: none; width: 100%; font-weight: bold; text-align: center; color: #1e293b; cursor: pointer; -webkit-appearance: none; }
+        .active-check { color: #059669; font-weight: bold; font-size: 24px; }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+    <script type="text/babel">
+        const { useState, useEffect } = React;
+
+        // قناة مزامنة قوية جداً وفريدة
+        const SYNC_ID = "yasin_master_v100";
+        const API_URL = `https://kvdb.io/4y9UvN8U8U8U8U8U8U8U8U/${SYNC_ID}`;
+
+        function App() {
+            const users = ['محمد', 'شيماء', 'أحمد', 'ياسين'];
+            const men = ['محمد', 'أحمد', 'ياسين'];
+            const [date, setDate] = useState(new Date().toISOString().split('T')[0]);
+            const [data, setData] = useState({});
+            const [syncing, setSyncing] = useState(false);
+
+            const fetchCloud = async () => {
+                setSyncing(true);
+                try {
+                    const r = await fetch(API_URL);
+                    if (r.ok) setData(await r.json());
+                } catch (e) {}
+                setSyncing(false);
+            };
+
+            const saveCloud = async (updated) => {
+                try {
+                    await fetch(API_URL, { method: 'POST', body: JSON.stringify(updated) });
+                } catch (e) {}
+            };
+
+            useEffect(() => { 
+                fetchCloud();
+                const itv = setInterval(fetchCloud, 5000); // مزامنة كل 5 ثوانٍ
+                return () => clearInterval(itv);
+            }, []);
+
+            const isFriday = new Date(date).getDay() === 5;
+            const prayers = ["صلاة الفجر", isFriday ? "صلاة الجمعة" : "صلاة الظهر", "صلاة العصر", "صلاة المغرب", "صلاة العشاء"];
+            const others = ["سنة الفجر", "أذكار الصباح", "الضحى", "سورة الكهف", "٤ ركعات قبل الظهر", "ركعتان بعد الظهر", "أذكار المساء", "ركعتان بعد المغرب", "ركعتان بعد العشاء", "سورة الملك", "الشفع والوتر", "القيام", "الورد", "أذكار النوم"].filter(i => isFriday || i !== "سورة الكهف");
+
+            const update = (u, t, val) => {
+                const newData = { ...data, [date]: { ...data[date], [u]: { ...data[date]?.[u], [t]: val } } };
+                setData(newData);
+                saveCloud(newData);
+            };
+
+            const scores = users.map(u => ({
+                name: u,
+                count: Object.values(data[date]?.[u] || {}).filter(v => v === true || (v && v !== "")).length
+            })).sort((a,b) => b.count - a.count);
+
+            return (
+                <div className="max-w-md mx-auto space-y-6">
+                    {/* هيدر مجسم */}
+                    <header className="neu-flat p-6 text-center">
+                        <div className="flex justify-between items-center mb-4">
+                            <span className="text-[10px] neu-btn px-2 py-1 text-blue-600 font-bold">{syncing ? 'يحدث...' : 'متصل ✓'}</span>
+                            <h1 className="text-xl font-bold text-slate-700">🏠 أسرتي على الطاعة</h1>
+                        </div>
+                        <div className="neu-pressed p-2">
+                            <input type="date" value={date} onChange={e => setDate(e.target.value)} className="w-full text-center font-bold bg-transparent outline-none"/>
+                        </div>
+                    </header>
+
+                    {/* الجدول الرئيسي */}
+                    <div className="neu-flat p-2">
+                        <table className="w-full text-right border-separate border-spacing-y-2">
+                            <thead>
+                                <tr className="text-[10px] text-slate-400 font-bold">
+                                    <th className="p-2">العبادة</th>
+                                    {users.map(u => <th key={u} className="text-center">{u}</th>)}
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {prayers.map(p => (
+                                    <tr key={p}>
+                                        <td className="p-3 text-xs font-bold text-slate-600 border-r-4 border-blue-500">{p}</td>
+                                        {users.map(u => (
+                                            <td key={u} className="p-1">
+                                                <div className="neu-pressed p-1">
+                                                    <select value={data[date]?.[u]?.[p] || ""} onChange={e => update(u, p, e.target.value)}>
+                                                        <option value="">--</option>
+                                                        {men.includes(u) ? <><option value="مسجد">مسجد</option><option value="فرد">فرد</option></> : <option value="حاضر">حاضر</option>}
+                                                        <option value="قضاء">قضاء</option>
+                                                    </select>
+                                                </div>
+                                            </td>
+                                        ))}
+                                    </tr>
+                                ))}
+                                {others.map(t => (
+                                    <tr key={t}>
+                                        <td className="p-3 text-[11px] text-slate-500">{t}</td>
+                                        {users.map(u => (
+                                            <td key={u} className="p-1">
+                                                <button onClick={() => update(u, t, !data[date]?.[u]?.[t])} className="w-10 h-10 neu-btn mx-auto flex items-center justify-center">
+                                                    <span className="active-check">{data[date]?.[u]?.[t] ? "✓" : ""}</span>
+                                                </button>
+                                            </td>
+                                        ))}
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    </div>
+
+                    {/* لوحة الشرف */}
+                    <div className="neu-flat p-6">
+                        <h2 className="text-center font-bold text-slate-700 mb-6">🏆 لوحة الشرف اليومية</h2>
+                        <div className="space-y-4">
+                            {scores.map((s, i) => (
+                                <div key={s.name} className={`flex items-center justify-between p-4 ${i===0 ? 'neu-pressed shadow-blue-200' : 'neu-btn'}`}>
+                                    <span className="font-bold text-sm">{i+1}. {s.name}</span>
+                                    <span className="neu-flat px-4 py-1 text-xs font-bold text-blue-600">{s.count}</span>
+                                </div>
+                            ))}
+                        </div>
+                        {scores[0].count > 0 && (
+                            <div className="mt-8 p-4 neu-flat bg-emerald-600 text-white text-center">
+                                <p className="text-sm font-bold animate-bounce">🌟 بطل الأسرة: {scores[0].name} 🌟</p>
+                            </div>
+                        )}
+                    </div>
+
+                    <footer className="py-10 text-center">
+                        <div className="inline-block px-10 py-4 neu-flat font-bold text-slate-500 text-xs">
+                            تصميم محمد ياسين
+                        </div>
+                    </footer>
+                </div>
+            );
+        }
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+</body>
+</html>
