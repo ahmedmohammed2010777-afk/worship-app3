@@ -12,19 +12,18 @@
 
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Changa:wght@400;700&display=swap');
-body { font-family:'Changa',sans-serif;background:#e0e5ec;padding:15px;color:#444 }
+body { font-family:'Changa',sans-serif;background:#e0e5ec;padding:15px;color:#444;min-height:100vh }
 .neu-flat { background:#e0e5ec; box-shadow:12px 12px 24px #a3b1c6,-12px -12px 24px #fff; border-radius:30px }
 .neu-inset { background:#e0e5ec; box-shadow:inset 8px 8px 16px #a3b1c6,inset -8px -8px 16px #fff; border-radius:20px }
 .neu-btn { background:#e0e5ec; box-shadow:6px 6px 12px #a3b1c6,-6px -6px 12px #fff; transition:.2s; border-radius:12px }
 .neu-btn:active { box-shadow:inset 4px 4px 8px #a3b1c6,inset -4px -4px 8px #fff; transform:scale(.95) }
-select{background:transparent;border:none;outline:none;width:100%;font-weight:bold;text-align:center}
+select{background:transparent;border:none;outline:none;width:100%;font-weight:bold;text-align:center;cursor:pointer}
 </style>
 </head>
 
 <body>
 <div id="root"></div>
 
-<!-- Firebase -->
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
 import { getFirestore, doc, setDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
@@ -41,115 +40,157 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
+// تصدير الأدوات للنافذة العالمية ليستخدمها React
 window.docRef = doc(db, "worship", "family");
 window.setDoc = setDoc;
 window.onSnapshot = onSnapshot;
 </script>
 
-<!-- React App -->
 <script type="text/babel">
-const { useState, useEffect } = React;
+const { useState, useEffect, useRef } = React;
 
 function App(){
-  const users=['محمد','شيماء','أحمد','ياسين'];
-  const men=['محمد','أحمد','ياسين'];
-  const [date,setDate]=useState(new Date().toISOString().split('T')[0]);
-  const [data,setData]=useState({});
+  const users = ['محمد','شيماء','أحمد','ياسين'];
+  const men = ['محمد','أحمد','ياسين'];
+  const [date, setDate] = useState(new Date().toISOString().split('T')[0]);
+  const [data, setData] = useState({});
+  
+  // نستخدم useRef للاحتفاظ بأحدث نسخة من البيانات لمنع الكتابة فوق التعديلات المتزامنة
+  const latestData = useRef({});
 
-  useEffect(()=>{
-    return onSnapshot(window.docRef,(snap)=>{
-      if(snap.exists()) setData(snap.data());
+  useEffect(() => {
+    // الاتصال اللحظي بـ Firestore
+    const unsubscribe = window.onSnapshot(window.docRef, (snap) => {
+      if (snap.exists()) {
+        const cloudData = snap.data();
+        latestData.current = cloudData;
+        setData(cloudData);
+      }
     });
-  },[]);
+    return () => unsubscribe();
+  }, []);
 
-  const save = (newData)=>{
-    window.setDoc(window.docRef,newData);
-  };
-
-  const update=(u,t,val)=>{
-    const newData={
-      ...data,
-      [date]:{...data[date],[u]:{...data[date]?.[u],[t]:val}}
+  // دالة التحديث اللحظية
+  const update = async (user, task, val) => {
+    const newData = {
+      ...latestData.current,
+      [date]: {
+        ...latestData.current[date],
+        [user]: {
+          ...latestData.current[date]?.[user],
+          [task]: val
+        }
+      }
     };
-    setData(newData);
-    save(newData);
+
+    try {
+      // الحفظ في Firestore مباشرة
+      await window.setDoc(window.docRef, newData);
+    } catch (error) {
+      console.error("خطأ في تحديث البيانات:", error);
+    }
   };
 
-  const isFriday=new Date(date).getDay()===5;
-  const prayers=["صلاة الفجر",isFriday?"صلاة الجمعة":"صلاة الظهر","صلاة العصر","صلاة المغرب","صلاة العشاء"];
-  const others=["سنة الفجر","أذكار الصباح","الضحى","سورة الكهف","٤ ركعات قبل الظهر","ركعتان بعد الظهر","أذكار المساء","ركعتان بعد المغرب","ركعتان بعد العشاء","سورة الملك","الشفع والوتر","القيام","الورد","أذكار النوم"].filter(i=>isFriday||i!=="سورة الكهف");
+  const isFriday = new Date(date).getDay() === 5;
+  const prayers = ["صلاة الفجر", isFriday ? "صلاة الجمعة" : "صلاة الظهر", "صلاة العصر", "صلاة المغرب", "صلاة العشاء"];
+  const others = [
+    "سنة الفجر", "أذكار الصباح", "الضحى", "سورة الكهف", 
+    "٤ ركعات قبل الظهر", "ركعتان بعد الظهر", "أذكار المساء", 
+    "ركعتان بعد المغرب", "ركعتان بعد العشاء", "سورة الملك", 
+    "الشفع والوتر", "القيام", "الورد", "أذكار النوم"
+  ].filter(i => isFriday || i !== "سورة الكهف");
 
-  const scores=users.map(u=>({
-    name:u,
-    count:Object.values(data[date]?.[u]||{}).filter(v=>v).length
-  })).sort((a,b)=>b.count-a.count);
+  const scores = users.map(u => ({
+    name: u,
+    count: Object.values(data[date]?.[u] || {}).filter(v => v && v !== "قضاء").length
+  })).sort((a,b) => b.count - a.count);
 
   return (
-    <div className="max-w-md mx-auto space-y-8">
+    <div className="max-w-md mx-auto space-y-8 pb-10">
       <header className="neu-flat p-8 text-center">
-        <h1 className="text-2xl font-bold">🏠 أسرتي على الطاعة</h1>
-        <div className="neu-inset mt-4 p-2">
-          <input type="date" value={date} onChange={e=>setDate(e.target.value)} className="w-full text-center font-bold bg-transparent"/>
+        <h1 className="text-2xl font-bold mb-2">🏠 أسرتي على الطاعة</h1>
+        <p className="text-sm text-slate-500 mb-4">متابعة العبادات اليومية</p>
+        <div className="neu-inset p-2">
+          <input 
+            type="date" 
+            value={date} 
+            onChange={e => setDate(e.target.value)} 
+            className="w-full text-center font-bold bg-transparent outline-none border-none"
+          />
         </div>
       </header>
 
-      <div className="neu-flat p-3">
-        <table className="w-full">
+      <div className="neu-flat p-4 overflow-x-auto">
+        <table className="w-full text-center text-sm">
+          <thead>
+            <tr>
+              <th className="p-2 text-right">العبادة</th>
+              {users.map(u => <th key={u} className="p-2">{u}</th>)}
+            </tr>
+          </thead>
           <tbody>
-          {prayers.map(p=>(
-            <tr key={p}>
-              <td className="font-bold">{p}</td>
-              {users.map(u=>(
-                <td key={u}>
-                  <select value={data[date]?.[u]?.[p]||""} onChange={e=>update(u,p,e.target.value)}>
-                    <option value="">--</option>
-                    {men.includes(u)
-                      ? <>
-                          <option value="مسجد">مسجد</option>
-                          <option value="فرد">فرد</option>
-                        </>
-                      : <option value="حاضر">حاضر</option>}
-                    <option value="قضاء">قضاء</option>
-                  </select>
-                </td>
-              ))}
-            </tr>
-          ))}
-          {others.map(t=>(
-            <tr key={t}>
-              <td className="text-sm text-slate-500">{t}</td>
-              {users.map(u=>(
-                <td key={u}>
-                  <button onClick={()=>update(u,t,!data[date]?.[u]?.[t])}
-                    className="w-10 h-10 neu-btn mx-auto">
-                    {data[date]?.[u]?.[t]?"✓":""}
-                  </button>
-                </td>
-              ))}
-            </tr>
-          ))}
+            {prayers.map(p => (
+              <tr key={p} className="border-b border-white/20">
+                <td className="text-right font-bold py-4">{p}</td>
+                {users.map(u => (
+                  <td key={u}>
+                    <select 
+                      value={data[date]?.[u]?.[p] || ""} 
+                      onChange={e => update(u, p, e.target.value)}
+                    >
+                      <option value="">--</option>
+                      {men.includes(u) 
+                        ? <><option value="مسجد">مسجد</option><option value="فرد">فرد</option></>
+                        : <option value="حاضر">حاضر</option>
+                      }
+                      <option value="قضاء">قضاء</option>
+                    </select>
+                  </td>
+                ))}
+              </tr>
+            ))}
+            {others.map(t => (
+              <tr key={t} className="border-b border-white/10 text-xs">
+                <td className="text-right py-4 text-slate-500">{t}</td>
+                {users.map(u => (
+                  <td key={u}>
+                    <button 
+                      onClick={() => update(u, t, !data[date]?.[u]?.[t])}
+                      className="w-10 h-10 neu-btn mx-auto flex items-center justify-center"
+                    >
+                      {data[date]?.[u]?.[t] ? <span className="text-green-600 font-bold">✓</span> : ""}
+                    </button>
+                  </td>
+                ))}
+              </tr>
+            ))}
           </tbody>
         </table>
       </div>
 
       <div className="neu-flat p-6">
-        <h2 className="text-center font-bold mb-4">🏆 لوحة الشرف</h2>
-        {scores.map((s,i)=>(
-          <div key={s.name} className="flex justify-between mb-2">
-            <span>{i+1}. {s.name}</span>
-            <span>{s.count}</span>
+        <h2 className="text-center font-bold mb-4 flex items-center justify-center gap-2">
+          🏆 لوحة الشرف
+        </h2>
+        {scores.map((s, i) => (
+          <div key={s.name} className="flex justify-between items-center mb-3 p-3 neu-inset">
+            <span className="font-bold">{i + 1}. {s.name}</span>
+            <span className="bg-blue-500 text-white px-3 py-1 rounded-full text-xs">
+              {s.count} نقطة
+            </span>
           </div>
         ))}
       </div>
 
-      <footer className="text-center text-xs text-slate-400">
-        حقوق التصميم محفوظة © محمد ياسين 2026
+      <footer className="text-center text-[10px] text-slate-400">
+        حقوق التصميم محفوظة ©️ محمد ياسين 2026
       </footer>
     </div>
   );
 }
 
-ReactDOM.createRoot(document.getElementById('root')).render(<App/>);
+const root = ReactDOM.createRoot(document.getElementById('root'));
+root.render(<App />);
 </script>
 
 </body>
