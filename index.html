@@ -44,16 +44,17 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 window.docRef = doc(db, "worship", "family");
-window.chatRef = doc(db, "worship", "chat");
+// مرجع الدردشة سيكون الآن ديناميكياً داخل التطبيق بناءً على التاريخ
+window.db = db;
 window.setDoc = setDoc;
 window.onSnapshot = onSnapshot;
 window.arrayUnion = arrayUnion;
+window.docFunc = doc;
 </script>
 
 <script type="text/babel">
 const { useState, useEffect, useRef } = React;
 
-// قائمة أحاديث متنوعة
 const hadiths = [
   "«خياركم خياركم لأهلهم»",
   "«أحب الأعمال إلى الله أدومها وإن قل»",
@@ -79,24 +80,34 @@ function App(){
   const [currentUser, setCurrentUser] = useState("محمد");
   const latestData = useRef({});
 
-  // اختيار الحديث بناءً على اليوم لضمان تغيره يومياً
   const currentHadithIndex = new Date(date).getDate() % hadiths.length;
   const currentHadith = hadiths[currentHadithIndex];
 
   useEffect(() => {
+    // جلب بيانات العبادات
     const unsubData = window.onSnapshot(window.docRef, (snap) => {
       if (snap.exists()) { latestData.current = snap.data(); setData(snap.data()); }
     });
-    const unsubChat = window.onSnapshot(window.chatRef, (snap) => {
+
+    // جلب دردشة اليوم المختار فقط
+    const dailyChatRef = window.docFunc(window.db, "chats", date);
+    const unsubChat = window.onSnapshot(dailyChatRef, (snap) => {
       if (snap.exists()) setMessages(snap.data().messages || []);
+      else setMessages([]); // إذا كان اليوم جديداً ولم تُكتب رسائل بعد
     });
+
     return () => { unsubData(); unsubChat(); };
-  }, []);
+  }, [date]); // إعادة التشغيل عند تغيير التاريخ
 
   const sendChat = async () => {
     if (!newMsg.trim()) return;
-    await window.setDoc(window.chatRef, { 
-      messages: window.arrayUnion({ user: currentUser, text: newMsg, time: new Date().toLocaleTimeString('ar-EG', {hour:'2-digit', minute:'2-digit'}) }) 
+    const dailyChatRef = window.docFunc(window.db, "chats", date);
+    await window.setDoc(dailyChatRef, { 
+      messages: window.arrayUnion({ 
+        user: currentUser, 
+        text: newMsg, 
+        time: new Date().toLocaleTimeString('ar-EG', {hour:'2-digit', minute:'2-digit'}) 
+      }) 
     }, { merge: true });
     setNewMsg("");
   };
@@ -136,23 +147,23 @@ function App(){
         <h1 className="text-3xl font-black text-blue-900 drop-shadow-sm">أسرتي على الطاعة</h1>
       </header>
 
-      {/* الحديث المتغير والفاخر */}
-      <div className="neu-card hadith-card p-6 mb-8 relative">
-        <h3 className="text-yellow-600 font-bold text-xs mb-2 border-b border-yellow-200 inline-block">حديث اليوم</h3>
+      {/* الحديث اليومي الفاخر */}
+      <div className="neu-card hadith-card p-6 mb-8 relative shadow-lg border-b-4 border-yellow-400">
+        <h3 className="text-yellow-600 font-bold text-xs mb-2 border-b border-yellow-200 inline-block uppercase tracking-wider">حديث اليوم</h3>
         <p className="text-xl md:text-2xl font-bold text-slate-800 leading-relaxed text-center font-serif">
           {currentHadith}
         </p>
       </div>
 
-      <div className="neu-card p-4 mb-6 text-center">
+      <div className="neu-card p-4 mb-6">
         <div className="neu-inset p-1">
-          <input type="date" value={date} onChange={e => setDate(e.target.value)} className="w-full text-center font-bold bg-transparent outline-none p-2 text-blue-900 cursor-pointer"/>
+          <input type="date" value={date} onChange={e => setDate(e.target.value)} className="w-full text-center font-bold bg-transparent outline-none p-2 text-blue-900"/>
         </div>
       </div>
 
       {/* منصة التتويج */}
-      <div className="neu-card p-6">
-        <h2 className="text-center font-bold mb-10 text-slate-500">🏆 لوحة الشرف</h2>
+      <div className="neu-card p-6 shadow-xl">
+        <h2 className="text-center font-bold mb-10 text-slate-500">🏆 لوحة الشرف اليومية</h2>
         <div className="flex justify-center items-end gap-2 h-64 border-b-2 border-white/50 mb-8">
           <div className="flex flex-col items-center w-1/3">
             <span className="trophy-2">🥈</span>
@@ -178,7 +189,7 @@ function App(){
                 <span className="text-blue-600">{s.progress}%</span>
               </div>
               <div className="w-full bg-gray-200 h-2 rounded-full overflow-hidden mb-2">
-                <div className="bg-blue-500 h-full" style={{width: `${s.progress}%`}}></div>
+                <div className="bg-blue-500 h-full transition-all duration-1000" style={{width: `${s.progress}%`}}></div>
               </div>
               <p className="text-[9px] text-slate-500">
                 {s.missing.length > 0 ? <span className="text-red-400 font-medium">بانتظار: {s.missing.join('، ')}</span> : <span className="text-green-500 font-bold">✅ تم الإنجاز!</span>}
@@ -188,35 +199,40 @@ function App(){
         </div>
       </div>
 
-      {/* الشات العائلي */}
-      <div className="neu-card p-4">
-        <h3 className="text-center font-bold mb-4 text-blue-800">💬 ملتقى العائلة</h3>
+      {/* ملتقى العائلة (شات يومي منفصل) */}
+      <div className="neu-card p-4 shadow-lg border-t-4 border-blue-400">
+        <h3 className="text-center font-bold mb-2 text-blue-800">💬 ملتقى العائلة</h3>
+        <p className="text-[10px] text-center text-slate-400 mb-4 italic">دردشة يوم {date}</p>
         <div className="neu-inset p-3 h-48 overflow-y-auto mb-4 bg-white/20">
-          {messages.map((m, i) => (
-            <div key={i} className={`chat-msg ${m.user === currentUser ? 'mr-auto bg-blue-100' : 'ml-auto bg-white'} shadow-sm max-w-[80%]`}>
-              <div className="flex justify-between items-center gap-4 mb-1">
-                <span className="font-bold text-[10px] text-blue-600">{m.user}</span>
-                <span className="text-[8px] text-gray-400">{m.time}</span>
+          {messages.length === 0 ? (
+            <p className="text-center text-[10px] text-slate-400 mt-10">لا توجد رسائل لهذا اليوم.. ابدأ بالتشجيع!</p>
+          ) : (
+            messages.map((m, i) => (
+              <div key={i} className={`chat-msg ${m.user === currentUser ? 'mr-auto bg-blue-100' : 'ml-auto bg-white'} shadow-sm max-w-[85%]`}>
+                <div className="flex justify-between items-center gap-4 mb-1 border-b border-gray-100 pb-1">
+                  <span className="font-bold text-[10px] text-blue-600">{m.user}</span>
+                  <span className="text-[8px] text-gray-400">{m.time}</span>
+                </div>
+                <p className="font-medium text-slate-700 mt-1">{m.text}</p>
               </div>
-              <p className="font-medium text-slate-700">{m.text}</p>
-            </div>
-          ))}
+            ))
+          )}
         </div>
         <div className="flex gap-2">
           <select value={currentUser} onChange={e => setCurrentUser(e.target.value)} className="w-1/4 neu-btn text-xs font-bold p-1">
             {users.map(u => <option key={u} value={u}>{u}</option>)}
           </select>
-          <input value={newMsg} onChange={e => setNewMsg(e.target.value)} onKeyPress={e => e.key === 'Enter' && sendChat()} placeholder="اكتب تشجيعاً..." className="flex-1 neu-inset px-3 text-sm outline-none"/>
+          <input value={newMsg} onChange={e => setNewMsg(e.target.value)} onKeyPress={e => e.key === 'Enter' && sendChat()} placeholder="اكتب رسالة اليوم..." className="flex-1 neu-inset px-3 text-sm outline-none border-none"/>
           <button onClick={sendChat} className="neu-btn px-4 py-2 font-bold text-blue-600">ارسل</button>
         </div>
       </div>
 
-      {/* جدول العبادات */}
-      <div className="neu-card p-4 overflow-x-auto">
+      {/* الجدول */}
+      <div className="neu-card p-4 overflow-x-auto mt-6">
         <table className="w-full">
           <thead>
             <tr>
-              <th className="text-right text-[10px] text-blue-900 pb-3">العبادة</th>
+              <th className="text-right text-[10px] text-blue-900 pb-3 font-black">العبادة</th>
               {users.map(u => <th key={u} className="text-[10px] pb-3 text-center">{u}</th>)}
             </tr>
           </thead>
