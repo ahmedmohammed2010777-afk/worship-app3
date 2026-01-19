@@ -19,9 +19,8 @@ body { font-family:'Changa',sans-serif;background:#e0e5ec;padding:10px;color:#44
 .neu-btn:active { box-shadow:inset 3px 3px 6px #a3b1c6, inset -3px -3px 6px #fff; transform:scale(0.92) }
 .hadith-card { background: linear-gradient(135deg, #fdfbfb 0%, #ebedee 100%); border-right: 5px solid #fbbf24; }
 .chat-msg { margin-bottom: 8px; padding: 8px 12px; border-radius: 15px; font-size: 13px; line-height: 1.4; }
-.trophy-1 { font-size: 60px; filter: drop-shadow(0 0 12px #fbbf24); }
-.trophy-2 { font-size: 45px; filter: drop-shadow(0 0 10px #94a3b8); }
-.trophy-3 { font-size: 35px; filter: drop-shadow(0 0 8px #d97706); }
+.podium-avatar { width: 65px; height: 65px; border-radius: 50%; border: 4px solid white; margin-bottom: -10px; z-index: 10; object-fit: cover; background: #eee; box-shadow: 0 4px 10px rgba(0,0,0,0.2); }
+.trophy-1 { font-size: 45px; filter: drop-shadow(0 0 10px #fbbf24); position: absolute; top: -40px; }
 </style>
 </head>
 
@@ -44,7 +43,6 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 window.docRef = doc(db, "worship", "family");
-// مرجع الدردشة سيكون الآن ديناميكياً داخل التطبيق بناءً على التاريخ
 window.db = db;
 window.setDoc = setDoc;
 window.onSnapshot = onSnapshot;
@@ -70,6 +68,14 @@ const hadiths = [
   "«الدين النصيحة»"
 ];
 
+// الصور الحقيقية للعائلة بالكامل
+const userImages = {
+  'محمد': 'https://r2.erweima.ai/i/6f966020-22c6-48c4-8b65-680f4f9f4b9c.png',
+  'أحمد': 'https://r2.erweima.ai/i/0689626e-440a-4074-b81b-53531b402e90.png',
+  'ياسين': 'https://r2.erweima.ai/i/f3265538-4e8c-4f51-b8f4-600320696700.png',
+  'شيماء': 'https://r2.erweima.ai/i/e0210f8a-466d-472d-94c0-7f212f45811f.png'
+};
+
 function App(){
   const users = ['محمد','شيماء','أحمد','ياسين'];
   const men = ['محمد','أحمد','ياسين'];
@@ -80,52 +86,27 @@ function App(){
   const [currentUser, setCurrentUser] = useState("محمد");
   const latestData = useRef({});
 
-  const currentHadithIndex = new Date(date).getDate() % hadiths.length;
-  const currentHadith = hadiths[currentHadithIndex];
+  const currentHadith = hadiths[new Date(date).getDate() % hadiths.length];
 
   useEffect(() => {
-    // جلب بيانات العبادات
     const unsubData = window.onSnapshot(window.docRef, (snap) => {
       if (snap.exists()) { latestData.current = snap.data(); setData(snap.data()); }
     });
-
-    // جلب دردشة اليوم المختار فقط
     const dailyChatRef = window.docFunc(window.db, "chats", date);
     const unsubChat = window.onSnapshot(dailyChatRef, (snap) => {
       if (snap.exists()) setMessages(snap.data().messages || []);
-      else setMessages([]); // إذا كان اليوم جديداً ولم تُكتب رسائل بعد
+      else setMessages([]);
     });
-
     return () => { unsubData(); unsubChat(); };
-  }, [date]); // إعادة التشغيل عند تغيير التاريخ
+  }, [date]);
 
   const sendChat = async () => {
     if (!newMsg.trim()) return;
     const dailyChatRef = window.docFunc(window.db, "chats", date);
     await window.setDoc(dailyChatRef, { 
-      messages: window.arrayUnion({ 
-        user: currentUser, 
-        text: newMsg, 
-        time: new Date().toLocaleTimeString('ar-EG', {hour:'2-digit', minute:'2-digit'}) 
-      }) 
+      messages: window.arrayUnion({ user: currentUser, text: newMsg, time: new Date().toLocaleTimeString('ar-EG', {hour:'2-digit', minute:'2-digit'}) }) 
     }, { merge: true });
     setNewMsg("");
-  };
-
-  const isFriday = new Date(date).getDay() === 5;
-  const prayers = ["صلاة الفجر", isFriday ? "صلاة الجمعة" : "صلاة الظهر", "صلاة العصر", "صلاة المغرب", "صلاة العشاء"];
-  const others = ["سنة الفجر", "أذكار الصباح", "الضحى", "سورة الكهف", "٤ قبل الظهر", "٢ بعد الظهر", "أذكار المساء", "٢ بعد المغرب", "٢ بعد العشاء", "سورة الملك", "الشفع والوتر", "القيام", "الورد", "أذكار النوم"].filter(i => isFriday || i !== "سورة الكهف");
-  const allTasks = [...prayers, ...others];
-
-  const calculateScore = (user, dayData) => {
-    let score = 0;
-    if (!dayData?.[user]) return 0;
-    Object.entries(dayData[user]).forEach(([task, val]) => {
-      if (val === true || val === "مسجد" || val === "حاضر") score += 3;
-      else if (val === "فرد") score += 2;
-      else if (val === "قضاء") score += 1;
-    });
-    return score;
   };
 
   const update = async (user, task, val) => {
@@ -133,12 +114,22 @@ function App(){
     await window.setDoc(window.docRef, newData);
   };
 
+  const isFriday = new Date(date).getDay() === 5;
+  const prayers = ["صلاة الفجر", isFriday ? "صلاة الجمعة" : "صلاة الظهر", "صلاة العصر", "صلاة المغرب", "صلاة العشاء"];
+  const others = ["سنة الفجر", "أذكار الصباح", "الضحى", "سورة الكهف", "٤ قبل الظهر", "٢ بعد الظهر", "أذكار المساء", "٢ بعد المغرب", "٢ بعد العشاء", "سورة الملك", "الشفع والوتر", "القيام", "الورد", "أذكار النوم"].filter(i => isFriday || i !== "سورة الكهف");
+  
   const dayScores = users.map(u => {
-    const score = calculateScore(u, data[date]);
-    const doneTasks = Object.keys(data[date]?.[u] || {}).filter(k => data[date][u][k]);
-    const progress = Math.round((doneTasks.length / allTasks.length) * 100);
-    const missing = allTasks.filter(t => !data[date]?.[u]?.[t]);
-    return { name: u, score, progress, missing };
+    const dayData = data[date]?.[u] || {};
+    let score = 0;
+    Object.entries(dayData).forEach(([task, val]) => {
+      if (val === true || val === "مسجد" || val === "حاضر") score += 3;
+      else if (val === "فرد") score += 2;
+      else if (val === "قضاء") score += 1;
+    });
+    const doneCount = Object.values(dayData).filter(v => v).length;
+    const progress = Math.round((doneCount / (prayers.length + others.length)) * 100);
+    const missing = [...prayers, ...others].filter(t => !dayData[t]);
+    return { name: u, score, progress, missing, img: userImages[u] };
   }).sort((a,b) => b.score - a.score);
 
   return (
@@ -147,103 +138,109 @@ function App(){
         <h1 className="text-3xl font-black text-blue-900 drop-shadow-sm">أسرتي على الطاعة</h1>
       </header>
 
-      {/* الحديث اليومي الفاخر */}
-      <div className="neu-card hadith-card p-6 mb-8 relative shadow-lg border-b-4 border-yellow-400">
-        <h3 className="text-yellow-600 font-bold text-xs mb-2 border-b border-yellow-200 inline-block uppercase tracking-wider">حديث اليوم</h3>
-        <p className="text-xl md:text-2xl font-bold text-slate-800 leading-relaxed text-center font-serif">
-          {currentHadith}
-        </p>
+      {/* الحديث اليومي */}
+      <div className="neu-card hadith-card p-6 mb-6">
+        <h3 className="text-yellow-600 font-bold text-[10px] mb-2 border-b border-yellow-200 inline-block uppercase tracking-widest">حديث اليوم</h3>
+        <p className="text-xl font-bold text-slate-800 leading-relaxed text-center font-serif">{currentHadith}</p>
       </div>
 
       <div className="neu-card p-4 mb-6">
         <div className="neu-inset p-1">
-          <input type="date" value={date} onChange={e => setDate(e.target.value)} className="w-full text-center font-bold bg-transparent outline-none p-2 text-blue-900"/>
+          <input type="date" value={date} onChange={e => setDate(e.target.value)} className="w-full text-center font-bold bg-transparent outline-none p-2 text-blue-900 cursor-pointer"/>
         </div>
       </div>
 
-      {/* منصة التتويج */}
-      <div className="neu-card p-6 shadow-xl">
-        <h2 className="text-center font-bold mb-10 text-slate-500">🏆 لوحة الشرف اليومية</h2>
-        <div className="flex justify-center items-end gap-2 h-64 border-b-2 border-white/50 mb-8">
+      {/* منصة التتويج بالعائلة */}
+      <div className="neu-card p-6 shadow-xl relative">
+        <h2 className="text-center font-bold mb-12 text-slate-500">🏆 لوحة الشرف اليومية</h2>
+        <div className="flex justify-center items-end gap-2 h-64 border-b-2 border-white/50 mb-8 pt-10">
           <div className="flex flex-col items-center w-1/3">
-            <span className="trophy-2">🥈</span>
-            <span className="text-[10px] font-bold mb-1">{dayScores[1]?.name}</span>
-            <div className="bg-slate-300 w-full rounded-t-lg shadow-lg flex items-end justify-center pb-2 text-white font-bold" style={{height: '80px'}}>2</div>
+            <img src={dayScores[1]?.img} className="podium-avatar border-slate-300 shadow-lg" />
+            <span className="text-[10px] font-bold mb-1">🥈 {dayScores[1]?.name}</span>
+            <div className="bg-slate-300 w-full rounded-t-lg shadow-lg flex items-center justify-center text-white font-bold" style={{height: '75px'}}>2</div>
           </div>
-          <div className="flex flex-col items-center w-1/3">
+          <div className="flex flex-col items-center w-1/3 relative">
             <span className="trophy-1 animate-bounce">🏆</span>
-            <span className="text-xs font-bold mb-1 text-yellow-600">{dayScores[0]?.name}</span>
-            <div className="bg-yellow-400 w-full rounded-t-lg shadow-2xl flex items-end justify-center pb-2 text-white font-black" style={{height: '130px'}}>1</div>
+            <img src={dayScores[0]?.img} className="podium-avatar border-yellow-400 scale-125 shadow-xl" />
+            <span className="text-xs font-bold mb-1 text-yellow-600">🥇 {dayScores[0]?.name}</span>
+            <div className="bg-yellow-400 w-full rounded-t-lg shadow-2xl flex items-center justify-center text-white font-black" style={{height: '120px'}}>1</div>
           </div>
           <div className="flex flex-col items-center w-1/3">
-            <span className="trophy-3">🥉</span>
-            <span className="text-[10px] font-bold mb-1">{dayScores[2]?.name}</span>
-            <div className="bg-orange-400 w-full rounded-t-lg shadow-md flex items-end justify-center pb-2 text-white font-bold" style={{height: '50px'}}>3</div>
+            <img src={dayScores[2]?.img} className="podium-avatar border-orange-400 shadow-md" />
+            <span className="text-[10px] font-bold mb-1">🥉 {dayScores[2]?.name}</span>
+            <div className="bg-orange-400 w-full rounded-t-lg shadow-md flex items-center justify-center text-white font-bold" style={{height: '45px'}}>3</div>
           </div>
         </div>
-        <div className="space-y-6">
+
+        <div className="space-y-4">
           {dayScores.map(s => (
-            <div key={s.name} className="neu-inset p-3">
-              <div className="flex justify-between items-center mb-1 text-xs font-bold">
-                <span>{s.name}</span>
-                <span className="text-blue-600">{s.progress}%</span>
+            <div key={s.name} className="neu-inset p-3 flex items-center gap-3">
+              <img src={s.img} className="w-12 h-12 rounded-full border-2 border-white shadow-sm object-cover" />
+              <div className="flex-1">
+                <div className="flex justify-between items-center mb-1 text-xs font-bold text-slate-700">
+                  <span>{s.name}</span>
+                  <span className="text-blue-600 font-black">{s.progress}%</span>
+                </div>
+                <div className="w-full bg-gray-200 h-2 rounded-full overflow-hidden">
+                  <div className="bg-blue-500 h-full transition-all duration-1000" style={{width: `${s.progress}%`}}></div>
+                </div>
+                <p className="text-[9px] mt-1 text-slate-500 leading-tight italic">
+                   {s.missing.length > 0 ? <span className="text-red-400 font-medium">بانتظار: {s.missing.slice(0,2).join('، ')}...</span> : <span className="text-green-500 font-bold">✨ بطل اليوم!</span>}
+                </p>
               </div>
-              <div className="w-full bg-gray-200 h-2 rounded-full overflow-hidden mb-2">
-                <div className="bg-blue-500 h-full transition-all duration-1000" style={{width: `${s.progress}%`}}></div>
-              </div>
-              <p className="text-[9px] text-slate-500">
-                {s.missing.length > 0 ? <span className="text-red-400 font-medium">بانتظار: {s.missing.join('، ')}</span> : <span className="text-green-500 font-bold">✅ تم الإنجاز!</span>}
-              </p>
             </div>
           ))}
         </div>
       </div>
 
-      {/* ملتقى العائلة (شات يومي منفصل) */}
+      {/* دردشة اليوم */}
       <div className="neu-card p-4 shadow-lg border-t-4 border-blue-400">
-        <h3 className="text-center font-bold mb-2 text-blue-800">💬 ملتقى العائلة</h3>
-        <p className="text-[10px] text-center text-slate-400 mb-4 italic">دردشة يوم {date}</p>
-        <div className="neu-inset p-3 h-48 overflow-y-auto mb-4 bg-white/20">
-          {messages.length === 0 ? (
-            <p className="text-center text-[10px] text-slate-400 mt-10">لا توجد رسائل لهذا اليوم.. ابدأ بالتشجيع!</p>
-          ) : (
-            messages.map((m, i) => (
-              <div key={i} className={`chat-msg ${m.user === currentUser ? 'mr-auto bg-blue-100' : 'ml-auto bg-white'} shadow-sm max-w-[85%]`}>
-                <div className="flex justify-between items-center gap-4 mb-1 border-b border-gray-100 pb-1">
-                  <span className="font-bold text-[10px] text-blue-600">{m.user}</span>
-                  <span className="text-[8px] text-gray-400">{m.time}</span>
+        <h3 className="text-center font-bold mb-4 text-blue-800">💬 ملتقى العائلة اليومي</h3>
+        <div className="neu-inset p-3 h-48 overflow-y-auto mb-4 bg-white/10">
+          {messages.map((m, i) => (
+            <div key={i} className={`chat-msg ${m.user === currentUser ? 'mr-auto bg-blue-100 border-r-4 border-blue-300' : 'ml-auto bg-white border-l-4 border-gray-300'} shadow-sm flex items-start gap-2 max-w-[90%]`}>
+              <img src={userImages[m.user]} className="w-7 h-7 rounded-full shadow-sm object-cover" />
+              <div>
+                <div className="flex justify-between gap-4">
+                  <span className="font-bold text-[9px] text-blue-600">{m.user}</span>
+                  <span className="text-[7px] text-gray-400">{m.time}</span>
                 </div>
-                <p className="font-medium text-slate-700 mt-1">{m.text}</p>
+                <p className="text-xs text-slate-700 font-medium">{m.text}</p>
               </div>
-            ))
-          )}
+            </div>
+          ))}
         </div>
         <div className="flex gap-2">
-          <select value={currentUser} onChange={e => setCurrentUser(e.target.value)} className="w-1/4 neu-btn text-xs font-bold p-1">
+          <select value={currentUser} onChange={e => setCurrentUser(e.target.value)} className="w-1/4 neu-btn text-[10px] font-bold p-1">
             {users.map(u => <option key={u} value={u}>{u}</option>)}
           </select>
-          <input value={newMsg} onChange={e => setNewMsg(e.target.value)} onKeyPress={e => e.key === 'Enter' && sendChat()} placeholder="اكتب رسالة اليوم..." className="flex-1 neu-inset px-3 text-sm outline-none border-none"/>
+          <input value={newMsg} onChange={e => setNewMsg(e.target.value)} onKeyPress={e => e.key === 'Enter' && sendChat()} placeholder="اكتب رسالة تشجيع..." className="flex-1 neu-inset px-3 text-sm outline-none border-none"/>
           <button onClick={sendChat} className="neu-btn px-4 py-2 font-bold text-blue-600">ارسل</button>
         </div>
       </div>
 
       {/* الجدول */}
-      <div className="neu-card p-4 overflow-x-auto mt-6">
+      <div className="neu-card p-4 overflow-x-auto mt-6 shadow-inner">
         <table className="w-full">
           <thead>
             <tr>
               <th className="text-right text-[10px] text-blue-900 pb-3 font-black">العبادة</th>
-              {users.map(u => <th key={u} className="text-[10px] pb-3 text-center">{u}</th>)}
+              {users.map(u => (
+                <th key={u} className="text-[9px] pb-3 text-center">
+                  <img src={userImages[u]} className="w-8 h-8 rounded-full mx-auto mb-1 border shadow-sm object-cover" />
+                  {u}
+                </th>
+              ))}
             </tr>
           </thead>
           <tbody>
             {prayers.map(p => (
               <tr key={p} className="border-b border-white/20">
-                <td className="py-3 text-right text-[10px] font-bold text-slate-600 whitespace-nowrap">{p}</td>
+                <td className="py-3 text-right text-[10px] font-bold text-slate-600">{p}</td>
                 {users.map(u => (
                   <td key={u} className="px-1 text-center">
                     <div className="neu-inset p-1">
-                      <select value={data[date]?.[u]?.[p] || ""} onChange={e => update(u, p, e.target.value)}>
+                      <select value={data[date]?.[u]?.[p] || ""} onChange={e => update(u, p, e.target.value)} className="text-[10px] font-bold text-blue-700 bg-transparent">
                         <option value="">--</option>
                         {men.includes(u) ? <><option value="مسجد">🕌</option><option value="فرد">🏠</option></> : <option value="حاضر">✅</option>}
                         <option value="قضاء">⏳</option>
@@ -255,10 +252,10 @@ function App(){
             ))}
             {others.map(t => (
               <tr key={t} className="border-b border-white/10">
-                <td className="py-2 text-right text-[9px] text-slate-500 whitespace-nowrap">{t}</td>
+                <td className="py-2 text-right text-[9px] text-slate-500">{t}</td>
                 {users.map(u => (
                   <td key={u} className="text-center px-1">
-                    <button onClick={() => update(u, t, !data[date]?.[u]?.[t])} className="w-7 h-7 neu-btn mx-auto flex items-center justify-center">
+                    <button onClick={() => update(u, t, !data[date]?.[u]?.[t])} className="w-7 h-7 neu-btn mx-auto flex items-center justify-center text-[12px]">
                       {data[date]?.[u]?.[t] ? "✔️" : ""}
                     </button>
                   </td>
