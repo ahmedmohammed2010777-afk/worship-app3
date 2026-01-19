@@ -19,8 +19,9 @@ body { font-family:'Changa',sans-serif;background:#e0e5ec;padding:10px;color:#44
 .neu-btn:active { box-shadow:inset 3px 3px 6px #a3b1c6, inset -3px -3px 6px #fff; transform:scale(0.92) }
 .hadith-card { background: linear-gradient(135deg, #fdfbfb 0%, #ebedee 100%); border-right: 5px solid #fbbf24; }
 .chat-msg { margin-bottom: 8px; padding: 8px 12px; border-radius: 15px; font-size: 13px; line-height: 1.4; }
-.podium-avatar { width: 65px; height: 65px; border-radius: 50%; border: 4px solid white; margin-bottom: -10px; z-index: 10; object-fit: cover; background: #eee; box-shadow: 0 4px 10px rgba(0,0,0,0.2); }
-.trophy-1 { font-size: 45px; filter: drop-shadow(0 0 10px #fbbf24); position: absolute; top: -40px; }
+.avatar-circle { width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 30px; background: #e0e5ec; box-shadow: 4px 4px 8px #a3b1c6, -4px -4px 8px #fff; border: 2px solid white; margin-bottom: -5px; z-index: 10; }
+.podium-avatar { transform: scale(1.1); }
+.trophy-1 { font-size: 40px; filter: drop-shadow(0 0 10px #fbbf24); position: absolute; top: -35px; }
 </style>
 </head>
 
@@ -68,12 +69,12 @@ const hadiths = [
   "«الدين النصيحة»"
 ];
 
-// تم استبدال الروابط المنتهية بروابط دائمة ومجربة
-const userImages = {
-  'محمد': 'https://i.ibb.co/h7N1L1T/mohammed.png',
-  'أحمد': 'https://i.ibb.co/L5rB1J5/ahmed.png',
-  'ياسين': 'https://i.ibb.co/zX9v0V5/yassin.png',
-  'شيماء': 'https://i.ibb.co/Prtv8f0/shaymaa.png'
+// الرموز الجديدة التي تعبر عن الأدوار العائلية
+const userIcons = {
+  'محمد': '🧔‍♂️',
+  'شيماء': '🧕',
+  'أحمد': '👦',
+  'ياسين': '👱‍♂️'
 };
 
 function App(){
@@ -86,7 +87,6 @@ function App(){
   const [currentUser, setCurrentUser] = useState("محمد");
   const latestData = useRef({});
 
-  // الحديث يتغير يومياً بناءً على التاريخ المحفوظ في تعليماتك [2026-01-17]
   const currentHadith = hadiths[new Date(date).getDate() % hadiths.length];
 
   useEffect(() => {
@@ -129,8 +129,7 @@ function App(){
     });
     const doneCount = Object.values(dayData).filter(v => v).length;
     const progress = Math.round((doneCount / (prayers.length + others.length)) * 100);
-    const missing = [...prayers, ...others].filter(t => !dayData[t]);
-    return { name: u, score, progress, missing, img: userImages[u] };
+    return { name: u, score, progress, icon: userIcons[u] };
   }).sort((a,b) => b.score - a.score);
 
   return (
@@ -144,37 +143,35 @@ function App(){
         <p className="text-xl font-bold text-slate-800 leading-relaxed text-center font-serif">{currentHadith}</p>
       </div>
 
-      <div className="neu-card p-4 mb-6">
-        <div className="neu-inset p-1">
-          <input type="date" value={date} onChange={e => setDate(e.target.value)} className="w-full text-center font-bold bg-transparent outline-none p-2 text-blue-900 cursor-pointer"/>
-        </div>
+      <div className="neu-card p-4 mb-6 text-center">
+        <input type="date" value={date} onChange={e => setDate(e.target.value)} className="neu-inset p-2 font-bold text-blue-900 bg-transparent outline-none cursor-pointer"/>
       </div>
 
       <div className="neu-card p-6 shadow-xl relative">
-        <h2 className="text-center font-bold mb-12 text-slate-500">🏆 لوحة الشرف اليومية</h2>
-        <div className="flex justify-center items-end gap-2 h-64 border-b-2 border-white/50 mb-8 pt-10">
+        <h2 className="text-center font-bold mb-12 text-slate-500">🏆 ترتيب اليوم</h2>
+        <div className="flex justify-center items-end gap-2 h-56 border-b-2 border-white/50 mb-8 pt-10">
           <div className="flex flex-col items-center w-1/3">
-            <img src={dayScores[1]?.img} className="podium-avatar border-slate-300 shadow-lg" />
+            <div className="avatar-circle"><span>{dayScores[1]?.icon}</span></div>
             <span className="text-[10px] font-bold mb-1">🥈 {dayScores[1]?.name}</span>
-            <div className="bg-slate-300 w-full rounded-t-lg shadow-lg flex items-center justify-center text-white font-bold" style={{height: '75px'}}>2</div>
+            <div className="bg-slate-300 w-full rounded-t-lg flex items-center justify-center text-white font-bold" style={{height: '70px'}}>2</div>
           </div>
           <div className="flex flex-col items-center w-1/3 relative">
             <span className="trophy-1 animate-bounce">🏆</span>
-            <img src={dayScores[0]?.img} className="podium-avatar border-yellow-400 scale-125 shadow-xl" />
+            <div className="avatar-circle podium-avatar border-yellow-400"><span>{dayScores[0]?.icon}</span></div>
             <span className="text-xs font-bold mb-1 text-yellow-600">🥇 {dayScores[0]?.name}</span>
-            <div className="bg-yellow-400 w-full rounded-t-lg shadow-2xl flex items-center justify-center text-white font-black" style={{height: '120px'}}>1</div>
+            <div className="bg-yellow-400 w-full rounded-t-lg shadow-xl flex items-center justify-center text-white font-black" style={{height: '110px'}}>1</div>
           </div>
           <div className="flex flex-col items-center w-1/3">
-            <img src={dayScores[2]?.img} className="podium-avatar border-orange-400 shadow-md" />
+            <div className="avatar-circle"><span>{dayScores[2]?.icon}</span></div>
             <span className="text-[10px] font-bold mb-1">🥉 {dayScores[2]?.name}</span>
-            <div className="bg-orange-400 w-full rounded-t-lg shadow-md flex items-center justify-center text-white font-bold" style={{height: '45px'}}>3</div>
+            <div className="bg-orange-400 w-full rounded-t-lg flex items-center justify-center text-white font-bold" style={{height: '40px'}}>3</div>
           </div>
         </div>
 
         <div className="space-y-4">
           {dayScores.map(s => (
             <div key={s.name} className="neu-inset p-3 flex items-center gap-3">
-              <img src={s.img} className="w-12 h-12 rounded-full border-2 border-white shadow-sm object-cover" />
+              <div className="w-10 h-10 rounded-full flex items-center justify-center bg-white/50 text-xl shadow-sm">{s.icon}</div>
               <div className="flex-1">
                 <div className="flex justify-between items-center mb-1 text-xs font-bold text-slate-700">
                   <span>{s.name}</span>
@@ -189,40 +186,37 @@ function App(){
         </div>
       </div>
 
-      <div className="neu-card p-4 shadow-lg border-t-4 border-blue-400">
-        <h3 className="text-center font-bold mb-4 text-blue-800">💬 ملتقى العائلة اليومي</h3>
-        <div className="neu-inset p-3 h-48 overflow-y-auto mb-4 bg-white/10">
+      <div className="neu-card p-4">
+        <h3 className="text-center font-bold mb-4 text-blue-800">💬 الدردشة العائلية</h3>
+        <div className="neu-inset p-3 h-40 overflow-y-auto mb-4 bg-white/10">
           {messages.map((m, i) => (
-            <div key={i} className={`chat-msg ${m.user === currentUser ? 'mr-auto bg-blue-100 border-r-4 border-blue-300' : 'ml-auto bg-white border-l-4 border-gray-300'} shadow-sm flex items-start gap-2 max-w-[90%]`}>
-              <img src={userImages[m.user]} className="w-7 h-7 rounded-full shadow-sm object-cover" />
+            <div key={i} className={`chat-msg ${m.user === currentUser ? 'mr-auto bg-blue-100' : 'ml-auto bg-white'} shadow-sm flex items-center gap-2 max-w-[85%]`}>
+              <span className="text-lg">{userIcons[m.user]}</span>
               <div>
-                <div className="flex justify-between gap-4">
-                  <span className="font-bold text-[9px] text-blue-600">{m.user}</span>
-                  <span className="text-[7px] text-gray-400">{m.time}</span>
-                </div>
-                <p className="text-xs text-slate-700 font-medium">{m.text}</p>
+                <span className="font-bold text-[8px] block text-blue-500">{m.user}</span>
+                <p className="text-xs text-slate-700">{m.text}</p>
               </div>
             </div>
           ))}
         </div>
         <div className="flex gap-2">
-          <select value={currentUser} onChange={e => setCurrentUser(e.target.value)} className="w-1/4 neu-btn text-[10px] font-bold p-1">
+          <select value={currentUser} onChange={e => setCurrentUser(e.target.value)} className="w-1/4 neu-btn text-[10px] p-1 font-bold">
             {users.map(u => <option key={u} value={u}>{u}</option>)}
           </select>
-          <input value={newMsg} onChange={e => setNewMsg(e.target.value)} onKeyPress={e => e.key === 'Enter' && sendChat()} placeholder="اكتب رسالة..." className="flex-1 neu-inset px-3 text-sm outline-none border-none"/>
-          <button onClick={sendChat} className="neu-btn px-4 py-2 font-bold text-blue-600">ارسل</button>
+          <input value={newMsg} onChange={e => setNewMsg(e.target.value)} onKeyPress={e => e.key === 'Enter' && sendChat()} placeholder="اكتب رسالة..." className="flex-1 neu-inset px-2 text-sm outline-none border-none"/>
+          <button onClick={sendChat} className="neu-btn px-3 font-bold text-blue-600">ارسل</button>
         </div>
       </div>
 
-      <div className="neu-card p-4 overflow-x-auto mt-6 shadow-inner">
+      <div className="neu-card p-4 overflow-x-auto mt-6">
         <table className="w-full">
           <thead>
             <tr>
-              <th className="text-right text-[10px] text-blue-900 pb-3 font-black">العبادة</th>
+              <th className="text-right text-[10px] pb-3 text-blue-900 font-black">العبادة</th>
               {users.map(u => (
-                <th key={u} className="text-[9px] pb-3 text-center">
-                  <img src={userImages[u]} className="w-8 h-8 rounded-full mx-auto mb-1 border shadow-sm object-cover" />
-                  {u}
+                <th key={u} className="text-center pb-3">
+                   <div className="text-lg">{userIcons[u]}</div>
+                   <div className="text-[8px] font-bold">{u}</div>
                 </th>
               ))}
             </tr>
@@ -232,9 +226,9 @@ function App(){
               <tr key={p} className="border-b border-white/20">
                 <td className="py-3 text-right text-[10px] font-bold text-slate-600">{p}</td>
                 {users.map(u => (
-                  <td key={u} className="px-1 text-center">
+                  <td key={u} className="text-center px-1">
                     <div className="neu-inset p-1">
-                      <select value={data[date]?.[u]?.[p] || ""} onChange={e => update(u, p, e.target.value)} className="text-[10px] font-bold text-blue-700 bg-transparent">
+                      <select value={data[date]?.[u]?.[p] || ""} onChange={e => update(u, p, e.target.value)} className="text-[9px] font-bold text-blue-700 bg-transparent outline-none">
                         <option value="">--</option>
                         {men.includes(u) ? <><option value="مسجد">🕌</option><option value="فرد">🏠</option></> : <option value="حاضر">✅</option>}
                         <option value="قضاء">⏳</option>
@@ -248,8 +242,8 @@ function App(){
               <tr key={t} className="border-b border-white/10">
                 <td className="py-2 text-right text-[9px] text-slate-500">{t}</td>
                 {users.map(u => (
-                  <td key={u} className="text-center px-1">
-                    <button onClick={() => update(u, t, !data[date]?.[u]?.[t])} className="w-7 h-7 neu-btn mx-auto flex items-center justify-center text-[12px]">
+                  <td key={u} className="text-center">
+                    <button onClick={() => update(u, t, !data[date]?.[u]?.[t])} className="w-6 h-6 neu-btn mx-auto flex items-center justify-center text-[10px]">
                       {data[date]?.[u]?.[t] ? "✔️" : ""}
                     </button>
                   </td>
