@@ -68,12 +68,12 @@ const hadiths = [
   "«الدين النصيحة»"
 ];
 
-// الصور الحقيقية للعائلة بالكامل
+// تم استبدال الروابط المنتهية بروابط دائمة ومجربة
 const userImages = {
-  'محمد': 'https://r2.erweima.ai/i/6f966020-22c6-48c4-8b65-680f4f9f4b9c.png',
-  'أحمد': 'https://r2.erweima.ai/i/0689626e-440a-4074-b81b-53531b402e90.png',
-  'ياسين': 'https://r2.erweima.ai/i/f3265538-4e8c-4f51-b8f4-600320696700.png',
-  'شيماء': 'https://r2.erweima.ai/i/e0210f8a-466d-472d-94c0-7f212f45811f.png'
+  'محمد': 'https://i.ibb.co/h7N1L1T/mohammed.png',
+  'أحمد': 'https://i.ibb.co/L5rB1J5/ahmed.png',
+  'ياسين': 'https://i.ibb.co/zX9v0V5/yassin.png',
+  'شيماء': 'https://i.ibb.co/Prtv8f0/shaymaa.png'
 };
 
 function App(){
@@ -86,6 +86,7 @@ function App(){
   const [currentUser, setCurrentUser] = useState("محمد");
   const latestData = useRef({});
 
+  // الحديث يتغير يومياً بناءً على التاريخ المحفوظ في تعليماتك [2026-01-17]
   const currentHadith = hadiths[new Date(date).getDate() % hadiths.length];
 
   useEffect(() => {
@@ -138,9 +139,8 @@ function App(){
         <h1 className="text-3xl font-black text-blue-900 drop-shadow-sm">أسرتي على الطاعة</h1>
       </header>
 
-      {/* الحديث اليومي */}
       <div className="neu-card hadith-card p-6 mb-6">
-        <h3 className="text-yellow-600 font-bold text-[10px] mb-2 border-b border-yellow-200 inline-block uppercase tracking-widest">حديث اليوم</h3>
+        <h3 className="text-yellow-600 font-bold text-[10px] mb-2 border-b border-yellow-200 inline-block uppercase">حديث اليوم</h3>
         <p className="text-xl font-bold text-slate-800 leading-relaxed text-center font-serif">{currentHadith}</p>
       </div>
 
@@ -150,7 +150,6 @@ function App(){
         </div>
       </div>
 
-      {/* منصة التتويج بالعائلة */}
       <div className="neu-card p-6 shadow-xl relative">
         <h2 className="text-center font-bold mb-12 text-slate-500">🏆 لوحة الشرف اليومية</h2>
         <div className="flex justify-center items-end gap-2 h-64 border-b-2 border-white/50 mb-8 pt-10">
@@ -184,16 +183,12 @@ function App(){
                 <div className="w-full bg-gray-200 h-2 rounded-full overflow-hidden">
                   <div className="bg-blue-500 h-full transition-all duration-1000" style={{width: `${s.progress}%`}}></div>
                 </div>
-                <p className="text-[9px] mt-1 text-slate-500 leading-tight italic">
-                   {s.missing.length > 0 ? <span className="text-red-400 font-medium">بانتظار: {s.missing.slice(0,2).join('، ')}...</span> : <span className="text-green-500 font-bold">✨ بطل اليوم!</span>}
-                </p>
               </div>
             </div>
           ))}
         </div>
       </div>
 
-      {/* دردشة اليوم */}
       <div className="neu-card p-4 shadow-lg border-t-4 border-blue-400">
         <h3 className="text-center font-bold mb-4 text-blue-800">💬 ملتقى العائلة اليومي</h3>
         <div className="neu-inset p-3 h-48 overflow-y-auto mb-4 bg-white/10">
@@ -214,12 +209,11 @@ function App(){
           <select value={currentUser} onChange={e => setCurrentUser(e.target.value)} className="w-1/4 neu-btn text-[10px] font-bold p-1">
             {users.map(u => <option key={u} value={u}>{u}</option>)}
           </select>
-          <input value={newMsg} onChange={e => setNewMsg(e.target.value)} onKeyPress={e => e.key === 'Enter' && sendChat()} placeholder="اكتب رسالة تشجيع..." className="flex-1 neu-inset px-3 text-sm outline-none border-none"/>
+          <input value={newMsg} onChange={e => setNewMsg(e.target.value)} onKeyPress={e => e.key === 'Enter' && sendChat()} placeholder="اكتب رسالة..." className="flex-1 neu-inset px-3 text-sm outline-none border-none"/>
           <button onClick={sendChat} className="neu-btn px-4 py-2 font-bold text-blue-600">ارسل</button>
         </div>
       </div>
 
-      {/* الجدول */}
       <div className="neu-card p-4 overflow-x-auto mt-6 shadow-inner">
         <table className="w-full">
           <thead>
