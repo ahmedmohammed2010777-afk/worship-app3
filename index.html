@@ -3,34 +3,32 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>محراب العائلة الذكي الشامل</title>
+<title>محراب العائلة المتكامل</title>
 <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
 <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
 <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 <script src="https://cdn.tailwindcss.com"></script>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Changa:wght@400;700;800&display=swap');
-
 body { font-family: 'Changa', sans-serif; background: #f0f9ff; color: #1e293b; margin: 0; padding: 10px; }
 .neu-card { background: white; border-radius: 25px; padding: 20px; margin-bottom: 20px; border: 1px solid #e2e8f0; box-shadow: 0 4px 15px rgba(0,0,0,0.04); }
 
-/* منصة التتويج الذكية */
-.podium-box { display: flex; align-items: flex-end; justify-content: center; gap: 8px; height: 180px; margin: 20px 0; transition: all 0.5s ease; }
+/* البوديوم */
+.podium-box { display: flex; align-items: flex-end; justify-content: center; gap: 8px; height: 160px; margin: 15px 0; }
 .podium-col { display: flex; flex-direction: column; align-items: center; width: 22%; transition: all 0.5s ease; }
-.step { width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; font-weight: 800; color: white; border-radius: 10px 10px 0 0; transition: all 0.5s ease; }
-.p1 { height: 100px; background: linear-gradient(#fbbf24, #d97706); box-shadow: 0 4px 10px #fbbf2466; }
-.p2 { height: 75px; background: linear-gradient(#94a3b8, #475569); }
-.p3 { height: 55px; background: linear-gradient(#b45309, #78350f); }
-.p4 { height: 40px; background: linear-gradient(#cbd5e1, #94a3b8); }
-.user-label { font-size: 11px; font-weight: 800; margin-top: 5px; color: #334155; }
-.points-tag { font-size: 9px; background: rgba(255,255,255,0.2); padding: 2px 6px; border-radius: 10px; margin-top: 2px; }
+.step { width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; font-weight: 800; color: white; border-radius: 10px 10px 0 0; }
+.p1 { height: 90px; background: linear-gradient(#fbbf24, #d97706); }
+.p2 { height: 70px; background: linear-gradient(#94a3b8, #475569); }
+.p3 { height: 50px; background: linear-gradient(#b45309, #78350f); }
+.p4 { height: 35px; background: linear-gradient(#cbd5e1, #94a3b8); }
 
-/* التنبيهات */
-.todo-warning { font-size: 9px; color: #ef4444; margin-top: 4px; font-weight: bold; background: #fef2f2; padding: 2px 4px; border-radius: 5px; border: 1px solid #fee2e2; text-align: center; width: 100%; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+/* التنبيهات الشاملة */
+.pending-list { font-size: 8px; color: #ef4444; background: #fef2f2; border: 1px solid #fee2e2; border-radius: 8px; padding: 4px; margin-top: 5px; max-height: 50px; overflow-y: auto; width: 100%; line-height: 1.2; }
 
-/* الجداول */
-.status-select { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 3px; font-size: 10px; width: 100%; outline: none; cursor: pointer; }
-.section-title { font-weight: 800; border-right: 5px solid; padding-right: 10px; margin-bottom: 15px; }
+/* التاريخ وبطل الشهر */
+.date-picker { background: #fff; border: 2px solid #bae6fd; border-radius: 12px; padding: 5px 10px; font-weight: bold; color: #0369a1; outline: none; }
+.hero-badge { background: linear-gradient(45deg, #fbbf24, #f59e0b); color: white; padding: 10px; border-radius: 15px; text-align: center; margin-bottom: 20px; animation: pulse 2s infinite; }
+@keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.02); } 100% { transform: scale(1); } }
 </style>
 </head>
 <body>
@@ -51,7 +49,7 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
-window.docRef = doc(db, "worship", "family");
+window.docRef = doc(db, "worship", "family_v2");
 window.setDoc = setDoc;
 window.onSnapshot = onSnapshot;
 </script>
@@ -59,26 +57,17 @@ window.onSnapshot = onSnapshot;
 <script type="text/babel">
 const { useState, useEffect, useMemo } = React;
 
-const HADITHS = [
-  "«خياركم خياركم لأهلهم، وأنا خياركم لأهلي»",
-  "«من قرأ سورة الكهف يوم الجمعة أضاء له من النور ما بين الجمعتين»",
-  "«أحب الأعمال إلى الله أدومها وإن قل»",
-  "«مَنْ صَلَّى لِلَّهِ فِي يَوْمٍ ثِنْتَيْ عَشْرَةَ رَكْعَةً تَطَوُّعًا بَنَى اللَّهُ لَهُ بَيْتًا فِي الْجَنَّةِ»"
-];
-
-const ALL_TASKS = [
-  "الفجر", "الظهر", "الجمعة", "العصر", "المغرب", "العشاء", 
-  "سنة الفجر (قبلية)", "سنة الظهر (قبلية)", "سنة الظهر (بعدية)", 
-  "سنة المغرب (بعدية)", "سنة العشاء (بعدية)", "صلاة الضحى",
-  "قيام الليل", "الشفع والوتر", "أذكار الصباح", "أذكار المساء", 
-  "أذكار النوم", "الورد القرآني", "سورة الكهف", "سورة الملك"
-];
+const TASKS = {
+  prayers: ["الفجر", "الظهر", "الجمعة", "العصر", "المغرب", "العشاء"],
+  sunnah: ["سنة الفجر (قبلية)", "سنة الظهر (قبلية)", "سنة الظهر (بعدية)", "سنة المغرب (بعدية)", "سنة العشاء (بعدية)", "صلاة الضحى"],
+  night: ["قيام الليل", "الشفع والوتر"],
+  azkar: ["أذكار الصباح", "أذكار المساء", "أذكار النوم", "الورد القرآني", "سورة الكهف", "سورة الملك"]
+};
 
 function App() {
   const [data, setData] = useState({});
-  const users = ['محمد','شيماء','أحمد','ياسين'];
-  const today = new Date().toISOString().split('T')[0];
-  const isFriday = new Date().getDay() === 5;
+  const [currentDate, setCurrentDate] = useState(new Date().toISOString().split('T')[0]);
+  const users = ['محمد', 'شيماء', 'أحمد', 'ياسين'];
 
   useEffect(() => {
     const unsub = window.onSnapshot(window.docRef, (snap) => snap.exists() && setData(snap.data()));
@@ -86,83 +75,93 @@ function App() {
   }, []);
 
   const update = async (u, t, v) => {
-    const newData = { ...data, [today]: { ...data[today], [u]: { ...data[today]?.[u], [t]: v } } };
+    const newData = { ...data, [currentDate]: { ...data[currentDate], [u]: { ...data[currentDate]?.[u], [t]: v } } };
     await window.setDoc(window.docRef, newData);
   };
 
   const handleLink = (title) => {
-    if (title.includes("أذكار")) {
-      window.open("https://alazkar.today/", "_blank");
-    } else if (title === "سورة الملك") {
-      window.open("https://quran.com/67", "_blank");
-    } else if (title === "سورة الكهف") {
-      window.open("https://quran.com/18", "_blank");
-    }
+    if (title.includes("أذكار")) window.open("https://alazkar.today/", "_blank");
+    else if (title === "سورة الملك") window.open("https://quran.com/67", "_blank");
+    else if (title === "سورة الكهف") window.open("https://quran.com/18", "_blank");
   };
 
-  const rankings = useMemo(() => {
-    const scores = users.map(u => {
-      const userToday = data[today]?.[u] || {};
-      let score = 0;
-      let pending = [];
-      ALL_TASKS.forEach(task => {
-        if (task === "الجمعة" && !isFriday) return;
-        if (task === "الظهر" && isFriday) return;
-        if (task === "سورة الكهف" && !isFriday) return;
-        if (task === "سورة الملك" && isFriday) return;
+  // فحص نهاية الشهر
+  const isLastDayOfMonth = useMemo(() => {
+    const d = new Date(currentDate);
+    const nextDay = new Date(d);
+    nextDay.setDate(d.getDate() + 1);
+    return nextDay.getDate() === 1;
+  }, [currentDate]);
 
-        if (userToday[task] && userToday[task] !== "قضاء" && userToday[task] !== "") score += 1;
-        else pending.push(task);
+  // حساب الترتيب والمتروكات
+  const stats = useMemo(() => {
+    return users.map(u => {
+      const dayData = data[currentDate]?.[u] || {};
+      let score = 0;
+      let missed = [];
+      const isFri = new Date(currentDate).getDay() === 5;
+
+      Object.values(TASKS).flat().forEach(task => {
+        if ((task === "الجمعة" || task === "سورة الكهف") && !isFri) return;
+        if ((task === "الظهر" || task === "سورة الملك") && isFri) return;
+        
+        if (dayData[task] && dayData[task] !== "قضاء" && dayData[task] !== "") score++;
+        else missed.push(task);
       });
-      return { name: u, score, pending };
-    });
-    return scores.sort((a, b) => b.score - a.score);
-  }, [data, today]);
+      return { name: u, score, missed };
+    }).sort((a, b) => b.score - a.score);
+  }, [data, currentDate]);
 
   const pClasses = ['p1', 'p2', 'p3', 'p4'];
 
   return (
     <div className="max-w-md mx-auto pb-10">
-      <header className="py-6 text-center">
-        <h1 className="text-3xl font-black text-sky-600 mb-2">مِحْرابُ العائلة ✨</h1>
-        <div className="neu-card border-none bg-sky-50 text-sky-800 text-sm italic">
-          {HADITHS[new Date().getDate() % HADITHS.length]}
-        </div>
+      <header className="py-4 flex justify-between items-center">
+        <h1 className="text-2xl font-black text-sky-600">مِحْرابُ العائلة ✨</h1>
+        <input type="date" value={currentDate} onChange={(e)=>setCurrentDate(e.target.value)} className="date-picker" />
       </header>
 
-      {/* منصة التتويج التفاعلية */}
+      {/* تقرير بطل الشهر */}
+      {isLastDayOfMonth && (
+        <div className="hero-badge shadow-lg">
+          <h2 className="text-lg font-bold">🏆 بطل الشهر: {stats[0].name}</h2>
+          <p className="text-[10px]">تهانينا! أنت الأكثر التزاماً في ختام هذا الشهر المبارك</p>
+        </div>
+      )}
+
+      {/* البوديوم الذكي */}
       <div className="neu-card">
-        <h3 className="text-center font-bold text-amber-500 mb-2 text-sm">🏆 ترتيب فرسان الطاعة اليوم</h3>
+        <h3 className="text-center font-bold text-amber-500 mb-2 text-sm">🎖️ فرسان اليوم</h3>
         <div className="podium-box">
-          {[rankings[1], rankings[0], rankings[2], rankings[3]].map((user) => (
-            <div key={user.name} className="podium-col">
-              {user.name === rankings[0].name && <span className="text-xl">👑</span>}
-              <div className={`step ${pClasses[rankings.findIndex(r => r.name === user.name)]}`}>
-                <span className="text-lg">{rankings.findIndex(r => r.name === user.name) + 1}</span>
-                <span className="points-tag">{user.score}</span>
+          {[stats[1], stats[0], stats[2], stats[3]].map((u, i) => (
+            <div key={u.name} className="podium-col">
+              {u.name === stats[0].name && <span className="text-xl">👑</span>}
+              <div className={`step ${pClasses[stats.findIndex(r => r.name === u.name)]}`}>
+                <span className="text-sm">{u.score}</span>
               </div>
-              <span className="user-label">{user.name}</span>
-              {user.pending.length > 0 && user.pending.length < 18 && (
-                <div className="todo-warning">متبقي: {user.pending[0]}</div>
+              <span className="user-label">{u.name}</span>
+              {u.missed.length > 0 && (
+                <div className="pending-list">
+                  <strong>متبقي:</strong> {u.missed.join(' - ')}
+                </div>
               )}
             </div>
           ))}
         </div>
       </div>
 
-      {/* الجداول والتقسيمات */}
+      {/* الأقسام */}
       <div className="neu-card">
-        <h3 className="section-title text-amber-600 border-amber-600">🕋 الصلوات المفروضة</h3>
+        <h3 className="font-bold text-amber-600 border-r-4 pr-2 mb-4">🕋 المفروضات</h3>
         <table className="w-full text-[10px]">
-          <thead><tr><th className="text-right">الصلاة</th>{users.map(u => <th key={u}>{u}</th>)}</tr></thead>
           <tbody>
-            {["الفجر", isFriday ? "الجمعة" : "الظهر", "العصر", "المغرب", "العشاء"].map(p => (
+            {TASKS.prayers.map(p => (
               <tr key={p} className="border-t">
                 <td className="py-2 font-bold">{p}</td>
                 {users.map(u => (
                   <td key={u} className="px-1">
-                    <select value={data[today]?.[u]?.[p] || ""} onChange={e => update(u, p, e.target.value)} className="status-select">
-                      <option value="">-</option><option value="مسجد">🕌 مسجد</option><option value="حاضر">✅ حاضر</option><option value="قضاء">⏳ قضاء</option>
+                    <select value={data[currentDate]?.[u]?.[p] || ""} onChange={e => update(u, p, e.target.value)} className="status-select w-full text-[9px] border rounded p-1 outline-none">
+                      <option value="">-</option><option value="حاضر">✅</option><option value="قضاء">⏳</option>
                     </select>
                   </td>
                 ))}
@@ -173,53 +172,33 @@ function App() {
       </div>
 
       <div className="neu-card">
-        <h3 className="section-title text-emerald-600 border-emerald-600">✨ السنن والرواتب</h3>
-        <div className="space-y-2">
-          {["سنة الفجر (قبلية)", "سنة الظهر (قبلية)", "سنة الظهر (بعدية)", "سنة المغرب (بعدية)", "سنة العشاء (بعدية)", "صلاة الضحى"].map(s => (
-            <div key={s} className="flex items-center justify-between py-1 border-b last:border-0">
-              <span className="text-[11px] font-bold text-slate-600">{s}</span>
-              <div className="flex gap-1">
-                {users.map(u => (
-                  <button key={u} onClick={() => update(u, s, !data[today]?.[u]?.[s])} className={`w-7 h-7 rounded-lg text-[10px] font-bold transition-all ${data[today]?.[u]?.[s] ? 'bg-emerald-500 text-white shadow-md' : 'bg-slate-100 text-slate-300'}`}>{u[0]}</button>
-                ))}
-              </div>
+        <h3 className="font-bold text-emerald-600 border-r-4 pr-2 mb-4">✨ السنن والقيام</h3>
+        {[...TASKS.sunnah, ...TASKS.night].map(s => (
+          <div key={s} className="flex justify-between items-center mb-2 border-b border-slate-50 pb-1">
+            <span className="text-[11px] font-bold text-slate-600">{s}</span>
+            <div className="flex gap-1">
+              {users.map(u => (
+                <button key={u} onClick={() => update(u, s, !data[currentDate]?.[u]?.[s])} className={`w-7 h-7 rounded-lg text-[10px] font-bold ${data[currentDate]?.[u]?.[s] ? 'bg-emerald-500 text-white shadow' : 'bg-slate-100 text-slate-300'}`}>{u[0]}</button>
+              ))}
             </div>
-          ))}
-        </div>
+          </div>
+        ))}
       </div>
 
       <div className="neu-card">
-        <h3 className="section-title text-indigo-600 border-indigo-600">🌙 قيام الليل</h3>
-        <div className="space-y-2">
-          {["قيام الليل", "الشفع والوتر"].map(s => (
-            <div key={s} className="flex items-center justify-between py-1 border-b last:border-0">
-              <span className="text-[11px] font-bold text-slate-600">{s}</span>
-              <div className="flex gap-1">
-                {users.map(u => (
-                  <button key={u} onClick={() => update(u, s, !data[today]?.[u]?.[s])} className={`w-7 h-7 rounded-lg text-[10px] font-bold ${data[today]?.[u]?.[s] ? 'bg-indigo-500 text-white shadow-md' : 'bg-slate-100 text-slate-300'}`}>{u[0]}</button>
-                ))}
-              </div>
+        <h3 className="font-bold text-sky-600 border-r-4 pr-2 mb-4">📖 الأوراد (اضغط للفتح)</h3>
+        {TASKS.azkar.map(w => (
+          <div key={w} className="flex justify-between items-center mb-3">
+            <span onClick={() => handleLink(w)} className="text-[11px] font-bold text-slate-700 cursor-pointer underline decoration-sky-100">
+              {w} ↗
+            </span>
+            <div className="flex gap-1">
+              {users.map(u => (
+                <button key={u} onClick={() => update(u, w, !data[currentDate]?.[u]?.[w])} className={`w-7 h-7 rounded-lg text-[10px] font-bold ${data[currentDate]?.[u]?.[w] ? 'bg-sky-500 text-white shadow' : 'bg-slate-100 text-slate-300'}`}>{u[0]}</button>
+              ))}
             </div>
-          ))}
-        </div>
-      </div>
-
-      <div className="neu-card">
-        <h3 className="section-title text-sky-600 border-sky-600">📖 الأوراد (اضغط للفتح)</h3>
-        <div className="space-y-3">
-          {["أذكار الصباح", "أذكار المساء", "أذكار النوم", "الورد القرآني", isFriday ? "سورة الكهف" : "سورة الملك"].map(w => (
-            <div key={w} className="flex items-center justify-between">
-              <span onClick={() => handleLink(w)} className="text-[12px] font-bold text-slate-700 cursor-pointer hover:text-sky-500 underline decoration-sky-100">
-                {w} <span className="text-[8px] bg-sky-50 px-1 rounded">رابط ↗</span>
-              </span>
-              <div className="flex gap-1">
-                {users.map(u => (
-                  <button key={u} onClick={() => update(u, w, !data[today]?.[u]?.[w])} className={`w-7 h-7 rounded-lg text-[10px] font-bold ${data[today]?.[u]?.[w] ? 'bg-sky-500 text-white shadow-md' : 'bg-slate-100 text-slate-300'}`}>{u[0]}</button>
-                ))}
-              </div>
-            </div>
-          ))}
-        </div>
+          </div>
+        ))}
       </div>
     </div>
   );
