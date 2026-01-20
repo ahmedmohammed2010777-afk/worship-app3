@@ -3,232 +3,250 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>تطبيق متابعة العبادة اليومي</title>
-    
+    <title>تطبيق عبادتي - المنصة الشاملة المطورة</title>
     <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Tajawal:wght@400;700&display=swap" rel="stylesheet">
-    
     <style>
         :root {
             --gold: #b8860b;
-            --dark-green: #1b5e20;
-            --soft-white: #fcfaf5;
-            --shadow: 0 10px 30px rgba(0,0,0,0.1);
+            --emerald: #2e7d32;
+            --dark-red: #d32f2f;
+            --luxury-shadow: 0 15px 35px rgba(0,0,0,0.1), inset 0 0 10px rgba(184, 134, 11, 0.05);
         }
 
         body {
             font-family: 'Tajawal', sans-serif;
-            background-color: #f4f4f2;
-            margin: 0;
-            padding: 20px;
+            background-color: #f0f2f5;
+            margin: 0; padding: 15px;
             color: #333;
         }
 
-        .main-container {
-            max-width: 600px;
-            margin: 0 auto;
+        .container { max-width: 800px; margin: 0 auto; }
+
+        /* التقويم */
+        .date-picker { margin: 20px 0; text-align: center; }
+        input[type="date"] { 
+            padding: 10px; border-radius: 10px; border: 2px solid var(--gold); 
+            font-family: 'Tajawal'; font-weight: bold; cursor: pointer;
         }
 
-        header {
-            text-align: center;
-            padding: 20px;
-            background: var(--dark-green);
-            color: white;
-            border-radius: 15px;
-            margin-bottom: 25px;
-            box-shadow: var(--shadow);
-        }
-
-        /* --- تصميم مربع الحديث والومضة الفخم --- */
-        .spiritual-section {
-            margin-bottom: 30px;
-        }
-
+        /* التصميم الفخم للحديث والومضة */
         .luxury-card {
-            background: white;
-            margin-bottom: 20px;
-            padding: 8px;
-            border-radius: 20px;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.08), inset 0 0 10px rgba(184, 134, 11, 0.1);
+            background: white; border-radius: 20px;
+            padding: 10px; box-shadow: var(--luxury-shadow);
             border: 1px solid rgba(184, 134, 11, 0.2);
-            position: relative;
+            margin-bottom: 20px;
         }
-
         .card-inner {
-            border: 2px double var(--gold);
-            border-radius: 15px;
-            padding: 25px 15px;
-            text-align: center;
+            border: 2px double var(--gold); border-radius: 15px;
+            padding: 25px 15px; text-align: center;
         }
+        .naskh-font { font-family: 'Amiri', serif; font-size: 1.5rem; line-height: 1.8; margin: 10px 0; color: #1a1a1a; }
+        .label-gold { color: var(--gold); font-weight: bold; font-size: 1rem; display: block; margin-bottom: 5px; }
 
-        .card-label {
-            font-size: 0.9rem;
-            color: var(--gold);
-            font-weight: bold;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            margin-bottom: 10px;
-            display: block;
+        /* منصة الأبطال والمتبقي */
+        .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px; }
+        .stat-card { background: var(--emerald); color: white; padding: 15px; border-radius: 15px; text-align: center; box-shadow: 0 4px 15px rgba(46, 125, 50, 0.3); }
+        .remaining-box { background: var(--dark-red); color: white; padding: 15px; border-radius: 15px; text-align: center; box-shadow: 0 4px 15px rgba(211, 47, 47, 0.3); }
+
+        /* أقسام العبادات */
+        .section-box {
+            background: white; border-radius: 15px; padding: 20px;
+            margin-bottom: 20px; box-shadow: 0 4px 10px rgba(0,0,0,0.05);
         }
-
-        .naskh-text {
-            font-family: 'Amiri', serif;
-            font-size: 1.5rem;
-            line-height: 1.8;
-            color: #1a1a1a;
-            margin: 0;
+        .section-title { border-right: 5px solid var(--emerald); padding-right: 10px; margin-bottom: 15px; color: var(--emerald); font-weight: bold; }
+        
+        .task-row {
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 12px 0; border-bottom: 1px solid #eee;
         }
+        .task-info { display: flex; align-items: center; gap: 12px; }
+        input[type="checkbox"] { width: 20px; height: 20px; accent-color: var(--emerald); cursor: pointer; }
 
-        .flash-text {
-            font-family: 'Amiri', serif;
-            font-size: 1.3rem;
-            color: #444;
-            font-style: italic;
+        .masjid-btn { 
+            font-size: 0.8rem; padding: 6px 12px; border-radius: 8px; 
+            border: 1px solid #ccc; background: #fff; cursor: pointer; transition: 0.3s;
         }
+        .masjid-active { background: #e8f5e9; border-color: var(--emerald); color: var(--emerald); font-weight: bold; }
 
-        /* --- قسم تتبع العبادات --- */
-        .tasks-section {
-            background: white;
-            padding: 20px;
-            border-radius: 15px;
-            box-shadow: var(--shadow);
-        }
+        /* الشات */
+        .chat-room { background: white; border-radius: 15px; height: 250px; display: flex; flex-direction: column; overflow: hidden; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
+        #chat-messages { flex: 1; padding: 15px; overflow-y: auto; background: #f9f9f9; font-size: 0.95rem; }
+        .chat-input { display: flex; border-top: 1px solid #eee; }
+        .chat-input input { flex: 1; border: none; padding: 15px; outline: none; font-family: 'Tajawal'; }
+        .chat-input button { background: var(--emerald); color: white; border: none; padding: 0 25px; cursor: pointer; font-weight: bold; }
 
-        .task-item {
-            display: flex;
-            align-items: center;
-            padding: 15px;
-            border-bottom: 1px solid #eee;
-            transition: 0.3s;
-        }
-
-        .task-item:last-child { border-bottom: none; }
-
-        input[type="checkbox"] {
-            width: 22px;
-            height: 22px;
-            margin-left: 15px;
-            cursor: pointer;
-            accent-color: var(--dark-green);
-        }
-
-        .progress-container {
-            margin-top: 20px;
-            background: #eee;
-            border-radius: 10px;
-            height: 20px;
-            overflow: hidden;
-        }
-
-        .progress-bar {
-            background: var(--dark-green);
-            width: 0%;
-            height: 100%;
-            transition: width 0.5s ease;
-        }
-
-        footer {
-            text-align: center;
-            margin-top: 30px;
-            font-size: 0.8rem;
-            color: #888;
-        }
     </style>
 </head>
 <body>
 
-    <div class="main-container">
-        <header>
-            <h1>متابعة العبادات اليومية</h1>
-            <p id="current-date"></p>
-        </header>
+    <div class="container">
+        <div class="date-picker">
+            <input type="date" id="main-calendar" onchange="updateDateByCalendar()">
+            <h2 id="display-date" style="color: var(--gold); margin-top: 15px;"></h2>
+        </div>
 
-        <div class="spiritual-section">
+        <div class="spiritual-header">
             <div class="luxury-card">
                 <div class="card-inner">
-                    <span class="card-label">✨ حديث اليوم</span>
-                    <p id="daily-hadith" class="naskh-text">جاري التحميل...</p>
+                    <span class="label-gold">✨ حديث اليوم</span>
+                    <p id="daily-hadith" class="naskh-font">جاري التحميل...</p>
                 </div>
             </div>
-
-            <div class="luxury-card" style="background: #fdfdfd;">
-                <div class="card-inner" style="border-style: solid; border-width: 1px; border-color: #2e7d32;">
-                    <span class="card-label" style="color: #2e7d32;">💡 ومضة اليوم</span>
-                    <p id="daily-flash" class="flash-text">جاري التحميل...</p>
+            <div class="luxury-card" style="border-color: var(--emerald);">
+                <div class="card-inner" style="border-color: var(--emerald);">
+                    <span class="label-gold" style="color: var(--emerald);">💡 ومضة اليوم</span>
+                    <p id="daily-flash" class="naskh-font" style="font-size: 1.25rem;"></p>
                 </div>
             </div>
         </div>
 
-        <div class="tasks-section">
-            <h3>قائمة العبادات</h3>
-            <div id="tasks-list">
-                </div>
-
-            <div class="progress-container">
-                <div id="progress-bar" class="progress-bar"></div>
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div>🏆 منصة الأبطال</div>
+                <div id="hero-rank" style="font-size: 1.6rem; font-weight: bold; margin: 5px 0;">مبتدئ</div>
+                <div id="total-percent">0% إنجاز</div>
             </div>
-            <p style="text-align: center; margin-top: 10px;">إنجازك اليوم: <span id="progress-text">0%</span></p>
+            <div class="remaining-box">
+                <div>⚠️ العبادات المتبقية</div>
+                <div id="remaining-count" style="font-size: 1.6rem; font-weight: bold; margin: 5px 0;">0</div>
+                <div>مهمة متروكة</div>
+            </div>
         </div>
 
-        <footer>
-            برنامج متابعة العبادة - 2026
-        </footer>
+        <div class="section-box">
+            <h3 class="section-title">الفروض الخمسة</h3>
+            <div id="fard-list"></div>
+        </div>
+
+        <div class="section-box">
+            <h3 class="section-title">السنن والرواتب</h3>
+            <div id="sunnah-list"></div>
+        </div>
+
+        <h3 class="section-title">💬 ملتقى الطاعة</h3>
+        <div class="chat-room">
+            <div id="chat-messages"><b>نظام:</b> مرحباً بك في ملتقى الطاعة.. شاركنا ذكر الله اليوم.</div>
+            <div class="chat-input">
+                <input type="text" id="chat-txt" placeholder="اكتب رسالة تحفيزية لأصحابك...">
+                <button onclick="sendMessage()">إرسال</button>
+            </div>
+        </div>
     </div>
 
     <script>
-        // البيانات
         const hadiths = [
-            "قال ﷺ: «أَحَبُّ الأَعْمَالِ إِلَى اللَّهِ أَدْوَمُهَا وَإِنْ قَلَّ»",
-            "قال ﷺ: «مَنْ صَلَّى الْبَرْدَيْنِ دَخَلَ الْجَنَّةَ»",
             "قال ﷺ: «خَيْرُكُمْ مَنْ تَعَلَّمَ الْقُرْآنَ وَعَلَّمَهُ»",
-            "قال ﷺ: «مَنْ لَا يَرْحَمُ لَا يُرْحَمُ»",
-            "قال ﷺ: «الدُّعَاءُ هُوَ الْعِبَادَةُ»"
+            "قال ﷺ: «الدُّعَاءُ هُوَ الْعِبَادَةُ»",
+            "قال ﷺ: «مَنْ بَنَى مَسْجِدًا لِلَّهِ بَنَى اللَّهُ لَهُ بَيْتًا فِي الْجَنَّةِ»",
+            "قال ﷺ: «أَحَبُّ الأَعْمَالِ إِلَى اللَّهِ أَدْوَمُهَا وَإِنْ قَلَّ»",
+            "قال ﷺ: «كُلُّ مَعْرُوفٍ صَدَقَةٌ»"
         ];
-
         const flashes = [
-            "ركعتا الفجر خير من الدنيا وما فيها.",
-            "اجعل مصحفك رفيقك، تجد البركة في وقتك.",
-            "الكلمة الطيبة صدقة تجري لك حتى بعد رحيلك.",
-            "تفقّد قلبك دائماً، هل هو معلق بالخالق أم بالمخلوق؟",
-            "أذكار الصباح والمساء حصنك الحصين."
+            "الصلاة نور، والصدقة برهان، والصبر ضياء.",
+            "من لزم الاستغفار جعل الله له من كل هم فرجاً.",
+            "رتل وردك بتدبر، فالقرآن ربيع القلوب.",
+            "استعن بالله ولا تعجز، فكل خطوة لله مأجورة.",
+            "الخبيئة الصالحة هي زادك الحقيقي يوم القيامة."
+        ];
+        
+        const fardPrayers = ["الفجر", "الظهر", "العصر", "المغرب", "العشاء"];
+        const sunnahPrayers = [
+            { name: "سنة الفجر (قبلية)", count: 2 },
+            { name: "سنة الظهر (قبلية)", count: 4 },
+            { name: "سنة الظهر (بعدية)", count: 2 },
+            { name: "سنة المغرب (بعدية)", count: 2 },
+            { name: "سنة العشاء (بعدية)", count: 2 }
         ];
 
-        const tasks = ["صلاة الفجر", "صلاة الظهر", "صلاة العصر", "صلاة المغرب", "صلاة العشاء", "ورد القرآن", "أذكار الصباح", "أذكار المساء"];
+        function init(dateObj = new Date()) {
+            // تحديث عرض التاريخ
+            document.getElementById('display-date').innerText = dateObj.toLocaleDateString('ar-EG', {weekday:'long', day:'numeric', month:'long', year:'numeric'});
+            
+            // اختيار المحتوى المتغير بناءً على اليوم
+            const dayIndex = dateObj.getDate() % hadiths.length;
+            document.getElementById('daily-hadith').innerText = hadiths[dayIndex];
+            document.getElementById('daily-flash').innerText = flashes[dayIndex];
 
-        // وظيفة تحديث المحتوى المتغير
-        function initApp() {
-            // التاريخ
-            const now = new Date();
-            document.getElementById('current-date').innerText = now.toLocaleDateString('ar-EG', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+            // بناء القوائم (تصفيرها أولاً عند تغيير التاريخ)
+            document.getElementById('fard-list').innerHTML = "";
+            document.getElementById('sunnah-list').innerHTML = "";
+            renderFard();
+            renderSunnah();
+            updateStats();
+        }
 
-            // اختيار الحديث والومضة بناءً على اليوم
-            const dayOfYear = Math.floor((now - new Date(now.getFullYear(), 0, 0)) / 86400000);
-            document.getElementById('daily-hadith').innerText = hadiths[dayOfYear % hadiths.length];
-            document.getElementById('daily-flash').innerText = flashes[dayOfYear % flashes.length];
-
-            // بناء قائمة المهام
-            const listContainer = document.getElementById('tasks-list');
-            tasks.forEach((task, index) => {
-                const div = document.createElement('div');
-                div.className = 'task-item';
-                div.innerHTML = `
-                    <input type="checkbox" id="task-${index}" onchange="updateProgress()">
-                    <label for="task-${index}">${task}</label>
-                `;
-                listContainer.appendChild(div);
+        function renderFard() {
+            const container = document.getElementById('fard-list');
+            fardPrayers.forEach(p => {
+                container.innerHTML += `
+                    <div class="task-row">
+                        <div class="task-info">
+                            <input type="checkbox" class="task-check" onchange="updateStats()">
+                            <span><b>${p}</b></span>
+                        </div>
+                        <button class="masjid-btn" onclick="toggleMasjid(this)">🕌 في المسجد</button>
+                    </div>`;
             });
         }
 
-        // تحديث شريط التقدم
-        function updateProgress() {
-            const checkboxes = document.querySelectorAll('input[type="checkbox"]');
-            const checked = Array.from(checkboxes).filter(c => c.checked).length;
-            const percent = Math.round((checked / tasks.length) * 100);
-            
-            document.getElementById('progress-bar').style.width = percent + '%';
-            document.getElementById('progress-text').innerText = percent + '%';
+        function renderSunnah() {
+            const container = document.getElementById('sunnah-list');
+            sunnahPrayers.forEach(s => {
+                container.innerHTML += `
+                    <div class="task-row">
+                        <div class="task-info">
+                            <input type="checkbox" class="task-check" onchange="updateStats()">
+                            <span>${s.name} - <small>${s.count} ركعات</small></span>
+                        </div>
+                    </div>`;
+            });
         }
 
-        window.onload = initApp;
+        function toggleMasjid(btn) {
+            btn.classList.toggle('masjid-active');
+            updateStats();
+        }
+
+        function updateStats() {
+            const allChecks = document.querySelectorAll('.task-check');
+            const done = Array.from(allChecks).filter(c => c.checked).length;
+            const total = allChecks.length;
+            const percent = Math.round((done / total) * 100) || 0;
+
+            document.getElementById('total-percent').innerText = percent + "% إنجاز";
+            document.getElementById('remaining-count').innerText = total - done;
+
+            // تحديث منصة الأبطال
+            let rank = "مبتدئ";
+            if(percent > 30) rank = "مجاهد";
+            if(percent > 60) rank = "مثابر";
+            if(percent > 85) rank = "بطل طاعة 👑";
+            document.getElementById('hero-rank').innerText = rank;
+        }
+
+        function updateDateByCalendar() {
+            const selectedDate = new Date(document.getElementById('main-calendar').value);
+            if(!isNaN(selectedDate)) {
+                init(selectedDate);
+            }
+        }
+
+        function sendMessage() {
+            const txt = document.getElementById('chat-txt');
+            if(txt.value.trim() !== "") {
+                const msgBox = document.getElementById('chat-messages');
+                const time = new Date().toLocaleTimeString('ar-EG', {hour: '2-digit', minute:'2-digit'});
+                msgBox.innerHTML += `<div><small style="color:gray">${time}</small> <b>أنت:</b> ${txt.value}</div>`;
+                txt.value = "";
+                msgBox.scrollTop = msgBox.scrollHeight;
+            }
+        }
+
+        window.onload = () => {
+            init();
+            // وضع تاريخ اليوم في التقويم افتراضياً
+            document.getElementById('main-calendar').valueAsDate = new Date();
+        };
     </script>
 </body>
 </html>
