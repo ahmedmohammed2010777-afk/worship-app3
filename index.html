@@ -3,31 +3,30 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>محراب العائلة - النسخة الشاملة</title>
+<title>محراب العائلة - نسخة المسجد والطاعة</title>
 <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
 <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
 <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 <script src="https://cdn.tailwindcss.com"></script>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Changa:wght@400;700;800&display=swap');
-body { font-family: 'Changa', sans-serif; background: #f0f9ff; color: #1e293b; margin: 0; padding: 10px; }
+body { font-family: 'Changa', sans-serif; background: #f8fafc; color: #1e293b; margin: 0; padding: 10px; }
 .neu-card { background: white; border-radius: 25px; padding: 20px; margin-bottom: 20px; border: 1px solid #e2e8f0; box-shadow: 0 4px 15px rgba(0,0,0,0.04); }
 
-/* البوديوم المتفاعل */
+/* البوديوم المتطور */
 .podium-box { display: flex; align-items: flex-end; justify-content: center; gap: 8px; height: 160px; margin: 15px 0; }
 .podium-col { display: flex; flex-direction: column; align-items: center; width: 22%; transition: all 0.5s ease; }
-.step { width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; font-weight: 800; color: white; border-radius: 12px 12px 0 0; position: relative; }
+.step { width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; font-weight: 800; color: white; border-radius: 12px 12px 0 0; }
 .p1 { height: 95px; background: linear-gradient(#fbbf24, #d97706); box-shadow: 0 4px 12px rgba(217, 119, 6, 0.3); }
 .p2 { height: 75px; background: linear-gradient(#94a3b8, #475569); }
 .p3 { height: 55px; background: linear-gradient(#b45309, #78350f); }
 .p4 { height: 40px; background: linear-gradient(#cbd5e1, #94a3b8); }
 
-/* قائمة المتروكات الشاملة */
-.pending-full-list { font-size: 8px; color: #ef4444; background: #fff5f5; border: 1px solid #feb2b2; border-radius: 10px; padding: 6px; margin-top: 8px; width: 100%; text-align: center; line-height: 1.4; max-height: 80px; overflow-y: auto; box-shadow: inset 0 2px 4px rgba(0,0,0,0.02); }
-.pending-title { font-weight: 800; display: block; border-bottom: 1px solid #feb2b2; margin-bottom: 3px; font-size: 9px; }
+/* ملتقى الطاعة */
+.forum-badge { background: linear-gradient(135deg, #0ea5e9, #2563eb); color: white; padding: 15px; border-radius: 20px; text-align: center; margin-bottom: 20px; }
 
-.date-picker { background: #fff; border: 2px solid #bae6fd; border-radius: 12px; padding: 6px 12px; font-weight: bold; color: #0369a1; outline: none; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
-.hero-badge { background: linear-gradient(135deg, #fbbf24, #f59e0b); color: white; padding: 15px; border-radius: 20px; text-align: center; margin-bottom: 25px; border: 2px solid #fff; box-shadow: 0 10px 20px rgba(245, 158, 11, 0.2); }
+.pending-full-list { font-size: 8px; color: #ef4444; background: #fff5f5; border: 1px solid #feb2b2; border-radius: 10px; padding: 6px; margin-top: 8px; width: 100%; text-align: center; line-height: 1.4; max-height: 80px; overflow-y: auto; }
+.date-picker { background: #fff; border: 2px solid #bae6fd; border-radius: 12px; padding: 6px 12px; font-weight: bold; color: #0369a1; outline: none; }
 </style>
 </head>
 <body>
@@ -48,7 +47,7 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
-window.docRef = doc(db, "worship", "family_ultimate_v1");
+window.docRef = doc(db, "worship", "family_mosque_v2");
 window.setDoc = setDoc;
 window.onSnapshot = onSnapshot;
 </script>
@@ -57,11 +56,11 @@ window.onSnapshot = onSnapshot;
 const { useState, useEffect, useMemo } = React;
 
 const HADITHS = [
-  "«خياركم خياركم لأهلهم، وأنا خياركم لأهلي»",
-  "«من قرأ سورة الكهف يوم الجمعة أضاء له من النور ما بين الجمعتين»",
+  "«صلاة الرجل في الجماعة تضعف على صلاته في بيته وفي سوقه خمسًا وعشرين ضعفًا»",
+  "«مَنْ غَدَا إِلَى الْمَسْجِدِ أَوْ رَاحَ أَعَدَّ اللَّهُ لَهُ فِي الْجَنَّةِ نُزُلًا كُلَّمَا غَدَا أَوْ رَاحَ»",
   "«أحب الأعمال إلى الله أدومها وإن قل»",
-  "«من سلك طريقًا يلتمس فيه علمًا سهل الله له به طريقًا إلى الجنة»",
-  "«تبسمك في وجه أخيك لك صدقة»"
+  "«خياركم خياركم لأهلهم، وأنا خياركم لأهلي»",
+  "«بشر المشائين في الظلم إلى المساجد بالنور التام يوم القيامة»"
 ];
 
 function App() {
@@ -76,7 +75,7 @@ function App() {
 
   const isFriday = useMemo(() => new Date(currentDate).getDay() === 5, [currentDate]);
 
-  const currentTasks = useMemo(() => {
+  const tasksList = useMemo(() => {
     const base = {
       prayers: ["الفجر", isFriday ? "الجمعة" : "الظهر", "العصر", "المغرب", "العشاء"],
       sunnah: ["سنة الفجر (قبلية)", "سنة الظهر (قبلية)", "سنة الظهر (بعدية)", "سنة المغرب (بعدية)", "سنة العشاء (بعدية)", "صلاة الضحى"],
@@ -92,55 +91,56 @@ function App() {
     await window.setDoc(window.docRef, newData);
   };
 
-  const handleLink = (title) => {
-    if (title.includes("أذكار")) window.open("https://alazkar.today/", "_blank");
-    else if (title === "سورة الملك") window.open("https://quran.com/67", "_blank");
-    else if (title === "سورة الكهف") window.open("https://quran.com/18", "_blank");
+  const handleLink = (t) => {
+    if (t.includes("أذكار")) window.open("https://alazkar.today/", "_blank");
+    else if (t === "سورة الملك") window.open("https://quran.com/67", "_blank");
+    else if (t === "سورة الكهف") window.open("https://quran.com/18", "_blank");
   };
 
-  const isLastDayOfMonth = useMemo(() => {
-    const d = new Date(currentDate);
-    return new Date(d.getFullYear(), d.getMonth() + 1, 0).getDate() === d.getDate();
-  }, [currentDate]);
-
+  // نظام حساب النقاط بالأفضلية
   const stats = useMemo(() => {
-    const allFlatTasks = Object.values(currentTasks).flat();
     return users.map(u => {
       const dayData = data[currentDate]?.[u] || {};
-      let score = 0;
+      let totalPoints = 0;
       let missed = [];
-      
-      allFlatTasks.forEach(task => {
+      const allTasks = Object.values(tasksList).flat();
+
+      allTasks.forEach(task => {
         const val = dayData[task];
-        if (val === true || val === "حاضر" || val === "مسجد") score++;
+        if (val === "مسجد") totalPoints += 3; // أفضلية كبرى
+        else if (val === "حاضر" || val === true) totalPoints += 2; // فرد
+        else if (val === "قضاء") totalPoints += 1; // قضاء
         else missed.push(task);
       });
-      return { name: u, score, missed };
+      return { name: u, score: totalPoints, missed };
     }).sort((a, b) => b.score - a.score);
-  }, [data, currentDate, currentTasks]);
+  }, [data, currentDate, tasksList]);
+
+  const totalFamilyDeeds = useMemo(() => stats.reduce((acc, curr) => acc + curr.score, 0), [stats]);
 
   const pClasses = ['p1', 'p2', 'p3', 'p4'];
 
   return (
     <div className="max-w-md mx-auto pb-10">
       <header className="py-4 flex justify-between items-center">
-        <h1 className="text-2xl font-black text-sky-600 italic">مِحْرابُ العائلة 🕊️</h1>
+        <h1 className="text-2xl font-black text-blue-600 italic">مِحْرابُ العائلة 🕌</h1>
         <input type="date" value={currentDate} onChange={(e)=>setCurrentDate(e.target.value)} className="date-picker shadow-sm" />
       </header>
 
-      <div className="neu-card border-none bg-sky-50 text-sky-800 text-xs text-center py-3 px-4 italic mb-4">
+      <div className="neu-card border-none bg-blue-50 text-blue-800 text-xs text-center py-3 px-4 italic mb-4">
           {HADITHS[new Date(currentDate).getDate() % HADITHS.length]}
       </div>
 
-      {isLastDayOfMonth && (
-        <div className="hero-badge">
-          <h2 className="text-xl font-bold">🏆 بطل الشهر: {stats[0].name}</h2>
-          <p className="text-[11px] mt-1">هنيئاً لك هذا الإنجاز العظيم في طاعة الله</p>
-        </div>
-      )}
+      {/* ملتقى الطاعة - إحصائيات جماعية */}
+      <div className="forum-badge shadow-lg">
+        <h2 className="text-lg font-bold">🤝 ملتقى الطاعة اليومي</h2>
+        <p className="text-xs">إجمالي نقاط العائلة اليوم: <span className="text-xl font-black">{totalFamilyDeeds}</span> نقطة</p>
+        <p className="text-[9px] mt-1 opacity-80">"يد الله مع الجماعة"</p>
+      </div>
 
+      {/* البوديوم بنظام الأفضلية */}
       <div className="neu-card">
-        <h3 className="text-center font-bold text-amber-500 mb-2 text-sm">🎖️ منصة ترتيب الفرسان</h3>
+        <h3 className="text-center font-bold text-amber-500 mb-2 text-sm">🎖️ فرسان المسجد والطاعة</h3>
         <div className="podium-box">
           {[stats[1], stats[0], stats[2], stats[3]].map((u) => (
             <div key={u.name} className="podium-col">
@@ -151,35 +151,32 @@ function App() {
               <span className="user-label text-[11px] font-bold">{u.name}</span>
               {u.missed.length > 0 && (
                 <div className="pending-full-list">
-                  <span className="pending-title">المتبقي اليوم:</span>
-                  {u.missed.join(' • ')}
+                  <strong>متبقي:</strong><br/> {u.missed.join(' • ')}
                 </div>
-              )}
-              {u.missed.length === 0 && (
-                <div className="text-[8px] text-emerald-600 font-bold mt-2">✨ اكتمل اليوم</div>
               )}
             </div>
           ))}
         </div>
       </div>
 
-      {/* أقسام العبادات */}
+      {/* جدول الفروض مع خيار المسجد */}
       <div className="neu-card">
-        <h3 className="font-bold text-amber-600 border-r-4 pr-2 mb-4 text-sm">🕋 الصلوات المفروضة</h3>
+        <h3 className="font-bold text-blue-600 border-r-4 pr-2 mb-4 text-sm">🕋 الفروض (المسجد هو الأفضل)</h3>
         <table className="w-full text-[10px]">
           <tbody>
-            {currentTasks.prayers.map(p => (
+            {tasksList.prayers.map(p => (
               <tr key={p} className="border-t">
                 <td className="py-2 font-bold text-slate-700">{p}</td>
                 {users.map(u => (
-                  <td key={u} className="px-1 text-center">
+                  <td key={u} className="px-1">
                     <select 
                       value={data[currentDate]?.[u]?.[p] || ""} 
                       onChange={e => update(u, p, e.target.value)} 
-                      className="status-select border rounded p-1 outline-none text-[9px] bg-slate-50">
+                      className="status-select w-full border rounded p-1 outline-none text-[8px] bg-slate-50">
                       <option value="">-</option>
-                      <option value="حاضر">✅</option>
-                      <option value="قضاء">⏳</option>
+                      <option value="مسجد">🕌 مسجد</option>
+                      <option value="حاضر">✅ فرد</option>
+                      <option value="قضاء">⏳ قضاء</option>
                     </select>
                   </td>
                 ))}
@@ -191,7 +188,7 @@ function App() {
 
       <div className="neu-card">
         <h3 className="font-bold text-emerald-600 border-r-4 pr-2 mb-4 text-sm">✨ السنن والقيام</h3>
-        {[...currentTasks.sunnah, ...currentTasks.night].map(s => (
+        {[...tasksList.sunnah, ...tasksList.night].map(s => (
           <div key={s} className="flex justify-between items-center mb-2 border-b border-slate-50 pb-1">
             <span className="text-[11px] font-bold text-slate-600">{s}</span>
             <div className="flex gap-1">
@@ -204,15 +201,15 @@ function App() {
       </div>
 
       <div className="neu-card">
-        <h3 className="font-bold text-sky-600 border-r-4 pr-2 mb-4 text-sm">📖 الأوراد والأذكار</h3>
-        {currentTasks.azkar.map(w => (
+        <h3 className="font-bold text-sky-600 border-r-4 pr-2 mb-4 text-sm">📖 الأوراد اليومية</h3>
+        {tasksList.azkar.map(w => (
           <div key={w} className="flex justify-between items-center mb-3">
-            <span onClick={() => handleLink(w)} className="text-[11px] font-bold text-slate-700 cursor-pointer hover:text-sky-500 flex items-center gap-1 transition-colors">
-              {w} <span className="text-[8px] bg-sky-100 text-sky-600 px-1 rounded-md">فتح ↗</span>
+            <span onClick={() => handleLink(w)} className="text-[11px] font-bold text-slate-700 cursor-pointer flex items-center gap-1">
+              {w} <span className="text-[8px] bg-sky-100 text-sky-600 px-1 rounded">رابط ↗</span>
             </span>
             <div className="flex gap-1">
               {users.map(u => (
-                <button key={u} onClick={() => update(u, w, !data[currentDate]?.[u]?.[w])} className={`w-8 h-8 rounded-xl text-[10px] font-bold transition-all ${data[currentDate]?.[u]?.[w] ? 'bg-sky-500 text-white shadow-lg' : 'bg-slate-100 text-slate-300'}`}>{u[0]}</button>
+                <button key={u} onClick={() => update(u, w, !data[currentDate]?.[u]?.[w])} className={`w-8 h-8 rounded-xl text-[10px] font-bold ${data[currentDate]?.[u]?.[w] ? 'bg-sky-500 text-white shadow-lg' : 'bg-slate-100 text-slate-300'}`}>{u[0]}</button>
               ))}
             </div>
           </div>
