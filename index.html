@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>محراب العائلة - النسخة الختامية الشاملة</title>
+<title>محراب العائلة - الإصدار الختامي الشامل</title>
 
 <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
 <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
@@ -13,20 +13,22 @@
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Changa:wght@400;700;800&family=Amiri:wght@400;700&display=swap');
 
-body { font-family: 'Changa', sans-serif; background: linear-gradient(135deg, #f0f4f8 0%, #d9e2ec 100%); padding: 10px; color: #102a43; min-height: 100vh; }
-.neu-card { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); box-shadow: 15px 15px 40px #bcccdc, -15px -15px 40px #ffffff; border-radius: 35px; margin-bottom: 25px; padding: 25px; border: 1px solid rgba(255,255,255,0.6); }
-.neu-inset { background: #f0f4f8; box-shadow: inset 4px 4px 8px #d1d9e6, inset -4px -4px 8px #ffffff; border-radius: 20px; }
-.royal-avatar { width: 55px; height: 55px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 22px; color: white; text-shadow: 1px 1px 2px rgba(0,0,0,0.3); border: 2px solid #fff; box-shadow: 0 8px 16px rgba(0,0,0,0.1); }
+body { font-family: 'Changa', sans-serif; background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); padding: 10px; color: #1e293b; min-height: 100vh; }
+.neu-card { background: rgba(255, 255, 255, 0.98); backdrop-filter: blur(15px); box-shadow: 20px 20px 60px #cbd5e1, -20px -20px 60px #ffffff; border-radius: 40px; margin-bottom: 25px; padding: 25px; border: 1px solid rgba(255,255,255,0.7); }
+.neu-inset { background: #f1f5f9; box-shadow: inset 5px 5px 10px #d1d5db, inset -5px -5px 10px #ffffff; border-radius: 20px; }
+
+.royal-avatar { width: 55px; height: 55px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 22px; color: white; text-shadow: 1px 1px 2px rgba(0,0,0,0.3); border: 2px solid #fff; box-shadow: 0 10px 20px rgba(0,0,0,0.1); }
 .av-m { background: linear-gradient(135deg, #b8860b 0%, #ffd700 50%, #b8860b 100%); }
 .av-s { background: linear-gradient(135deg, #db2777 0%, #fbcfe8 100%); }
 .av-a { background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%); }
 .av-y { background: linear-gradient(135deg, #059669 0%, #34d399 100%); }
 
-.modal-overlay { position: fixed; inset: 0; background: rgba(16, 42, 67, 0.85); backdrop-filter: blur(12px); z-index: 2000; display: flex; align-items: center; justify-content: center; padding: 15px; }
-.modal-content { background: #fff; width: 100%; max-width: 550px; max-height: 90vh; overflow-y: auto; border-radius: 40px; padding: 30px; position: relative; border: 8px solid #f0f4f8; }
-.quran-text { font-family: 'Amiri', serif; font-size: 1.5rem; line-height: 2.5; text-align: center; color: #102a43; word-spacing: 4px; }
-.zekr-item { background: #f8fafc; border-radius: 20px; padding: 20px; margin-bottom: 15px; border-right: 6px solid #627d98; box-shadow: 0 4px 6px rgba(0,0,0,0.02); }
-.counter-badge { background: #627d98; color: white; padding: 2px 10px; border-radius: 10px; font-size: 0.8rem; margin-right: 8px; }
+.modal-overlay { position: fixed; inset: 0; background: rgba(15, 23, 42, 0.9); backdrop-filter: blur(15px); z-index: 9999; display: flex; align-items: center; justify-content: center; padding: 10px; }
+.modal-content { background: #fff; width: 100%; max-width: 600px; max-height: 90vh; overflow-y: auto; border-radius: 45px; padding: 35px; position: relative; border: 10px solid #f8fafc; }
+
+.quran-font { font-family: 'Amiri', serif; font-size: 1.6rem; line-height: 2.6; text-align: center; color: #0f172a; word-spacing: 2px; }
+.zekr-block { background: #f8fafc; border-radius: 25px; padding: 20px; margin-bottom: 15px; border-right: 8px solid #3b82f6; }
+.repeat-badge { background: #3b82f6; color: white; padding: 2px 12px; border-radius: 12px; font-size: 0.85rem; font-weight: bold; }
 </style>
 </head>
 
@@ -59,29 +61,31 @@ window.docFunc = doc;
 <script type="text/babel">
 const { useState, useEffect, useRef } = React;
 
-const contentLibrary = {
+const dataLibrary = {
   "أذكار الصباح": [
-    { m: "آية الكرسي", t: "اللَّهُ لَا إِلَهَ إِلَّا هُوَ الْحَيُّ الْقَيُّومُ لَا تَأْخُذُهُ سِنَةٌ وَلَا نَوْمٌ لَهُ مَا فِي السَّمَاوَاتِ وَمَا فِي الْأَرْضِ مَنْ ذَا الَّذِي يَشْفَعُ عِنْدَهُ إِلَّا بِإِذْنِهِ يَعْلَمُ مَا بَيْنَ أَيْدِيهِمْ وَمَا خَلْفَهُمْ وَلَا يُحِيطُونَ بِشَيْءٍ مِنْ عِلْمِهِ إِلَّا بِمَا شَاءَ وَسِعَ كُرْسِيُّهُ السَّمَاوَاتِ وَالْأَرْضَ وَلَا يَئُودُهُ حِفْظُهُمَا وَهُوَ الْعَلِيُّ الْعَظِيمُ", c: "مرة واحدة" },
-    { m: "سيد الاستغفار", t: "اللَّهُمَّ أَنْتَ رَبِّي لَا إِلَهَ إِلَّا أَنْتَ، خَلَقْتَنِي وَأَنَا عَبْدُكَ، وَأَنَا عَلَى عَهْدِكَ وَوَعْدِكَ مَا اسْتَطَعْتُ، أَعُوذُ بِكَ مِنْ شَرِّ مَا صَنَعْتُ، أَبُوءُ لَكَ بِنِعْمَتِكَ عَلَيَّ، وَأَبُوءُ لَكَ بِذَنْبِي فَاغْفِرْ لِي فَإِنَّهُ لَا يَغْفِرُ الذُّنُوبَ إِلَّا أَنْتَ", c: "مرة واحدة" },
-    { m: "دعاء الحماية", t: "بِسْمِ اللَّهِ الَّذِي لَا يَضُرُّ مَعَ اسْمِهِ شَيْءٌ فِي الْأَرْضِ وَلَا فِي السَّمَاءِ وَهُوَ السَّمِيعُ الْعَلِيمُ", c: "3 مرات" }
+    { title: "آية الكرسي", text: "اللَّهُ لَا إِلَهَ إِلَّا هُوَ الْحَيُّ الْقَيُّومُ لَا تَأْخُذُهُ سِنَةٌ وَلَا نَوْمٌ لَهُ مَا فِي السَّمَاوَاتِ وَمَا فِي الْأَرْضِ مَنْ ذَا الَّذِي يَشْفَعُ عِنْدَهُ إِلَّا بِإِذْنِهِ يَعْلَمُ مَا بَيْنَ أَيْدِيهِمْ وَمَا خَلْفَهُمْ وَلَا يُحيطُونَ بِشَيْءٍ مِنْ عِلْمِهِ إِلَّا بِمَا شَاءَ وَسِعَ كُرْسِيُّهُ السَّمَاوَاتِ وَالْأَرْضَ وَلَا يَئُودُهُ حِفْظُهُمَا وَهُوَ الْعَلِيُّ الْعَظِيمُ", repeat: "مرة واحدة" },
+    { title: "سيد الاستغفار", text: "اللَّهُمَّ أَنْتَ رَبِّي لَا إِلَهَ إِلَّا أَنْتَ، خَلَقْتَنِي وَأَنَا عَبْدُكَ، وَأَنَا عَلَى عَهْدِكَ وَوَعْدِكَ مَا اسْتَطَعْتُ، أَعُوذُ بِكَ مِنْ شَرِّ مَا صَنَعْتُ، أَبُوءُ لَكَ بِنِعْمَتِكَ عَلَيَّ، وَأَبُوءُ لَكَ بِذَنْبِي فَاغْفِرْ لِي فَإِنَّهُ لَا يَغْفِرُ الذُّنُوبَ إِلَّا أَنْتَ", repeat: "مرة واحدة" },
+    { title: "الإخلاص والمعوذتين", text: "قُلْ هُوَ اللَّهُ أَحَدٌ.. قُلْ أَعُوذُ بِرَبِّ الْفَلَقِ.. قُلْ أَعُوذُ بِرَبِّ النَّاسِ..", repeat: "3 مرات" },
+    { title: "دعاء الحماية", text: "بِسْمِ اللَّهِ الَّذِي لَا يَضُرُّ مَعَ اسْمِهِ شَيْءٌ فِي الْأَرْضِ وَلَا فِي السَّمَاءِ وَهُوَ السَّمِيعُ الْعَلِيمُ", repeat: "3 مرات" }
   ],
   "سورة الملك": [
-    { m: "كاملة", t: "تَبَارَكَ الَّذِي بِيَدِهِ الْمُلْكُ وَهُوَ عَلَىٰ كُلِّ شَيْءٍ قَدِيرٌ (1) الَّذِي خَلَقَ الْمَوْتَ وَالْحَيَاةَ لِيَبْلُوَكُمْ أَيُّكُمْ أَحْسَنُ عَمَلًا وَهُوَ الْعَزِيزُ الْغَفُورُ (2) الَّذِي خَلَقَ سَبْعَ سَمَاوَاتٍ طِبَاقًا مَّا تَرَىٰ فِي خَلْقِ الرَّحْمَٰنِ مِن تَفَاوُتٍ فَارْجِعِ الْبَصَرَ هَلْ تَرَىٰ مِن فُطُورٍ (3) ثُمَّ ارْجِعِ الْبَصَرَ كَرَّتَيْنِ يَنقَلِبْ إِلَيْكَ الْبَصَرُ خَاسِئًا وَهُوَ حَسِيرٌ (4)... [يُرجى إكمال السورة من القلب أو المصحف تعظيماً للأجر]", c: "30 آية" }
+    { title: "سورة الملك كاملة", text: "تَبَارَكَ الَّذِي بِيَدِهِ الْمُلْكُ وَهُوَ عَلَىٰ كُلِّ شَيْءٍ قَدِيرٌ (1) الَّذِي خَلَقَ الْمَوْتَ وَالْحَيَاةَ لِيَبْلُوَكُمْ أَيُّكُمْ أَحْسَنُ عَمَلًا وَهُوَ الْعَزِيزُ الْغَفُورُ (2) الَّذِي خَلَقَ سَبْعَ سَمَاوَاتٍ طِبَاقًا مَّا تَرَىٰ فِي خَلْقِ الرَّحْمَٰنِ مِن تَفَاوُتٍ فَارْجِعِ الْبَصَرَ هَلْ تَرَىٰ مِن فُطُورٍ (3) ثُمَّ ارْجِعِ الْبَصَرَ كَرَّتَيْنِ يَنقَلِبْ إِلَيْكَ الْبَصَرُ خَاسِئًا وَهُوَ حَسِيرٌ (4) وَلَقَدْ زَيَّنَّا السَّمَاءَ الدُّنْيَا بِمَصَابِيحَ وَجَعَلْنَاهَا رُجُومًا لِّلشَّيَاطِينِ وَأَعْتَدْنَا لَهُمْ عَذَابَ السَّعِيرِ (5) وَلِلَّذِينَ كَفَرُوا بِرَبِّهِمْ عَذَابُ جَهَنَّمَ وَبِئْسَ الْمَصِيرُ (6) إِذَا أُلْقُوا فِيهَا سَمِعُوا لَهَا شَهِيقًا وَهِيَ تَفُورُ (7) تَكَادُ تَمَيَّزُ مِنَ الْغَيْظِ كُلَّمَا أُلْقِيَ فِيهَا فَوْجٌ سَأَلَهُمْ خَزَنَتُهَا أَلَمْ يَأْتِكُمْ نَذِيرٌ (8)... [تكملة السورة 30 آية]", repeat: "المنجية" }
   ],
   "سورة الكهف": [
-    { m: "نور الجمعة", t: "الْحَمْدُ لِلَّهِ الَّذِي أَنزَلَ عَلَىٰ عَبْدِهِ الْكِتَابَ وَلَمْ يَجْعَل لَّهُ عِوَجَا ۜ (1) قَيِّمًا لِّيُنذِرَ بَأْسًا شَدِيدًا مِّن لَّدُنْهُ وَيُبَشِّرَ الْمُؤْمِنِينَ الَّذِينَ يَعْمَلُونَ الصَّالِحَاتِ أَنَّ لَهُمْ أَجْرًا حَسَنًا (2) مَّاكِثِينَ فِيهِ أَبَدًا (3) وَيُنذِرَ الَّذِينَ قَالُوا اتَّخَذَ اللَّهُ وَلَدًا (4)... [يُستحب قراءتها كاملة يوم الجمعة]", c: "110 آيات" }
+    { title: "سورة الكهف كاملة", text: "الْحَمْدُ لِلَّهِ الَّذِي أَنزَلَ عَلَىٰ عَبْدِهِ الْكِتَابَ وَلَمْ يَجْعَل لَّهُ عِوجَا (1) قَيِّمًا لِّيُنذِرَ بَأْسًا شَدِيدًا مِّن لَّدُنْهُ وَيُبَشِّرَ الْمُؤْمِنِينَ الَّذِينَ يَعْمَلُونَ الصَّالِحَاتِ أَنَّ لَهُمْ أَجْرًا حَسَنًا (2) مَّاكِثِينَ فِيهِ أَبَدًا (3) وَيُنذِرَ الَّذِينَ قَالُوا اتَّخَذَ اللَّهُ وَلَدًا (4) مَّا لَهُم بِهِ مِنْ عِلْمٍ وَلَا لِآبَائِهِمْ كَبُرَتْ كَلِمَةً تَخْرُجُ مِنْ أَفْوَاهِهِمْ إِن يَقُولُونَ إِلَّا كَذِبًا (5) فَلَعَلَّكَ بَاخِعٌ نَّفْسَكَ عَلَىٰ آثَارِهِمْ إِن لَّمْ يُؤْمِنُوا بِهَٰذَا الْحَدِيثِ أَسَفًا (6)... [تكملة السورة 110 آية]", repeat: "نور الجمعة" }
   ],
   "أذكار النوم": [
-    { m: "التسبيح", t: "سبحان الله (33)، الحمد لله (33)، الله أكبر (34)", c: "100 مرة" },
-    { m: "باسمك ربي", t: "بِاسْمِكَ رَبِّي وَضَعْتُ جَنْبِي، وَبِكَ أَرْفَعُهُ، فَإِنْ أَمْسَكْتَ نَفْسِي فَارْحَمْهَا، وَإِنْ أَرْسَلْتَهَا فَاحْفَظْهَا بِمَا تَحْفَظُ بِهِ عِبَادَكَ الصَّالِحِينَ", c: "مرة واحدة" }
+    { title: "تسبیحات النوم", text: "سبحان الله (33)، الحمد لله (33)، الله أكبر (34)", repeat: "100 مرة" },
+    { title: "آية الكرسي", text: "اللَّهُ لَا إِلَهَ إِلَّا هُوَ الْحَيُّ الْقَيُّومُ...", repeat: "مرة واحدة" },
+    { title: "دعاء النوم", text: "بِاسْمِكَ رَبِّي وَضَعْتُ جَنْبِي، وَبِكَ أَرْفَعُهُ، فَإِنْ أَمْسَكْتَ نَفْسِي فَارْحَمْهَا، وَإِنْ أَرْسَلْتَهَا فَاحْفَظْهَا بِمَا تَحْفَظُ بِهِ عِبَادَكَ الصَّالِحِينَ", repeat: "مرة واحدة" }
   ]
 };
 
 const hadiths = [
   "«خياركم خياركم لأهلهم»",
   "«أحب الأعمال إلى الله أدومها وإن قل»",
-  "«خيركم من تعلم القرآن وعلمه»",
-  "«من صلى البردين دخل الجنة»"
+  "«من صلى في يوم وليلة اثنتي عشرة ركعة بني له بيت في الجنة»",
+  "«خيركم من تعلم القرآن وعلمه»"
 ];
 
 function App(){
@@ -91,7 +95,7 @@ function App(){
   const [messages, setMessages] = useState([]);
   const [newMsg, setNewMsg] = useState("");
   const [currentUser, setCurrentUser] = useState("محمد");
-  const [activeView, setActiveView] = useState(null);
+  const [activeScreen, setActiveScreen] = useState(null);
   const latestData = useRef({});
 
   const isFriday = new Date(date).getDay() === 5;
@@ -116,9 +120,7 @@ function App(){
   const sendChat = async () => {
     if (!newMsg.trim()) return;
     const dailyChatRef = window.docFunc(window.db, "chats", date);
-    await window.setDoc(dailyChatRef, { 
-      messages: window.arrayUnion({ user: currentUser, text: newMsg, time: new Date().toLocaleTimeString('ar-EG', {hour:'2-digit', minute:'2-digit'}) }) 
-    }, { merge: true });
+    await window.setDoc(dailyChatRef, { messages: window.arrayUnion({ user: currentUser, text: newMsg, time: new Date().toLocaleTimeString('ar-EG', {hour:'2-digit', minute:'2-digit'}) }) }, { merge: true });
     setNewMsg("");
   };
 
@@ -134,81 +136,69 @@ function App(){
   }).sort((a,b) => b.score - a.score);
 
   return (
-    <div className="max-w-md mx-auto pb-10">
+    <div className="max-w-lg mx-auto pb-10">
       {/* نافذة القراءة الكبرى */}
-      {activeView && (
-        <div className="modal-overlay" onClick={() => setActiveView(null)}>
+      {activeScreen && (
+        <div className="modal-overlay" onClick={() => setActiveScreen(null)}>
           <div className="modal-content" onClick={e => e.stopPropagation()}>
-            <h2 className="text-2xl font-black text-indigo-900 mb-6 text-center border-b-4 border-indigo-100 pb-3">{activeView}</h2>
-            {contentLibrary[activeView]?.map((item, i) => (
-              <div key={i} className="zekr-item">
-                <div className="flex justify-between mb-2">
-                  <span className="font-bold text-indigo-600">✦ {item.m}</span>
-                  <span className="counter-badge">{item.c}</span>
+            <h2 className="text-2xl font-black text-blue-900 mb-6 text-center border-b pb-3">{activeScreen}</h2>
+            {dataLibrary[activeScreen]?.map((item, i) => (
+              <div key={i} className="zekr-block shadow-sm">
+                <div className="flex justify-between items-center mb-3">
+                  <span className="font-bold text-blue-600">❂ {item.title}</span>
+                  <span className="repeat-badge">{item.repeat}</span>
                 </div>
-                <p className="quran-text">{item.text}</p>
+                <p className="quran-font">{item.text}</p>
               </div>
-            )) || <p className="text-center py-10">تقبل الله طاعتكم..</p>}
-            <button className="w-full mt-6 py-4 bg-indigo-900 text-white rounded-2xl font-black text-lg" onClick={() => setActiveView(null)}>تمت القراءة ✅</button>
+            ))}
+            <button className="w-full mt-6 py-4 bg-blue-600 text-white rounded-2xl font-black shadow-xl" onClick={() => setActiveScreen(null)}>تمت القراءة.. تقبل الله ✅</button>
           </div>
         </div>
       )}
 
       <header className="text-center py-8">
-        <h1 className="text-3xl font-black text-indigo-900 drop-shadow-md">مِحْرابُ العائلة ✨</h1>
+        <h1 className="text-3xl font-black text-slate-900">محراب عائلة محمد ✨</h1>
       </header>
 
-      {/* الحديث الشريف */}
-      <div className="neu-card bg-indigo-900 text-white border-r-8 border-yellow-400">
-        <h3 className="text-[10px] font-bold opacity-70 mb-2 underline">زَادُ اليَومِ</h3>
-        <p className="text-xl font-bold font-serif text-center">{hadiths[new Date(date).getDate() % hadiths.length]}</p>
+      {/* الحديث المتغير */}
+      <div className="neu-card bg-blue-700 text-white border-r-[10px] border-yellow-400">
+        <h3 className="text-[10px] font-bold opacity-80 mb-2 uppercase tracking-widest">حديث اليوم</h3>
+        <p className="text-xl font-bold font-serif text-center leading-relaxed italic">{hadiths[new Date(date).getDate() % hadiths.length]}</p>
       </div>
 
-      {/* منصة التتويج الملكية */}
+      {/* منصة التتويج */}
       <div className="neu-card">
-        <h2 className="text-center font-black mb-10 text-indigo-900">🏆 فُرسان الطاعة</h2>
-        <div className="flex justify-center items-end gap-3 h-48 border-b-2 border-indigo-50 pb-2 mb-4">
+        <h2 className="text-center font-black mb-10 text-slate-800">🏆 لوحة الشرف</h2>
+        <div className="flex justify-center items-end gap-3 h-48 border-b-2 border-slate-100 pb-2 mb-6">
           <div className="flex flex-col items-center w-1/3">
-             <div className={`royal-avatar mb-2 ${scores[1].name==='محمد'?'av-m':scores[1].name==='شيماء'?'av-s':scores[1].name==='أحمد'?'av-a':'av-y'}`}>
-              {scores[1].name[0]}
-             </div>
-             <div className="h-20 w-full bg-slate-200 rounded-t-2xl flex items-center justify-center font-black text-slate-500 text-2xl shadow-inner">2</div>
+             <div className={`royal-avatar mb-2 ${scores[1].name==='محمد'?'av-m':scores[1].name==='شيماء'?'av-s':scores[1].name==='أحمد'?'av-a':'av-y'}`}>{scores[1].name[0]}</div>
+             <div className="h-24 w-full bg-slate-200 rounded-t-3xl flex items-center justify-center font-black text-slate-500 text-2xl">2</div>
           </div>
           <div className="flex flex-col items-center w-1/3">
              <span className="text-3xl mb-1 animate-bounce">👑</span>
-             <div className={`royal-avatar mb-2 scale-125 ${scores[0].name==='محمد'?'av-m':scores[0].name==='شيماء'?'av-s':scores[0].name==='أحمد'?'av-a':'av-y'}`}>
-              {scores[0].name[0]}
-             </div>
-             <div className="h-32 w-full bg-yellow-400 rounded-t-2xl flex items-center justify-center font-black text-yellow-900 text-4xl shadow-lg border-x-4 border-yellow-500">1</div>
+             <div className={`royal-avatar mb-2 scale-125 ${scores[0].name==='محمد'?'av-m':scores[0].name==='شيماء'?'av-s':scores[0].name==='أحمد'?'av-a':'av-y'}`}>{scores[0].name[0]}</div>
+             <div className="h-36 w-full bg-yellow-400 rounded-t-3xl flex items-center justify-center font-black text-yellow-900 text-4xl shadow-lg border-x-4 border-yellow-500">1</div>
           </div>
           <div className="flex flex-col items-center w-1/3">
-             <div className={`royal-avatar mb-2 ${scores[2].name==='محمد'?'av-m':scores[2].name==='شيماء'?'av-s':scores[2].name==='أحمد'?'av-a':'av-y'}`}>
-              {scores[2].name[0]}
-             </div>
-             <div className="h-12 w-full bg-orange-200 rounded-t-2xl flex items-center justify-center font-black text-orange-700 text-xl shadow-inner">3</div>
+             <div className={`royal-avatar mb-2 ${scores[2].name==='محمد'?'av-m':scores[2].name==='شيماء'?'av-s':scores[2].name==='أحمد'?'av-a':'av-y'}`}>{scores[2].name[0]}</div>
+             <div className="h-16 w-full bg-orange-200 rounded-t-3xl flex items-center justify-center font-black text-orange-700 text-xl">3</div>
           </div>
         </div>
-        {scores.map(s => s.pending > 0 && (
-          <div key={s.name} className="text-[10px] text-gray-400 flex justify-between px-4">
-            <span>باقي لـ <b>{s.name}</b> {s.pending} طاعات</span>
-            <span className="font-bold text-indigo-500 italic">همّة!</span>
-          </div>
-        ))}
       </div>
 
-      {/* تاريخ اليوم */}
+      {/* التاريخ */}
       <div className="neu-card p-4 text-center">
-        <input type="date" value={date} onChange={e => setDate(e.target.value)} className="neu-inset px-6 py-2 font-bold text-indigo-900 outline-none"/>
+        <input type="date" value={date} onChange={e => setDate(e.target.value)} className="neu-inset px-6 py-2 font-bold text-blue-900 outline-none"/>
       </div>
 
-      {/* جدول العبادات */}
+      {/* الجدول الرئيسي */}
       <div className="neu-card overflow-x-auto">
         <table className="w-full">
           <thead>
-            <tr className="border-b-2 border-indigo-50">
-              <th className="py-2 pr-2 text-right text-xs text-indigo-400">العبادة</th>
+            <tr className="border-b border-slate-100">
+              <th className="py-3 pr-2 text-right text-xs text-slate-400 font-bold">العبادة</th>
               {users.map(u => (
-                <th key={u} className="p-2">
+                <th key={u} className="p-2 text-center">
                    <div className={`royal-avatar w-10 h-10 text-sm mx-auto ${u==='محمد'?'av-m':u==='شيماء'?'av-s':u==='أحمد'?'av-a':'av-y'}`}>{u[0]}</div>
                 </th>
               ))}
@@ -217,10 +207,10 @@ function App(){
           <tbody className="divide-y divide-slate-50">
             {prayers.map(p => (
               <tr key={p}>
-                <td className="py-4 pr-2 text-[11px] font-black text-slate-700">{p}</td>
+                <td className="py-5 pr-2 text-[11px] font-black text-slate-700">{p}</td>
                 {users.map(u => (
-                  <td key={u} className="text-center">
-                    <select value={data[date]?.[u]?.[p] || ""} onChange={e => update(u, p, e.target.value)} className="neu-inset text-[10px] font-bold p-1 outline-none text-indigo-700">
+                  <td key={u} className="text-center px-1">
+                    <select value={data[date]?.[u]?.[p] || ""} onChange={e => update(u, p, e.target.value)} className="neu-inset text-[10px] font-bold p-1 outline-none text-blue-700 bg-white">
                       <option value="">-</option>
                       {['محمد','أحمد','ياسين'].includes(u) ? <><option value="مسجد">🕌</option><option value="فرد">🏠</option></> : <option value="حاضر">✅</option>}
                       <option value="قضاء">⏳</option>
@@ -229,15 +219,15 @@ function App(){
                 ))}
               </tr>
             ))}
-            <tr className="bg-indigo-50/50"><td colSpan="5" className="py-2 text-center text-[10px] font-black text-indigo-900 italic">الرواتب والأذكار (اضغط للقراءة 📖)</td></tr>
+            <tr className="bg-blue-50/40"><td colSpan="5" className="py-2 text-center text-[11px] font-black text-blue-900 italic">الرواتب والأذكار (اضغط للقراءة التفصيلية 📖)</td></tr>
             {sunan.map(s => (
                 <tr key={s}>
-                    <td className="py-3 pr-2 text-[10px] font-bold text-indigo-500 cursor-pointer hover:bg-white rounded-lg transition-all" onClick={() => contentLibrary[s.split(' (')[0]] && setActiveView(s.split(' (')[0])}>
-                      {s} {contentLibrary[s.split(' (')[0]] && "📖"}
+                    <td className="py-4 pr-2 text-[10px] font-bold text-blue-600 cursor-pointer flex items-center gap-1 hover:text-blue-800" onClick={() => dataLibrary[s.split(' (')[0]] && setActiveScreen(s.split(' (')[0])}>
+                      {s} {dataLibrary[s.split(' (')[0]] && "📖"}
                     </td>
                     {users.map(u => (
                         <td key={u} className="text-center">
-                            <button onClick={() => update(u, s, !data[date]?.[u]?.[s])} className={`w-8 h-8 rounded-xl flex items-center justify-center border shadow-sm transition-all ${data[date]?.[u]?.[s] ? 'bg-indigo-600 text-white border-indigo-700' : 'bg-white text-slate-200'}`}>
+                            <button onClick={() => update(u, s, !data[date]?.[u]?.[s])} className={`w-9 h-9 rounded-2xl flex items-center justify-center border transition-all ${data[date]?.[u]?.[s] ? 'bg-blue-600 text-white shadow-lg scale-110' : 'bg-white text-slate-200'}`}>
                                 {data[date]?.[u]?.[s] ? "💎" : "○"}
                             </button>
                         </td>
@@ -250,21 +240,21 @@ function App(){
 
       {/* المجلس العائلي */}
       <div className="neu-card">
-        <h3 className="font-black mb-4 text-indigo-900 text-sm">مَجْلِسُ التَّشْجِيعِ 💬</h3>
-        <div className="neu-inset p-3 h-40 overflow-y-auto mb-4 bg-white/50">
+        <h3 className="font-black mb-4 text-slate-800 text-sm">مجلس التشجيع 💬</h3>
+        <div className="neu-inset p-4 h-44 overflow-y-auto mb-4 bg-white/60">
           {messages.map((m, i) => (
-            <div key={i} className={`mb-3 p-2 rounded-2xl text-xs shadow-sm ${m.user === currentUser ? 'bg-indigo-100 mr-8 text-right' : 'bg-white ml-8'}`}>
-              <span className="font-black text-[8px] text-indigo-400 block mb-1">{m.user}</span>
-              <p className="text-slate-800">{m.text}</p>
+            <div key={i} className={`mb-3 p-3 rounded-2xl text-xs shadow-sm ${m.user === currentUser ? 'bg-blue-100 mr-10 text-right' : 'bg-white ml-10 border'}`}>
+              <span className="font-black text-[9px] text-blue-500 block mb-1 underline">{m.user}</span>
+              <p className="text-slate-800 leading-relaxed font-bold">{m.text}</p>
             </div>
           ))}
         </div>
         <div className="flex gap-2">
-          <select value={currentUser} onChange={e => setCurrentUser(e.target.value)} className="w-1/4 neu-btn text-[10px] font-black bg-white rounded-xl p-2 shadow-sm border">
+          <select value={currentUser} onChange={e => setCurrentUser(e.target.value)} className="w-1/4 neu-inset text-[10px] font-black bg-white p-2">
             {users.map(u => <option key={u} value={u}>{u}</option>)}
           </select>
-          <input value={newMsg} onChange={e => setNewMsg(e.target.value)} onKeyPress={e => e.key === 'Enter' && sendChat()} placeholder="كلمة طيبة لأهلك..." className="flex-1 neu-inset px-4 text-xs outline-none py-2"/>
-          <button onClick={sendChat} className="p-3 bg-indigo-900 text-white rounded-xl shadow-lg">🚀</button>
+          <input value={newMsg} onChange={e => setNewMsg(e.target.value)} onKeyPress={e => e.key === 'Enter' && sendChat()} placeholder="اكتب تشجيعاً..." className="flex-1 neu-inset px-4 text-xs outline-none py-2"/>
+          <button onClick={sendChat} className="p-3 bg-blue-800 text-white rounded-2xl shadow-lg">🚀</button>
         </div>
       </div>
     </div>
