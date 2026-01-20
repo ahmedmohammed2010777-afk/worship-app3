@@ -53,7 +53,7 @@
         <div class="podium-flex" id="podium-ui"></div>
     </div>
     <div id="tasks-area">
-        <div class="section-box"><h3 class="section-title">الفروض الخمسة</h3><div id="fard-list"></div></div>
+        <div class="section-box"><h3 class="section-title" id="fard-title">الفروض الخمسة</h3><div id="fard-list"></div></div>
         <div class="section-box"><h3 class="section-title">السنن الرواتب</h3><div id="sunnah-list"></div></div>
         <div class="section-box"><h3 class="section-title">الأذكار والأوراد</h3><div id="words-list"></div></div>
     </div>
@@ -130,8 +130,10 @@
     function renderUI(dk, isFriday) {
         const ut = (familyData[currentUserIdx].tasks && familyData[currentUserIdx].tasks[dk]) ? familyData[currentUserIdx].tasks[dk] : {};
         
+        // الفروض (تبديل الظهر بالجمعة)
         const fList = document.getElementById('fard-list'); fList.innerHTML = "";
-        ["الفجر", isFriday?"الجمعة":"الظهر", "العصر", "المغرب", "العشاء"].forEach(p => {
+        const prayers = ["الفجر", isFriday?"الجمعة":"الظهر", "العصر", "المغرب", "العشاء"];
+        prayers.forEach(p => {
             const v = ut[p] || "";
             fList.innerHTML += `<div class="task-row"><span><b>${p}</b></span><div>
                 <button class="opt-btn ${v==='m'?'active-masjid':''}" onclick="setT('${dk}','${p}','m')">🕌 مسجد</button>
@@ -139,17 +141,22 @@
             </div></div>`;
         });
 
+        // السنن
         const sList = document.getElementById('sunnah-list'); sList.innerHTML = "";
         sunnahs.forEach(s => {
             sList.innerHTML += `<div class="task-row"><span>${s.n} <span class="badge">${s.t} - ${s.r}</span></span><input type="checkbox" ${ut[s.id]?'checked':''} onchange="setCheck('${dk}','${s.id}',this.checked)"></div>`;
         });
 
+        // الأذكار والأوراد (إضافة الملك والكهف)
         const wList = document.getElementById('words-list'); wList.innerHTML = `
             <div class="task-row"><span><a href="https://alazkar.today" target="_blank" class="ext-link">أذكار الصباح 🔗</a></span><input type="checkbox" ${ut.az_s?'checked':''} onchange="setCheck('${dk}','az_s',this.checked)"></div>
             <div class="task-row"><span><a href="https://alazkar.today" target="_blank" class="ext-link">أذكار المساء 🔗</a></span><input type="checkbox" ${ut.az_m?'checked':''} onchange="setCheck('${dk}','az_m',this.checked)"></div>
             <div class="task-row"><span><a href="https://quran.com" target="_blank" class="ext-link">الورد القرآني 🔗</a></span><input type="checkbox" ${ut.qr?'checked':''} onchange="setCheck('${dk}','qr',this.checked)"></div>
-            <div class="task-row"><span>سورة الملك</span><input type="checkbox" ${ut.mk?'checked':''} onchange="setCheck('${dk}','mk',this.checked)"></div>`;
-        if(isFriday) wList.innerHTML += `<div class="task-row" style="color:var(--emerald)"><span><b>سورة الكهف</b></span><input type="checkbox" ${ut.kf?'checked':''} onchange="setCheck('${dk}','kf',this.checked)"></div>`;
+            <div class="task-row"><span><a href="https://quran.com/67" target="_blank" class="ext-link">سورة الملك 🔗</a></span><input type="checkbox" ${ut.mk?'checked':''} onchange="setCheck('${dk}','mk',this.checked)"></div>`;
+        
+        if(isFriday) {
+            wList.innerHTML += `<div class="task-row" style="color:var(--emerald)"><span><b><a href="https://quran.com/18" target="_blank" class="ext-link" style="color:var(--emerald)">سورة الكهف 🔗</a></b></span><input type="checkbox" ${ut.kf?'checked':''} onchange="setCheck('${dk}','kf',this.checked)"></div>`;
+        }
 
         updatePodium(dk, isFriday);
     }
@@ -169,13 +176,19 @@
     }
 
     function updatePodium(dk, isFriday) {
-        const track = ["الفجر", isFriday?"الجمعة":"الظهر", "العصر", "المغرب", "العشاء", "s1", "s2", "s3", "s4", "s5", "az_s", "az_m", "qr"];
+        const track = ["الفجر", isFriday?"الجمعة":"الظهر", "العصر", "المغرب", "العشاء", "s1", "s2", "s3", "s4", "s5", "az_s", "az_m", "qr", "mk"];
+        if(isFriday) track.push("kf");
+        
         const results = familyData.map(u => {
             const ut = (u.tasks && u.tasks[dk]) ? u.tasks[dk] : {};
             let done = 0, rem = [];
             track.forEach(id => {
                 if(ut[id]===true || ut[id]==='m' || ut[id]==='f') done++;
-                else { let l = id.startsWith('s')?sunnahs.find(x=>x.id===id).n:id; rem.push(l); }
+                else { 
+                    let l = id.startsWith('s')?sunnahs.find(x=>x.id===id).n:id;
+                    l = l.replace('az_s','الأذكار').replace('az_m','الأذكار').replace('qr','الورد').replace('mk','الملك').replace('kf','الكهف');
+                    if(!rem.includes(l)) rem.push(l);
+                }
             });
             return { name: u.name, score: Math.round((done/track.length)*100), rem };
         }).sort((a,b) => b.score - a.score);
