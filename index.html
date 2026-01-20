@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>تطبيق عبادتي - النسخة الكاملة المطورة</title>
+    <title>تطبيق عبادتي الشامل - نسخة 2026</title>
     <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Tajawal:wght@400;700&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -16,7 +16,7 @@
         body { font-family: 'Tajawal', sans-serif; background-color: #f0f2f5; margin: 0; padding: 15px; color: #333; }
         .container { max-width: 850px; margin: 0 auto; }
 
-        /* التصميم الفخم للحديث والومضة */
+        /* الحديث والومضة */
         .luxury-card {
             background: white; border-radius: 20px; padding: 10px; margin-bottom: 20px;
             box-shadow: var(--luxury-shadow); border: 1px solid rgba(184, 134, 11, 0.2);
@@ -24,140 +24,144 @@
         .card-inner { border: 2px double var(--gold); border-radius: 15px; padding: 20px; text-align: center; }
         .naskh-font { font-family: 'Amiri', serif; font-size: 1.5rem; line-height: 1.8; margin: 10px 0; }
 
-        /* منصة التتويج (المتنافسون الأربعة) */
-        .podium-section { background: #fff; border-radius: 15px; padding: 20px; margin-bottom: 20px; text-align: center; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
+        /* منصة التتويج والمتبقي */
+        .podium-section { background: #fff; border-radius: 15px; padding: 20px; margin-bottom: 20px; text-align: center; }
         .champions-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-top: 15px; }
         .champion-card { padding: 10px; border-radius: 10px; background: #f8f9fa; border-top: 4px solid var(--gold); }
-        .rank-1 { background: #fffdf0; transform: scale(1.05); border-color: #ffd700; }
+        .remaining-total { background: var(--dark-red); color: white; padding: 15px; border-radius: 15px; text-align: center; margin-bottom: 20px; font-weight: bold; font-size: 1.1rem; }
 
-        /* العبادات المتبقية */
-        .remaining-total { background: var(--dark-red); color: white; padding: 15px; border-radius: 15px; text-align: center; margin-bottom: 20px; font-weight: bold; }
-
-        /* تدرج الأفضلية في الفروض */
+        /* العبادات والمهام */
         .section-box { background: white; border-radius: 15px; padding: 20px; margin-bottom: 20px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
         .section-title { border-right: 5px solid var(--emerald); padding-right: 10px; margin-bottom: 15px; color: var(--emerald); font-weight: bold; }
         
         .task-row { display: flex; align-items: center; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid #eee; flex-wrap: wrap; }
-        .prayer-options { display: flex; gap: 5px; margin-top: 5px; }
-        .opt-btn { font-size: 0.75rem; padding: 5px 8px; border-radius: 5px; border: 1px solid #ccc; cursor: pointer; background: white; transition: 0.3s; }
+        .opt-btn { font-size: 0.75rem; padding: 6px 10px; border-radius: 5px; border: 1px solid #ccc; cursor: pointer; background: white; transition: 0.3s; }
         .opt-btn.active-masjid { background: var(--emerald); color: white; border-color: var(--emerald); }
         .opt-btn.active-fard { background: #2196F3; color: white; border-color: #2196F3; }
         .opt-btn.active-qada { background: #757575; color: white; border-color: #757575; }
 
-        /* روابط الأذكار والأوراد */
-        .link-card { display: flex; justify-content: space-between; align-items: center; background: #f1f8e9; padding: 12px; border-radius: 10px; margin-bottom: 10px; text-decoration: none; color: #333; border: 1px solid #c8e6c9; }
-        .link-card:hover { background: #dcedc8; }
-
-        /* الشات والتقويم */
-        input[type="date"] { padding: 10px; border-radius: 10px; border: 2px solid var(--gold); margin-bottom: 15px; }
+        /* روابط خارجية */
+        .link-card { display: flex; justify-content: space-between; align-items: center; background: #f1f8e9; padding: 12px; border-radius: 10px; margin-bottom: 10px; text-decoration: none; color: #333; border: 1px solid #c8e6c9; font-weight: bold; }
+        .link-card:hover { background: #dcedc8; transform: scale(1.01); }
+        .link-icon { font-size: 1.2rem; }
     </style>
 </head>
 <body>
 
     <div class="container">
-        <div style="text-align: center;">
-            <input type="date" id="main-calendar" onchange="updateDate()">
-            <h2 id="display-date" style="color: var(--gold);"></h2>
+        <div style="text-align: center; margin-bottom: 20px;">
+            <input type="date" id="main-calendar" onchange="updateAppDate()" style="padding: 10px; border-radius: 10px; border: 2px solid var(--gold);">
+            <h2 id="display-date" style="color: var(--gold); margin-top: 10px;"></h2>
         </div>
 
         <div class="luxury-card">
             <div class="card-inner">
-                <span style="color:var(--gold)">✨ حديث اليوم</span>
-                <p id="daily-hadith" class="naskh-font"></p>
+                <span style="color:var(--gold); font-weight: bold;">✨ حديث اليوم</span>
+                <p id="daily-hadith" class="naskh-font">جاري التحميل...</p>
             </div>
         </div>
         <div class="luxury-card" style="border-color: var(--emerald);">
             <div class="card-inner" style="border-color: var(--emerald);">
-                <span style="color:var(--emerald)">💡 ومضة اليوم</span>
+                <span style="color:var(--emerald); font-weight: bold;">💡 ومضة اليوم</span>
                 <p id="daily-flash" class="naskh-font" style="font-size: 1.2rem;"></p>
             </div>
         </div>
 
         <div class="podium-section">
-            <h3 class="section-title">🏆 منصة التتويج (المتنافسون الأربعة)</h3>
-            <div class="champions-grid" id="podium-list">
-                </div>
+            <h3 class="section-title">🏆 منصة التتويج</h3>
+            <div class="champions-grid" id="podium-list"></div>
         </div>
 
         <div class="remaining-total">
-            ⚠️ العبادات المتبقية الشاملة: <span id="remaining-count">0</span> مهمة
+            ⚠️ العبادات المتبقية الشاملة: <span id="remaining-count">0</span> مهمة متروكة
         </div>
 
         <div class="section-box">
-            <h3 class="section-title">الفروض الخمسة (تدرج الأفضلية)</h3>
+            <h3 class="section-title">الفروض الخمسة</h3>
             <div id="fard-list"></div>
         </div>
 
         <div class="section-box">
-            <h3 class="section-title">السنن والرواتب</h3>
+            <h3 class="section-title">السنن والرواتب والأوراد</h3>
             <div id="sunnah-list"></div>
+            <div id="special-surahs" style="margin-top: 15px;"></div>
         </div>
 
         <div class="section-box">
-            <h3 class="section-title">الأوراد والأذكار (روابط خارجية)</h3>
-            <a href="https://www.azkary.com/" target="_blank" class="link-card"><span>📖 أذكار الصباح والمساء</span> 🔗</a>
-            <a href="https://quran.com/ar" target="_blank" class="link-card"><span>🌙 ورد القرآن الكريم</span> 🔗</a>
-            <a href="https://sunnah.com/ar" target="_blank" class="link-card"><span>📚 تصفح الأحاديث</span> 🔗</a>
+            <h3 class="section-title">مركز الأذكار والقرآن</h3>
+            <a href="https://alazkar.today/" target="_blank" class="link-card">
+                <span>📖 أذكار الصباح والمساء</span> <span class="link-icon">🔗</span>
+            </a>
+            <a href="https://quran.com/67" target="_blank" class="link-card" style="background: #e3f2fd; border-color: #bbdefb;">
+                <span>👑 قراءة سورة الملك</span> <span class="link-icon">📖</span>
+            </a>
+            <div id="kahf-link-container"></div>
         </div>
-
     </div>
 
     <script>
-        const hadiths = ["قال ﷺ: «خَيْرُكُمْ مَنْ تَعَلَّمَ الْقُرْآنَ وَعَلَّمَهُ»", "قال ﷺ: «الدُّعَاءُ هُوَ الْعِبَادَةُ»", "قال ﷺ: «بَلِّغُوا عَنِّي وَلَوْ آيَةً»"];
+        const hadiths = ["قال ﷺ: «خَيْرُكُمْ مَنْ تَعَلَّمَ الْقُرْآنَ وَعَلَّمَهُ»", "قال ﷺ: «الدُّعَاءُ هُوَ الْعِبَادَةُ»", "قال ﷺ: «تَبَسُّمُكَ فِي وَجْهِ أَخِيكَ لَكَ صَدَقَةٌ»"];
         const flashes = ["من لزم الاستغفار جعل الله له من كل هم فرجاً.", "الصلاة في وقتها أحب الأعمال إلى الله.", "ركعتا الفجر خير من الدنيا وما فيها."];
         
-        const fardPrayers = ["الفجر", "الظهر", "العصر", "المغرب", "العشاء"];
-        const sunnahPrayers = ["سنة الفجر", "سنة الظهر", "سنة المغرب", "سنة العشاء"];
-        
-        // بيانات المتنافسين الأربعة
-        let competitors = [
-            { name: "أحمد", score: 85 },
-            { name: "محمد", score: 92 },
-            { name: "علي", score: 70 },
-            { name: "يوسف", score: 88 }
-        ];
+        let fardPrayers = ["الفجر", "الظهر", "العصر", "المغرب", "العشاء"];
+        let competitors = [{name: "أحمد", score: 85}, {name: "محمد", score: 92}, {name: "علي", score: 70}, {name: "يوسف", score: 88}];
 
-        function init() {
-            const d = new Date();
+        function updateAppDate() {
+            const dateInput = document.getElementById('main-calendar').value;
+            const d = dateInput ? new Date(dateInput) : new Date();
+            init(d);
+        }
+
+        function init(d = new Date()) {
+            const isFriday = d.getDay() === 5;
             document.getElementById('display-date').innerText = d.toLocaleDateString('ar-EG', {weekday:'long', day:'numeric', month:'long'});
-            document.getElementById('daily-hadith').innerText = hadiths[d.getDate() % 3];
-            document.getElementById('daily-flash').innerText = flashes[d.getDate() % 3];
+            
+            // الحديث والومضة
+            document.getElementById('daily-hadith').innerText = hadiths[d.getDate() % hadiths.length];
+            document.getElementById('daily-flash').innerText = flashes[d.getDate() % flashes.length];
 
-            renderFard();
-            renderSunnah();
+            // تحديث صلاة الجمعة
+            const prayers = [...fardPrayers];
+            if (isFriday) prayers[1] = "الجمعة";
+
+            // بناء الفروض
+            const fContainer = document.getElementById('fard-list');
+            fContainer.innerHTML = "";
+            prayers.forEach(p => {
+                fContainer.innerHTML += `
+                    <div class="task-row">
+                        <span><b>${p}</b></span>
+                        <div class="prayer-options">
+                            <button class="opt-btn" onclick="setStatus(this, 'masjid')">🕌 مسجد</button>
+                            <button class="opt-btn" onclick="setStatus(this, 'fard')">👤 فرد</button>
+                            <button class="opt-btn" onclick="setStatus(this, 'qada')">🕒 قضاء</button>
+                        </div>
+                    </div>`;
+            });
+
+            // بناء السنن والأوراد
+            const sContainer = document.getElementById('sunnah-list');
+            sContainer.innerHTML = `
+                <div class="task-row"><span>سنة الفجر</span><input type="checkbox" class="task-check" onchange="updateRemaining()"></div>
+                <div class="task-row"><span>سنة الظهر/الجمعة</span><input type="checkbox" class="task-check" onchange="updateRemaining()"></div>
+                <div class="task-row"><span>سورة الملك</span><input type="checkbox" class="task-check" onchange="updateRemaining()"></div>
+            `;
+            if(isFriday) {
+                sContainer.innerHTML += `<div class="task-row" style="color:var(--emerald); font-weight:bold;"><span>سورة الكهف</span><input type="checkbox" class="task-check" onchange="updateRemaining()"></div>`;
+                document.getElementById('kahf-link-container').innerHTML = `
+                    <a href="https://quran.com/18" target="_blank" class="link-card" style="background: #fff9c4; border-color: #fff176;">
+                        <span>🕌 قراءة سورة الكهف (نور الجمعة)</span> <span class="link-icon">📖</span>
+                    </a>`;
+            } else {
+                document.getElementById('kahf-link-container').innerHTML = "";
+            }
+
             renderPodium();
             updateRemaining();
         }
 
-        function renderFard() {
-            const container = document.getElementById('fard-list');
-            fardPrayers.forEach(p => {
-                container.innerHTML += `
-                    <div class="task-row">
-                        <span><b>${p}</b></span>
-                        <div class="prayer-options">
-                            <button class="opt-btn" onclick="setPrayerStatus(this, 'masjid')">🕌 مسجد</button>
-                            <button class="opt-btn" onclick="setPrayerStatus(this, 'fard')">👤 فرد</button>
-                            <button class="opt-btn" onclick="setPrayerStatus(this, 'qada')">🕒 قضاء</button>
-                        </div>
-                    </div>`;
-            });
-        }
-
-        function renderSunnah() {
-            const container = document.getElementById('sunnah-list');
-            sunnahPrayers.forEach(s => {
-                container.innerHTML += `
-                    <div class="task-row">
-                        <span>${s}</span>
-                        <input type="checkbox" class="task-check" onchange="updateRemaining()">
-                    </div>`;
-            });
-        }
-
-        function setPrayerStatus(btn, type) {
-            const parent = btn.parentElement;
-            parent.querySelectorAll('.opt-btn').forEach(b => b.className = 'opt-btn');
+        function setStatus(btn, type) {
+            btn.parentElement.querySelectorAll('.opt-btn').forEach(b => b.className = 'opt-btn');
             btn.classList.add('active-' + type);
             updateRemaining();
         }
@@ -165,11 +169,10 @@
         function renderPodium() {
             const container = document.getElementById('podium-list');
             container.innerHTML = "";
-            competitors.sort((a, b) => b.score - a.score);
-            competitors.forEach((c, index) => {
+            competitors.sort((a, b) => b.score - a.score).forEach((c, i) => {
                 container.innerHTML += `
-                    <div class="champion-card ${index === 0 ? 'rank-1' : ''}">
-                        <div style="font-size:1.2rem">${index === 0 ? '🥇' : index + 1}</div>
+                    <div class="champion-card" style="${i===0?'background:#fffdf0; border-color:gold;':''}">
+                        <div>${i===0?'🥇':i+1}</div>
                         <div style="font-weight:bold">${c.name}</div>
                         <div style="color:var(--emerald)">${c.score}%</div>
                     </div>`;
@@ -177,14 +180,17 @@
         }
 
         function updateRemaining() {
-            const totalTasks = fardPrayers.length + sunnahPrayers.length;
-            const doneFard = document.querySelectorAll('.active-masjid, .active-fard, .active-qada').length;
-            const doneSunnah = document.querySelectorAll('.task-check:checked').length;
-            const remaining = totalTasks - (doneFard + doneSunnah);
-            document.getElementById('remaining-count').innerText = remaining;
+            const checks = document.querySelectorAll('.task-check').length;
+            const checked = document.querySelectorAll('.task-check:checked').length;
+            const prayersDone = document.querySelectorAll('.active-masjid, .active-fard, .active-qada').length;
+            const total = 5 + checks;
+            document.getElementById('remaining-count').innerText = total - (checked + prayersDone);
         }
 
-        window.onload = init;
+        window.onload = () => {
+            document.getElementById('main-calendar').valueAsDate = new Date();
+            init();
+        };
     </script>
 </body>
 </html>
