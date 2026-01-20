@@ -8,23 +8,18 @@
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Tajawal:wght@400;700&display=swap" rel="stylesheet">
     <style>
-        :root { --gold: #b8860b; --emerald: #2e7d32; --dark-red: #d32f2f; --wa-green: #075e54; --wa-light: #dcf8c6; --soft-bg: #f4f7f6; }
+        :root { --gold: #b8860b; --emerald: #2e7d32; --dark-red: #d32f2f; --wa-green: #075e54; --wa-light: #dcf8c6; --soft-bg: #f4f7f6; --qada-blue: #607d8b; }
         body { font-family: 'Tajawal', sans-serif; background-color: var(--soft-bg); margin: 0; padding: 10px; direction: rtl; }
         .container { max-width: 900px; margin: 0 auto; }
-        
         .calendar-header { display: flex; flex-direction: column; align-items: center; gap: 10px; margin-bottom: 20px; background: white; padding: 15px; border-radius: 20px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
         #main-calendar { padding: 12px 20px; border-radius: 30px; border: 2px solid var(--gold); font-family: 'Tajawal'; font-weight: bold; background: white; color: var(--gold); cursor: pointer; font-size: 1rem; outline: none; }
-
         .app-header h1 { color: var(--wa-green); margin: 0; text-align: center; }
         .luxury-card { background: white; border-radius: 20px; padding: 15px; margin-bottom: 15px; border: 1px solid rgba(184, 134, 11, 0.3); }
         .card-inner { border: 2px double var(--gold); border-radius: 15px; padding: 15px; text-align: center; }
         .naskh { font-family: 'Amiri', serif; font-size: 1.3rem; font-weight: bold; line-height: 1.6; }
-        
         .family-selector { display: flex; justify-content: center; gap: 8px; margin-bottom: 15px; flex-wrap: wrap; }
         .user-btn { padding: 8px 15px; border-radius: 20px; border: 2px solid var(--wa-green); background: white; cursor: pointer; font-weight: bold; }
         .user-btn.active { background: var(--wa-green); color: white; }
-
-        /* تعديل البوديوم ومربع المتبقي */
         .podium-flex { display: flex; align-items: flex-end; justify-content: center; gap: 5px; height: 280px; margin-top: 30px; }
         .podium-step { flex: 1; display: flex; flex-direction: column; align-items: center; border-radius: 12px 12px 0 0; position: relative; padding-bottom: 10px; background: #eee; min-width: 80px; }
         .step-1 { background: linear-gradient(to top, #ffd700, #fff); height: 100%; border: 1px solid var(--gold); }
@@ -32,16 +27,14 @@
         .step-3 { background: linear-gradient(to top, #cd7f32, #fff); height: 65%; }
         .medal { position: absolute; top: -35px; font-size: 1.6rem; }
         .remain-box { font-size: 0.58rem; color: var(--dark-red); background: rgba(255,255,255,0.9); padding: 4px; border-radius: 5px; width: 92%; margin-top: 5px; border: 1px dashed var(--dark-red); text-align: center; min-height: 45px; display: flex; align-items: center; justify-content: center; line-height: 1.2; font-weight: bold; }
-
         .section-box { background: white; border-radius: 15px; padding: 15px; margin-bottom: 15px; }
         .section-title { border-right: 5px solid var(--wa-green); padding-right: 10px; color: var(--wa-green); font-weight: bold; margin-bottom: 10px; }
         .task-row { display: flex; align-items: center; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid #f9f9f9; }
-        .badge { font-size: 0.7rem; padding: 2px 8px; border-radius: 10px; background: #e8f5e9; color: var(--emerald); border: 1px solid #c8e6c9; }
-        .opt-btn { font-size: 0.75rem; padding: 6px 10px; border-radius: 8px; border: 1px solid #ddd; cursor: pointer; background: white; }
+        .opt-btns-group { display: flex; gap: 4px; }
+        .opt-btn { font-size: 0.7rem; padding: 6px 8px; border-radius: 8px; border: 1px solid #ddd; cursor: pointer; background: white; }
         .opt-btn.active-masjid { background: var(--emerald); color: white; }
         .opt-btn.active-fard { background: #2196F3; color: white; }
-        .ext-link { color: var(--wa-green); text-decoration: none; font-weight: bold; border-bottom: 1px solid; font-size: 0.85rem; }
-
+        .opt-btn.active-qada { background: var(--qada-blue); color: white; }
         .chat-section { background: #e5ddd5; border-radius: 20px; overflow: hidden; margin-top: 20px; border: 1px solid #ccc; }
         .chat-messages { height: 280px; overflow-y: auto; padding: 15px; display: flex; flex-direction: column; gap: 10px; }
         .msg { max-width: 85%; padding: 10px; border-radius: 12px; font-size: 0.9rem; box-shadow: 0 1px 2px rgba(0,0,0,0.1); }
@@ -56,21 +49,17 @@
         <input type="date" id="main-calendar" onchange="init()">
         <h2 id="display-date" style="color: var(--gold); margin: 0;"></h2>
     </div>
-
     <div id="spiritual-header"></div>
     <div class="family-selector" id="user-btns"></div>
-
     <div class="luxury-card">
         <h3 style="text-align:center; color: var(--wa-green); margin:0;">🏆 حصاد الطاعات والترتيب</h3>
         <div class="podium-flex" id="podium-ui"></div>
     </div>
-
     <div id="tasks-area">
         <div class="section-box"><h3 class="section-title">الفروض الخمسة</h3><div id="fard-list"></div></div>
         <div class="section-box"><h3 class="section-title">السنن الرواتب</h3><div id="sunnah-list"></div></div>
         <div class="section-box"><h3 class="section-title">الأذكار والأوراد (روابط خارجية)</h3><div id="words-list"></div></div>
     </div>
-
     <div class="chat-section">
         <div style="background:var(--wa-green);color:white;padding:12px;text-align:center;font-weight:bold;">💬 ملتقى العائلة (يتجدد يومياً)</div>
         <div class="chat-messages" id="chat-box"></div>
@@ -99,12 +88,8 @@
     ];
 
     const library = {
-        hadiths: [
-            "قال ﷺ: خَيْرُكُمْ مَنْ تَعَلَّمَ الْقُرْآنَ وَعَلَّمَهُ", "قال ﷺ: أَحَبُّ الأَعْمَالِ إِلَى اللَّهِ أَدْوَمُهَا وَإِنْ قَلَّ", 
-            "قال ﷺ: مَنْ صَلَّى فِي يَوْمٍ ثِنْتَيْ عَشْرَةَ رَكْعَةً بُنِيَ لَهُ بَيْتٌ فِي الْجَنَّةِ", "قال ﷺ: كَلِمَتَانِ خَفِيفَتَانِ عَلَى اللِّسَانِ.. سُبْحَانَ اللَّهِ وَبِحَمْدِهِ",
-            "قال ﷺ: مَنْ صَلَّى عَلَيَّ صَلَاةً صَلَّى اللَّهُ عَلَيْهِ بِهَا عَشْرًا", "قال ﷺ: الدال على الخير كفاعله"
-        ],
-        flashes: ["الضحى صلاة الأوابين", "وردك القرآني نور قلبك", "اذكر الله يذكرك", "صنائع المعروف تقي مصارع السوء", "بر الوالدين مفتاح الجنة"]
+        hadiths: ["قال ﷺ: خَيْرُكُمْ مَنْ تَعَلَّمَ الْقُرْآنَ وَعَلَّمَهُ", "قال ﷺ: أَحَبُّ الأَعْمَالِ إِلَى اللَّهِ أَدْوَمُهَا وَإِنْ قَلَّ", "قال ﷺ: مَنْ صَلَّى فِي يَوْمٍ ثِنْتَيْ عَشْرَةَ رَكْعَةً بُنِيَ لَهُ بَيْتٌ فِي الْجَنَّةِ", "قال ﷺ: كَلِمَتَانِ خَفِيفَتَانِ عَلَى اللِّسَانِ.. سُبْحَانَ اللَّهِ وَبِحَمْدِهِ"],
+        flashes: ["الضحى صلاة الأوابين", "وردك القرآني نور قلبك", "اذكر الله يذكرك", "بر الوالدين مفتاح الجنة"]
     };
 
     let currentUserIdx = 0;
@@ -116,26 +101,16 @@
         const d = new Date(calendarEl.value);
         const dateKey = d.toISOString().split('T')[0];
         const isFriday = d.getDay() === 5;
-        
         document.getElementById('display-date').innerText = d.toLocaleDateString('ar-EG', {weekday:'long', day:'numeric', month:'long'});
         const start = new Date(d.getFullYear(), 0, 0);
         const dayOfYear = Math.floor((d - start) / 86400000);
-        const hIdx = dayOfYear % library.hadiths.length;
-        const fIdx = dayOfYear % library.flashes.length;
-
-        document.getElementById('spiritual-header').innerHTML = `
-            <div class="luxury-card"><div class="card-inner"><p class="naskh">${library.hadiths[hIdx]}</p></div></div>
-            <div class="luxury-card" style="border-color:var(--emerald);padding:8px"><p style="text-align:center;color:var(--emerald);margin:0;font-weight:bold;">💡 ومضة: ${library.flashes[fIdx]}</p></div>`;
-
+        document.getElementById('spiritual-header').innerHTML = `<div class="luxury-card"><div class="card-inner"><p class="naskh">${library.hadiths[dayOfYear % library.hadiths.length]}</p></div></div><div class="luxury-card" style="border-color:var(--emerald);padding:8px"><p style="text-align:center;color:var(--emerald);margin:0;font-weight:bold;">💡 ومضة: ${library.flashes[dayOfYear % library.flashes.length]}</p></div>`;
         db.ref('mehrab_v4/data').on('value', (snap) => {
             if(snap.exists()) familyData = snap.val();
             renderUI(dateKey, isFriday);
             const btnArea = document.getElementById('user-btns'); btnArea.innerHTML = "";
-            familyData.forEach((u, i) => {
-                btnArea.innerHTML += `<button class="user-btn ${i===currentUserIdx?'active':''}" onclick="switchUser(${i})">${u.name}</button>`;
-            });
+            familyData.forEach((u, i) => btnArea.innerHTML += `<button class="user-btn ${i===currentUserIdx?'active':''}" onclick="switchUser(${i})">${u.name}</button>`);
         });
-
         db.ref('mehrab_v4/chat/' + dateKey).on('value', (snap) => {
             const box = document.getElementById('chat-box'); box.innerHTML = "";
             if(snap.exists()) {
@@ -155,24 +130,16 @@
         const fList = document.getElementById('fard-list'); fList.innerHTML = "";
         ["الفجر", isFriday?"الجمعة":"الظهر", "العصر", "المغرب", "العشاء"].forEach(p => {
             const v = ut[p] || "";
-            fList.innerHTML += `<div class="task-row"><span><b>${p}</b></span><div>
+            fList.innerHTML += `<div class="task-row"><span><b>${p}</b></span><div class="opt-btns-group">
                 <button class="opt-btn ${v==='m'?'active-masjid':''}" onclick="setT('${dk}','${p}','m')">🕌 مسجد</button>
                 <button class="opt-btn ${v==='f'?'active-fard':''}" onclick="setT('${dk}','${p}','f')">👤 فرد</button>
+                <button class="opt-btn ${v==='q'?'active-qada':''}" onclick="setT('${dk}','${p}','q')">🕒 قضاء</button>
             </div></div>`;
         });
-
         const sList = document.getElementById('sunnah-list'); sList.innerHTML = "";
-        sunnahs.forEach(s => {
-            sList.innerHTML += `<div class="task-row"><span>${s.n}</span><input type="checkbox" ${ut[s.id]?'checked':''} onchange="setCheck('${dk}','${s.id}',this.checked)"></div>`;
-        });
-
-        const wList = document.getElementById('words-list'); wList.innerHTML = `
-            <div class="task-row"><span>أذكار الصباح</span><input type="checkbox" ${ut.az_s?'checked':''} onchange="setCheck('${dk}','az_s',this.checked)"></div>
-            <div class="task-row"><span>أذكار المساء</span><input type="checkbox" ${ut.az_m?'checked':''} onchange="setCheck('${dk}','az_m',this.checked)"></div>
-            <div class="task-row"><span>الورد القرآني</span><input type="checkbox" ${ut.qr?'checked':''} onchange="setCheck('${dk}','qr',this.checked)"></div>
-            <div class="task-row"><span>سورة الملك</span><input type="checkbox" ${ut.mk?'checked':''} onchange="setCheck('${dk}','mk',this.checked)"></div>`;
+        sunnahs.forEach(s => sList.innerHTML += `<div class="task-row"><span>${s.n}</span><input type="checkbox" ${ut[s.id]?'checked':''} onchange="setCheck('${dk}','${s.id}',this.checked)"></div>`);
+        const wList = document.getElementById('words-list'); wList.innerHTML = `<div class="task-row"><span>أذكار الصباح</span><input type="checkbox" ${ut.az_s?'checked':''} onchange="setCheck('${dk}','az_s',this.checked)"></div><div class="task-row"><span>أذكار المساء</span><input type="checkbox" ${ut.az_m?'checked':''} onchange="setCheck('${dk}','az_m',this.checked)"></div><div class="task-row"><span>الورد القرآني</span><input type="checkbox" ${ut.qr?'checked':''} onchange="setCheck('${dk}','qr',this.checked)"></div><div class="task-row"><span>سورة الملك</span><input type="checkbox" ${ut.mk?'checked':''} onchange="setCheck('${dk}','mk',this.checked)"></div>`;
         if(isFriday) wList.innerHTML += `<div class="task-row"><span>سورة الكهف</span><input type="checkbox" ${ut.kf?'checked':''} onchange="setCheck('${dk}','kf',this.checked)"></div>`;
-        
         updatePodium(dk, isFriday);
     }
 
@@ -191,42 +158,37 @@
     }
 
     function updatePodium(dk, isFriday) {
-        // مصفوفة تتبع كاملة لكل المهام
-        const track = [
-            {id:"الفجر", n:"الفجر"}, {id:isFriday?"الجمعة":"الظهر", n:isFriday?"الجمعة":"الظهر"}, {id:"العصر", n:"العصر"}, {id:"المغرب", n:"المغرب"}, {id:"العشاء", n:"العشاء"},
-            {id:"s1", n:"س الفجر"}, {id:"s2", n:"س الظهر ق"}, {id:"s3", n:"س الظهر ب"}, {id:"s4", n:"س المغرب"}, {id:"s5", n:"س العشاء"},
-            {id:"s6", n:"الضحى"}, {id:"s7", n:"الوتر"}, {id:"s8", n:"الليل"},
-            {id:"az_s", n:"ذكار ص"}, {id:"az_m", n:"ذكار م"}, {id:"qr", n:"الورد"}, {id:"mk", n:"الملك"}
-        ];
-        if(isFriday) track.push({id:"kf", n:"الكهف"});
-        
+        const prayers = ["الفجر", isFriday?"الجمعة":"الظهر", "العصر", "المغرب", "العشاء"];
+        const others = ["s1","s2","s3","s4","s5","s6","s7","s8","az_s","az_m","qr","mk"];
+        if(isFriday) others.push("kf");
+
         const results = familyData.map(u => {
             const ut = (u.tasks && u.tasks[dk]) ? u.tasks[dk] : {};
-            let doneCount = 0;
-            let missing = [];
-            track.forEach(item => {
-                const status = ut[item.id];
-                if(status === true || status === 'm' || status === 'f') {
-                    doneCount++;
-                } else {
-                    missing.push(item.n);
+            let points = 0, missing = [];
+            
+            prayers.forEach(p => {
+                const status = ut[p];
+                if(status === 'm') points += 3;
+                else if(status === 'f') points += 2;
+                else if(status === 'q') points += 1;
+                else missing.push(p);
+            });
+            others.forEach(id => {
+                if(ut[id]) points += 2;
+                else {
+                    let n = id.startsWith('s') ? sunnahs.find(x=>x.id===id).n : id.replace('az_s','ذكار ص').replace('az_m','ذكار م').replace('qr','ورد').replace('mk','ملك').replace('kf','كهف');
+                    missing.push(n);
                 }
             });
-            return { name: u.name, score: Math.round((doneCount/track.length)*100), missing };
+            const maxPoints = (prayers.length * 3) + (others.length * 2);
+            return { name: u.name, score: Math.round((points/maxPoints)*100), missing };
         }).sort((a,b) => b.score - a.score);
 
         const ui = document.getElementById('podium-ui'); ui.innerHTML = "";
         [results[1], results[0], results[2], results[3]].forEach((m) => {
             if(!m) return;
             const step = m === results[0] ? "step-1" : (m === results[1] ? "step-2" : (m === results[2] ? "step-3" : "step-4"));
-            const missingText = m.missing.length === 0 ? "✨ اكتمل!" : m.missing.join('، ');
-            ui.innerHTML += `
-                <div class="podium-step ${step}">
-                    <span class="medal">${m===results[0]?'🥇':m===results[1]?'🥈':m===results[2]?'🥉':'🏅'}</span>
-                    <b style="font-size:0.75rem">${m.name.split(' ')[0]}</b>
-                    <span style="font-weight:bold; color:var(--wa-green)">${m.score}%</span>
-                    <div class="remain-box">${missingText}</div>
-                </div>`;
+            ui.innerHTML += `<div class="podium-step ${step}"><span class="medal">${m===results[0]?'🥇':m===results[1]?'🥈':m===results[2]?'🥉':'🏅'}</span><b style="font-size:0.75rem">${m.name.split(' ')[0]}</b><span style="font-weight:bold; color:var(--wa-green)">${m.score}%</span><div class="remain-box">${m.missing.length ? m.missing.join('، ') : '✨ تم!'}</div></div>`;
         });
     }
 
