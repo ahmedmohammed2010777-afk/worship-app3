@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>محراب الطاعة الشامل - الإصدار الموسوعي</title>
+<title>محراب العائلة الشامل</title>
 <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
 <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
 <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
@@ -11,28 +11,26 @@
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Changa:wght@400;700;800&family=Amiri:wght@400;700&family=Noto+Naskh+Arabic:wght@400;700&display=swap');
 
-body { font-family: 'Changa', sans-serif; background: #f0f7ff; color: #1e293b; margin: 0; padding: 10px; }
-.neu-card { background: white; border-radius: 25px; padding: 20px; margin-bottom: 20px; border: 1px solid #e2e8f0; box-shadow: 0 4px 12px rgba(0,0,0,0.03); }
+body { font-family: 'Changa', sans-serif; background: #f0f9ff; color: #1e293b; margin: 0; padding: 10px; }
+.neu-card { background: white; border-radius: 25px; padding: 20px; margin-bottom: 20px; border: 1px solid #e2e8f0; box-shadow: 0 4px 15px rgba(0,0,0,0.04); }
 
-/* قارئ الأذكار والقرآن */
-.full-reader { position: fixed; inset: 0; background: #ffffff; z-index: 9999; display: flex; flex-direction: column; }
-.reader-header { padding: 15px; display: flex; justify-content: space-between; align-items: center; background: #f8fafc; border-bottom: 2px solid #e2e8f0; }
-.reader-body { flex: 1; overflow-y: auto; padding: 25px; background: #fffdf9; }
-.quran-frame { font-family: 'Noto Naskh Arabic', serif; font-size: 1.7rem; line-height: 2.5; text-align: justify; color: #0f172a; padding: 15px; border: 2px solid #f1f5f9; border-radius: 15px; background: white; }
-.zekr-item { background: white; border-radius: 15px; padding: 20px; margin-bottom: 15px; border-right: 8px solid #0ea5e9; box-shadow: 0 2px 4px rgba(0,0,0,0.02); }
-
-/* البوديوم - منصة التتويج */
-.podium-box { display: flex; align-items: flex-end; justify-content: center; gap: 8px; height: 160px; margin: 20px 0; }
+/* البوديوم */
+.podium-box { display: flex; align-items: flex-end; justify-content: center; gap: 8px; height: 150px; margin: 15px 0; }
 .podium-col { display: flex; flex-direction: column; align-items: center; width: 22%; }
-.step { width: 100%; display: flex; align-items: center; justify-content: center; font-weight: 800; color: white; border-radius: 8px 8px 0 0; }
-.p1 { height: 90px; background: linear-gradient(#fbbf24, #d97706); }
-.p2 { height: 70px; background: linear-gradient(#94a3b8, #475569); }
-.p3 { height: 50px; background: linear-gradient(#b45309, #78350f); }
-.p4 { height: 35px; background: linear-gradient(#cbd5e1, #94a3b8); }
+.step { width: 100%; display: flex; align-items: center; justify-content: center; font-weight: 800; color: white; border-radius: 10px 10px 0 0; }
+.p1 { height: 85px; background: linear-gradient(#fbbf24, #d97706); }
+.p2 { height: 65px; background: linear-gradient(#94a3b8, #475569); }
+.p3 { height: 45px; background: linear-gradient(#b45309, #78350f); }
+.p4 { height: 30px; background: linear-gradient(#cbd5e1, #94a3b8); }
 .user-label { font-size: 10px; font-weight: bold; margin-top: 5px; }
 
-/* جداول الصلاة */
-.status-select { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 2px; font-size: 10px; width: 100%; }
+/* القوائم والجداول */
+.status-select { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 3px; font-size: 10px; width: 100%; cursor: pointer; }
+.section-title { font-weight: 800; border-right: 5px solid; padding-right: 10px; margin-bottom: 15px; }
+
+/* قارئ السور */
+.quran-modal { position: fixed; inset: 0; background: white; z-index: 9999; display: flex; flex-direction: column; }
+.quran-content { flex: 1; overflow-y: auto; padding: 30px; font-family: 'Noto Naskh Arabic', serif; font-size: 1.8rem; line-height: 2.8; text-align: justify; background: #fffdf5; }
 </style>
 </head>
 <body>
@@ -52,8 +50,8 @@ const firebaseConfig = {
 };
 
 const app = initializeApp(firebaseConfig);
-window.db = getFirestore(app);
-window.docRef = doc(window.db, "worship", "family");
+const db = getFirestore(app);
+window.docRef = doc(db, "worship", "family");
 window.setDoc = setDoc;
 window.onSnapshot = onSnapshot;
 window.arrayUnion = arrayUnion;
@@ -62,35 +60,20 @@ window.arrayUnion = arrayUnion;
 <script type="text/babel">
 const { useState, useEffect } = React;
 
-const DATA = {
-  "أذكار الصباح": [
-    { text: "أَعُوذُ بِاللَّهِ مِنَ الشَّيْطَانِ الرَّجِيمِ: {اللَّهُ لَا إِلَهَ إِلَّا هُوَ الْحَيُّ الْقَيُّومُ لَا تَأْخُذُهُ سِنَةٌ وَلَا نَوْمٌ لَهُ مَا فِي السَّمَاوَاتِ وَمَا فِي الْأَرْضِ مَنْ ذَا الَّذِي يَشْفَعُ عِنْدَهُ إِلَّا بِإِذْنِهِ يَعْلَمُ مَا بَيْنَ أَيْدِيهِمْ وَمَا خَلْفَهُمْ وَلَا يُحِيطُونَ بِشَيْءٍ مِنْ عِلْمِهِ إِلَّا بِمَا شَاءَ وَسِعَ كُرْسِيُّهُ السَّمَاوَاتِ وَالْأَرْضَ وَلَا يَئُودُهُ حِفْظُهُمَا وَهُوَ الْعَلِيُّ الْعَظِيمُ}", count: 1 },
-    { text: "بِسْمِ اللهِ الرَّحْمنِ الرَّحِيمِ: {قُلْ هُوَ اللَّهُ أَحَدٌ...} (3 مرات)، {قُلْ أَعُوذُ بِرَبِّ الْفَلَقِ...} (3 مرات)، {قُلْ أَعُوذُ بِرَبِّ النَّاسِ...} (3 مرات)", count: 3 },
-    { text: "أَصْبَحْنَا وَأَصْبَحَ الْمُلْكُ لِلَّهِ، وَالْحَمْدُ لِلَّهِ، لَا إِلَهَ إِلَّا اللَّهُ وَحْدَهُ لَا شَرِيكَ لَهُ، لَهُ الْمُلْكُ وَلَهُ الْحَمْدُ وَهُوَ عَلَى كُلِّ شَيْءٍ قَدِيرٌ، رَبِّ أَسْأَلُكَ خَيْرَ مَا فِي هَذَا الْيَوْمِ وَخَيْرَ مَا بَعْدَهُ، وَأَعُوذُ بِكَ مِنْ شَرِّ مَا فِي هَذَا الْيَوْمِ وَشرِّ مَا بَعْدَهُ، رَبِّ أَعُوذُ بِكَ مِنَ الْكَسَلِ، وَسُوءِ الْكِبَرِ، رَبِّ أَعُوذُ بِكَ مِنْ عَذَابٍ فِي النَّارِ وَعَذَابٍ فِي الْقَبْرِ.", count: 1 },
-    { text: "اللَّهُمَّ أَنْتَ رَبِّي لَا إِلَهَ إِلَّا أَنْتَ، خَلَقْتَنِي وَأَنَا عَبْدُكَ، وَأَنَا عَلَى عَهْدِكَ وَوَعْدِكَ مَا اسْتَطَعْتُ، أَعُوذُ بِكَ مِنْ شَرِّ مَا صَنَعْتُ، أَبُوءُ لَكَ بِنِعْمَتِكَ عَلَيَّ، وَأَبُوءُ لَكَ بِذَنْبِي فَاغْفِرْ لِي فَإِنَّهُ لَا يَغْفِرُ الذُّنُوبَ إِلَّا أَنْتَ.", count: 1 },
-    { text: "اللَّهُمَّ إِنِّي أَسْأَلُكَ الْعَفْوَ وَالْعَافِيَةَ فِي الدُّنْيَا وَالْآخِرَةِ، اللَّهُمَّ إِنِّي أَسْأَلُكَ الْعَفْوَ وَالْعَافِيَةَ: فِي دِينِي وَدُنْيَايَ وَأَهْلِي، وَمَالِي، اللَّهُمَّ اسْتُرْ عَوْرَاتِي، وَآمِنْ رَوْعَاتِي، اللَّهُمَّ احْفَظْنِي مِنْ بَيْنِ يَدَيَّ، وَمِنْ خَلْفِي، وَعَنْ يَمِينِي، وَعَنْ شِمَالِي، وَمِنْ فَوْقِي، وَأَعُوذُ بِعَظَمَتِكَ أَنْ أُغْتَالَ مِنْ تَحْتِي.", count: 1 },
-    { text: "يَا حَيُّ يَا قَيُّومُ بِرَحْمَتِكَ أَسْتَغِيثُ أَصْلِحْ لِي شَأْنِي كُلَّهُ وَلَا تَكِلْنِي إِلَى نَفْسِي طَرْفَةَ عَيْنٍ.", count: 1 }
-  ],
-  "أذكار المساء": [
-    { text: "أَمْسَيْنَا وَأَمْسَى الْمُلْكُ لِلَّهِ، وَالْحَمْدُ لِلَّهِ، لَا إِلَهَ إِلَّا اللَّهُ وَحْدَهُ لَا شَرِيكَ لَهُ، لَهُ الْمُلْكُ وَلَهُ الْحَمْدُ وَهُوَ عَلَى كُلِّ شَيْءٍ قَدِيرٌ، رَبِّ أَسْأَلُكَ خَيْرَ مَا فِي هَذِهِ اللَّيْلَةِ وَخَيْرَ مَا بَعْدَهَا، وَأَعُوذُ بِكَ مِنْ شَرِّ مَا فِي هَذِهِ اللَّيْلَةِ وَشرِّ مَا بَعْدَهَا.", count: 1 },
-    { text: "اللَّهُمَّ أَنْتَ رَبِّي لَا إِلَهَ إِلَّا أَنْتَ، خَلَقْتَنِي وَأَنَا عَبْدُكَ، وَأَنَا عَلَى عَهْدِكَ وَوَعْدِكَ مَا اسْتَطَعْتُ، أَعُوذُ بِكَ مِنْ شَرِّ مَا صَنَعْتُ، أَبُوءُ لَكَ بِنِعْمَتِكَ عَلَيَّ، وَأَبُوءُ لَكَ بِذَنْبِي فَاغْفِرْ لِي فَإِنَّهُ لَا يَغْفِرُ الذُّنُوبَ إِلَّا أَنْتَ.", count: 1 },
-    { text: "أَعُوذُ بِكَلِمَاتِ اللهِ التَّامَّاتِ مِنْ شَرِّ مَا خَلَقَ.", count: 3 },
-    { text: "بِسْمِ اللَّهِ الَّذِي لَا يَضُرُّ مَعَ اسْمِهِ شَيْءٌ فِي الْأَرْضِ وَلَا فِي السَّمَاءِ وَهُوَ السَّمِيعُ الْعَلِيمُ.", count: 3 }
-  ],
-  "سورة الملك": [{ text: "بِسْمِ اللَّهِ الرَّحْمَنِ الرَّحِيمِ. تَبَارَكَ الَّذِي بِيَدِهِ الْمُلْكُ وَهُوَ عَلَى كُلِّ شَيْءٍ قَدِيرٌ (1) الَّذِي خَلَقَ الْمَوْتَ وَالْحَيَاةَ لِيَبْلُوَكُمْ أَيُّكُمْ أَحْسَنُ عَمَلًا وَهُوَ الْعَزِيزُ الْغَفُورُ (2) الَّذِي خَلَقَ سَبْعَ سَمَاوَاتٍ طِبَاقًا مَا تَرَى فِي خَلْقِ الرَّحْمَنِ مِنْ تَفَاوُتٍ فَارْجِعِ الْبَصَرَ هَلْ تَرَى مِنْ فُطُورٍ (3)... [النص القرآني الكامل]", q: true }],
-  "سورة الكهف": [{ text: "بِسْمِ اللَّهِ الرَّحْمَنِ الرَّحِيمِ. الْحَمْدُ لِلَّهِ الَّذِي أَنْزَلَ عَلَى عَبْدِهِ الْكِتَابَ وَلَمْ يَجْعَلْ لَهُ عِوجًا (1) قَيِّمًا لِيُنْذِرَ بَأْسًا شَدِيدًا مِنْ لَدُنْهُ وَيُبَشِّرَ الْمُؤْمِنِينَ الَّذِي يَعْمَلُونَ الصَّالِحَاتِ أَنَّ لَهُمْ أَجْرًا حَسَنًا (2)... [النص القرآني الكامل]", q: true }]
+const QURAN_TEXTS = {
+  "سورة الملك": "بِسْمِ اللَّهِ الرَّحْمَنِ الرَّحِيمِ. تَبَارَكَ الَّذِي بِيَدِهِ الْمُلْكُ وَهُوَ عَلَى كُلِّ شَيْءٍ قَدِيرٌ (1) الَّذِي خَلَقَ الْمَوْتَ وَالْحَيَاةَ لِيَبْلُوهُمْ أَيُّكُمْ أَحْسَنُ عَمَلًا وَهُوَ الْعَزِيزُ الْغَفُورُ (2) ... [النص الكامل]",
+  "سورة الكهف": "بِسْمِ اللَّهِ الرَّحْمَنِ الرَّحِيمِ. الْحَمْدُ لِلَّهِ الَّذِي أَنْزَلَ عَلَى عَبْدِهِ الْكِتَابَ وَلَمْ يَجْعَلْ لَهُ عِوجًا (1) قَيِّمًا لِيُنْذِرَ بَأْسًا شَدِيدًا مِنْ لَدُنْهُ ... [النص الكامل]"
 };
 
 const HADITHS = [
+  "«مَنْ صَلَّى لِلَّهِ فِي يَوْمٍ ثِنْتَيْ عَشْرَةَ رَكْعَةً تَطَوُّعًا بَنَى اللَّهُ لَهُ بَيْتًا فِي الْجَنَّةِ»",
   "«خياركم خياركم لأهلهم، وأنا خياركم لأهلي»",
-  "«من قرأ سورة الكهف يوم الجمعة أضاء له من النور ما بين الجمعتين»",
   "«أحب الأعمال إلى الله أدومها وإن قل»"
 ];
 
 function App() {
   const [data, setData] = useState({});
-  const [activePage, setActivePage] = useState(null);
-  const [msg, setMsg] = useState("");
+  const [view, setView] = useState(null);
   const users = ['محمد','شيماء','أحمد','ياسين'];
   const today = new Date().toISOString().split('T')[0];
   const isFriday = new Date().getDay() === 5;
@@ -105,79 +88,47 @@ function App() {
     await window.setDoc(window.docRef, newData);
   };
 
-  const sendMsg = async () => {
-    if(!msg) return;
-    await window.setDoc(window.docRef, { messages: window.arrayUnion({ u: "محمد", t: msg, d: new Date().toLocaleTimeString() }) }, { merge: true });
-    setMsg("");
-  };
-
-  const prayers = ["الفجر", isFriday ? "الجمعة" : "الظهر", "العصر", "المغرب", "العشاء"];
-  const sunan = ["سنة الفجر", "صلاة الضحى", "سنة المغرب", "سنة العشاء", "قيام الليل"];
+  const openAzkar = () => window.open("https://alazkar.today/", "_blank");
 
   return (
-    <div className="max-w-md mx-auto">
-      {/* قارئ الصفحات */}
-      {activePage && (
-        <div className="full-reader">
-          <div className="reader-header">
-            <h2 className="text-xl font-bold text-sky-600">{activePage}</h2>
-            <button onClick={() => setActivePage(null)} className="text-red-500 font-bold">إغلاق</button>
+    <div className="max-w-md mx-auto pb-10">
+      {view && (
+        <div className="quran-modal">
+          <div className="p-4 flex justify-between items-center bg-slate-100">
+            <h2 className="font-bold">{view}</h2>
+            <button onClick={() => setView(null)} className="text-red-500 font-bold">إغلاق</button>
           </div>
-          <div className="reader-body">
-            {DATA[activePage]?.map((item, i) => (
-              <div key={i} className={item.q ? "quran-frame" : "zekr-item"}>
-                <p className="text-2xl leading-relaxed text-center font-bold text-slate-800">{item.text}</p>
-                {item.count > 1 && <div className="mt-4 text-center text-sky-500 font-black italic">كررها {item.count} مرات</div>}
-              </div>
-            ))}
-          </div>
+          <div className="quran-content">{QURAN_TEXTS[view]}</div>
         </div>
       )}
 
       <header className="py-6 text-center">
-        <h1 className="text-4xl font-black text-sky-600 mb-2 italic">مِحْرابُ الطاعة 🕌</h1>
-        <div className="neu-card border-none bg-sky-50 text-sky-800 py-4 px-6 shadow-inner">
-           <p className="font-serif italic text-lg leading-relaxed">
-             {HADITHS[new Date().getDate() % HADITHS.length]}
-           </p>
+        <h1 className="text-3xl font-black text-sky-600 mb-2">مِحْرابُ العائلة ✨</h1>
+        <div className="neu-card border-none bg-sky-50 text-sky-800 text-sm italic">
+          {HADITHS[new Date().getDate() % HADITHS.length]}
         </div>
       </header>
 
-      {/* منصة التتويج البوديوم */}
+      {/* منصة التتويج */}
       <div className="neu-card">
-        <h3 className="text-center font-bold text-amber-500 mb-4">🏆 منصة التتويج العائلية</h3>
+        <h3 className="text-center font-bold text-amber-500 mb-2 text-sm">🏆 فرسان الطاعة اليوم</h3>
         <div className="podium-box">
-          <div className="podium-col">
-            <div className="step p2">2</div>
-            <span className="user-label">أحمد</span>
-          </div>
-          <div className="podium-col">
-            <span className="text-2xl">👑</span>
-            <div className="step p1">1</div>
-            <span className="user-label">محمد</span>
-          </div>
-          <div className="podium-col">
-            <div className="step p3">3</div>
-            <span className="user-label">شيماء</span>
-          </div>
-          <div className="podium-col">
-            <div className="step p4">4</div>
-            <span className="user-label">ياسين</span>
-          </div>
+          <div className="podium-col"><div className="step p2 text-xs">2</div><span className="user-label">أحمد</span></div>
+          <div className="podium-col"><span className="text-xl">👑</span><div className="step p1 text-xs">1</div><span className="user-label">محمد</span></div>
+          <div className="podium-col"><div className="step p3 text-xs">3</div><span className="user-label">شيماء</span></div>
+          <div className="podium-col"><div className="step p4 text-xs">4</div><span className="user-label">ياسين</span></div>
         </div>
       </div>
 
-      {/* قسم الصلوات المفروضة */}
+      {/* الصلوات المفروضة */}
       <div className="neu-card">
-        <h3 className="font-bold text-amber-600 mb-4 border-b pb-2">🕋 الصلوات المفروضة</h3>
+        <h3 className="section-title text-amber-600 border-amber-600">🕋 الصلوات المفروضة</h3>
         <table className="w-full text-[10px]">
-          <thead>
-            <tr><th className="text-right pb-2">الصلاة</th>{users.map(u => <th key={u}>{u}</th>)}</tr>
-          </thead>
+          <thead><tr><th className="text-right pb-2">الصلاة</th>{users.map(u => <th key={u}>{u}</th>)}</tr></thead>
           <tbody>
-            {prayers.map(p => (
-              <tr key={p} className="border-t border-slate-50">
-                <td className="py-2 font-bold text-slate-700">{p}</td>
+            {["الفجر", isFriday ? "الجمعة" : "الظهر", "العصر", "المغرب", "العشاء"].map(p => (
+              <tr key={p} className="border-t">
+                <td className="py-2 font-bold">{p}</td>
                 {users.map(u => (
                   <td key={u} className="px-1">
                     <select value={data[today]?.[u]?.[p] || ""} onChange={e => update(u, p, e.target.value)} className="status-select">
@@ -191,16 +142,23 @@ function App() {
         </table>
       </div>
 
-      {/* قسم السنن الرواتب */}
+      {/* السنن القبلية والبعدية */}
       <div className="neu-card">
-        <h3 className="font-bold text-emerald-600 mb-4 border-b pb-2">✨ السنن والرواتب</h3>
-        <div className="space-y-3">
-          {sunan.map(s => (
-            <div key={s} className="flex items-center justify-between py-1">
-              <span className="text-xs font-bold text-slate-600">{s}</span>
+        <h3 className="section-title text-emerald-600 border-emerald-600">✨ السنن الرواتب</h3>
+        <div className="space-y-2">
+          {[
+            {n: "سنة الفجر (قبلية)", c: "emerald"},
+            {n: "سنة الظهر (قبلية)", c: "emerald"},
+            {n: "سنة الظهر (بعدية)", c: "emerald"},
+            {n: "سنة المغرب (بعدية)", c: "emerald"},
+            {n: "سنة العشاء (بعدية)", c: "emerald"},
+            {n: "صلاة الضحى", c: "amber"}
+          ].map(s => (
+            <div key={s.n} className="flex items-center justify-between py-1 border-b border-slate-50 last:border-0">
+              <span className="text-[11px] font-bold text-slate-600">{s.n}</span>
               <div className="flex gap-1">
                 {users.map(u => (
-                  <button key={u} onClick={() => update(u, s, !data[today]?.[u]?.[s])} className={`w-7 h-7 rounded-lg text-[10px] font-bold ${data[today]?.[u]?.[s] ? 'bg-emerald-500 text-white shadow-md' : 'bg-slate-100 text-slate-300 border border-slate-200'}`}>{u[0]}</button>
+                  <button key={u} onClick={() => update(u, s.n, !data[today]?.[u]?.[s.n])} className={`w-7 h-7 rounded-lg text-[10px] font-bold transition-all ${data[today]?.[u]?.[s.n] ? 'bg-emerald-500 text-white shadow-md scale-110' : 'bg-slate-100 text-slate-300'}`}>{u[0]}</button>
                 ))}
               </div>
             </div>
@@ -208,36 +166,39 @@ function App() {
         </div>
       </div>
 
-      {/* قسم الأذكار والأوراد */}
+      {/* قيام الليل والشفع والوتر */}
       <div className="neu-card">
-        <h3 className="font-bold text-sky-600 mb-4 border-b pb-2">📖 الأذكار والأوراد القرآنية</h3>
-        <div className="space-y-4">
-          {["أذكار الصباح", "أذكار المساء", "أذكار النوم", isFriday ? "سورة الكهف" : "سورة الملك", "الورد القرآني"].map(w => (
-            <div key={w} className="flex items-center justify-between group">
-              <span onClick={() => DATA[w] && setActivePage(w)} className="text-sm font-bold text-slate-700 cursor-pointer hover:text-sky-500 flex items-center gap-2">
-                {w} {DATA[w] && <span className="bg-sky-50 text-[9px] px-2 rounded-full border border-sky-100">فتح القارئ 📖</span>}
+        <h3 className="section-title text-indigo-600 border-indigo-600">🌙 قيام الليل</h3>
+        <div className="space-y-2">
+          {["قيام الليل", "الشفع والوتر"].map(s => (
+            <div key={s} className="flex items-center justify-between py-1 border-b border-slate-50 last:border-0">
+              <span className="text-[11px] font-bold text-slate-600">{s}</span>
+              <div className="flex gap-1">
+                {users.map(u => (
+                  <button key={u} onClick={() => update(u, s, !data[today]?.[u]?.[s])} className={`w-7 h-7 rounded-lg text-[10px] font-bold ${data[today]?.[u]?.[s] ? 'bg-indigo-500 text-white shadow-md' : 'bg-slate-100 text-slate-300'}`}>{u[0]}</button>
+                ))}
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* الأذكار والأوراد */}
+      <div className="neu-card">
+        <h3 className="section-title text-sky-600 border-sky-600">📖 الأوراد والأذكار</h3>
+        <div className="space-y-3">
+          {["أذكار الصباح", "أذكار المساء", "أذكار النوم", "الورد القرآني", isFriday ? "سورة الكهف" : "سورة الملك"].map(w => (
+            <div key={w} className="flex items-center justify-between">
+              <span onClick={() => w.includes("أذكار") ? openAzkar() : (QURAN_TEXTS[w] ? setView(w) : null)} className="text-[12px] font-bold text-slate-700 cursor-pointer hover:text-sky-500 underline decoration-sky-100">
+                {w} <span className="text-[8px] bg-sky-50 px-1 rounded">فتح ↗</span>
               </span>
               <div className="flex gap-1">
                 {users.map(u => (
-                  <button key={u} onClick={() => update(u, w, !data[today]?.[u]?.[w])} className={`w-7 h-7 rounded-lg text-[10px] font-bold ${data[today]?.[u]?.[w] ? 'bg-sky-500 text-white shadow-md' : 'bg-slate-100 text-slate-300 border border-slate-200'}`}>{u[0]}</button>
+                  <button key={u} onClick={() => update(u, w, !data[today]?.[u]?.[w])} className={`w-7 h-7 rounded-lg text-[10px] font-bold ${data[today]?.[u]?.[w] ? 'bg-sky-500 text-white shadow-md' : 'bg-slate-100 text-slate-300'}`}>{u[0]}</button>
                 ))}
               </div>
             </div>
           ))}
-        </div>
-      </div>
-
-      {/* مجلس العائلة */}
-      <div className="neu-card">
-        <h3 className="font-bold text-slate-600 mb-3">💬 مجلس تحفيز العائلة</h3>
-        <div className="h-24 overflow-y-auto mb-3 bg-slate-50 p-3 rounded-xl border border-slate-100 text-xs">
-          {data.messages?.slice(-5).map((m, i) => (
-            <div key={i} className="mb-2"><strong>{m.u}:</strong> {m.t}</div>
-          ))}
-        </div>
-        <div className="flex gap-2">
-          <input value={msg} onChange={e => setMsg(e.target.value)} className="flex-1 bg-white border border-slate-200 rounded-lg px-3 py-1 text-sm" placeholder="اكتب تشجيعاً..." />
-          <button onClick={sendMsg} className="bg-sky-600 text-white px-4 rounded-lg text-sm font-bold">إرسال</button>
         </div>
       </div>
     </div>
