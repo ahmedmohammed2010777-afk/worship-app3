@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>محراب العائلة - النسخة الموسوعية الشاملة</title>
+<title>محراب العائلة - الإصدار الموسوعي الشامل</title>
 
 <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
 <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
@@ -13,23 +13,26 @@
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Changa:wght@400;700;800&family=Amiri:wght@400;700&display=swap');
 
-body { font-family: 'Changa', sans-serif; background: #f0f2f5; padding: 10px; color: #1a202c; min-height: 100vh; }
-.neu-card { background: white; border-radius: 35px; box-shadow: 20px 20px 60px #d1d9e6, -20px -20px 60px #ffffff; margin-bottom: 25px; padding: 25px; border: 1px solid #e2e8f0; }
-.neu-inset { background: #edf2f7; box-shadow: inset 6px 6px 12px #cfd9e0, inset -6px -6px 12px #ffffff; border-radius: 20px; }
+body { font-family: 'Changa', sans-serif; background: #f8fafc; color: #1e293b; margin: 0; padding: 10px; }
+.neu-card { background: white; border-radius: 35px; box-shadow: 20px 20px 60px #d1d9e6, -10px -10px 40px #ffffff; padding: 25px; margin-bottom: 25px; border: 1px solid #f1f5f9; }
+.neu-inset { background: #f1f5f9; box-shadow: inset 4px 4px 8px #d1d5db, inset -4px -4px 8px #ffffff; border-radius: 20px; }
 
+/* تصميم الأفاتار الملكي */
 .royal-avatar { width: 55px; height: 55px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 22px; color: white; border: 2px solid #fff; box-shadow: 0 10px 15px rgba(0,0,0,0.1); }
 .av-m { background: linear-gradient(135deg, #b8860b, #ffd700); }
 .av-s { background: linear-gradient(135deg, #db2777, #fbcfe8); }
 .av-a { background: linear-gradient(135deg, #1e3a8a, #3b82f6); }
 .av-y { background: linear-gradient(135deg, #059669, #34d399); }
 
-/* نافذة القراءة الكبرى */
-.reader-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 9999; display: flex; flex-direction: column; }
-.reader-header { background: #1a202c; color: white; padding: 20px; display: flex; justify-content: space-between; align-items: center; }
-.reader-body { flex: 1; overflow-y: auto; background: #fffcf5; padding: 30px; }
-.quran-container { font-family: 'Amiri', serif; font-size: 1.8rem; line-height: 2.8; text-align: center; max-width: 800px; margin: 0 auto; color: #2d3748; }
-.zekr-card { background: white; border: 2px solid #e2e8f0; border-radius: 20px; padding: 20px; margin-bottom: 20px; text-align: center; }
-.repeat-btn { background: #3182ce; color: white; padding: 5px 15px; border-radius: 10px; font-size: 0.9rem; margin-top: 10px; display: inline-block; }
+/* نافذة العرض الكبرى (مثل إلا صلاتي) */
+.full-reader { position: fixed; inset: 0; background: #fffcf5; z-index: 9999; display: flex; flex-direction: column; animation: slideUp 0.3s ease-out; }
+@keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
+
+.reader-header { background: #1e293b; color: white; padding: 20px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+.reader-content { flex: 1; overflow-y: auto; padding: 25px; font-family: 'Amiri', serif; }
+.quran-verse { font-size: 1.8rem; line-height: 2.8; text-align: center; color: #0f172a; margin-bottom: 30px; border-bottom: 1px solid #e2e8f0; padding-bottom: 20px; }
+.zekr-box { background: white; border: 1px solid #e2e8f0; border-radius: 25px; padding: 20px; margin-bottom: 20px; box-shadow: 0 4px 6px rgba(0,0,0,0.02); }
+.zekr-count { display: inline-block; background: #3b82f6; color: white; padding: 2px 15px; border-radius: 12px; font-family: 'Changa', sans-serif; font-size: 0.9rem; margin-top: 10px; }
 </style>
 </head>
 
@@ -62,40 +65,46 @@ window.docFunc = doc;
 <script type="text/babel">
 const { useState, useEffect, useRef } = React;
 
-const FULL_LIBRARY = {
+// المكتبة الشاملة بنظام "إلا صلاتي"
+const ENCYCLOPEDIA = {
   "أذكار الصباح": [
-    { t: "أَصْبَحْنَا وَأَصْبَحَ الْمُلْكُ لِلَّهِ، وَالْحَمْدُ لِلَّهِ، لاَ إِلَهَ إلاَّ اللَّهُ وَحْدَهُ لاَ شَرِيكَ لَهُ، لَهُ الْمُلْكُ وَلَهُ الْحَمْدُ وَهُوَ عَلَى كُلِّ شَيْءٍ قَدِيرٌ.", r: "1" },
-    { t: "اللَّهُ لَا إِلَهَ إِلَّا هُوَ الْحَيُّ الْقَيُّومُ لَا تَأْخُذُهُ سِنَةٌ وَلَا نَوْمٌ لَهُ مَا فِي السَّمَاوَاتِ وَمَا فِي الْأَرْضِ مَنْ ذَا الَّذِي يَشْفَعُ عِنْدَهُ إِلَّا بِإِذْنِهِ يَعْلَمُ مَا بَيْنَ أَيْدِيهِمْ وَمَا خَلْفَهُمْ وَلَا يُحِيطُونَ بِشَيْءٍ مِنْ عِلْمِهِ إِلَّا بِمَا شَاءَ وَسِعَ كُرْسِيُّهُ السَّمَاوَاتِ وَالْأَرْضَ وَلَا يَئُودُهُ حِفْظُهُمَا وَهُوَ الْعَلِيُّ الْعَظِيمُ.", r: "1" },
-    { t: "قُلْ هُوَ اللَّهُ أَحَدٌ... (سورة الإخلاص)", r: "3" },
-    { t: "قُلْ أَعُوذُ بِرَبِّ الْفَلَقِ... (سورة الفلق)", r: "3" },
-    { t: "قُلْ أَعُوذُ بِرَبِّ النَّاسِ... (سورة الناس)", r: "3" },
-    { t: "اللَّهُمَّ أَنْتَ رَبِّي لَا إِلَهَ إِلَّا أَنْتَ، خَلَقْتَنِي وَأَنَا عَبْدُكَ، وَأَنَا عَلَى عَهْدِكَ وَوَعْدِكَ مَا استَطَعْتُ، أَعُوذُ بِكَ مِنْ شَرِّ مَا صَنَعْتُ، أَبُوءُ لَكَ بِنِعْمَتِكَ عَلَيَّ، وَأَبُوءُ لَكَ بِذَنْبِي فَاغْفِرْ لِي فَإِنَّهُ لَا يَغْفِرُ الذُّنُوبَ إِلَّا أَنْتَ.", r: "1" },
-    { t: "اللَّهُمَّ عافِني في بَدَني، اللَّهُمَّ عافِني في سَمْعي، اللَّهُمَّ عافِني في بَصَري، لا إلهَ إلَّا أنتَ.", r: "3" },
-    { t: "بِسْمِ اللَّهِ الَّذِي لَا يَضُرُّ مَعَ اسْمِهِ شَيْءٌ فِي الْأَرْضِ وَلَا فِي السَّمَاءِ وَهُوَ السَّمِيعُ الْعَلِيمُ.", r: "3" }
+    { text: "أَعُوذُ بِاللَّهِ مِنَ الشَّيْطَانِ الرَّجِيمِ: اللَّهُ لَا إِلَهَ إِلَّا هُوَ الْحَيُّ الْقَيُّومُ لَا تَأْخُذُهُ سِنَةٌ وَلَا نَوْمٌ لَهُ مَا فِي السَّمَاوَاتِ وَمَا فِي الْأَرْضِ مَنْ ذَا الَّذِي يَشْفَعُ عِنْدَهُ إِلَّا بِإِذْنِهِ يَعْلَمُ مَا بَيْنَ أَيْدِيهِمْ وَمَا خَلْفَهُمْ وَلَا يُحيطُونَ بِشَيْءٍ مِنْ عِلْمِهِ إِلَّا بِمَا شَاءَ وَسِعَ كُرْسِيُّهُ السَّمَاوَاتِ وَالْأَرْضَ وَلَا يَئُودُهُ حِفْظُهُمَا وَهُوَ الْعَلِيُّ الْعَظِيمُ.", count: "مرة واحدة" },
+    { text: "بِسْمِ اللهِ الرَّحْمنِ الرَّحِيمِ: قُلْ هُوَ اللَّهُ أَحَدٌ (1) اللَّهُ الصَّمَدُ (2) لَمْ يَلِدْ وَلَمْ يُولَدْ (3) وَلَمْ يَكُن لَّهُ كُفُوًا أَحَدٌ (4).", count: "3 مرات" },
+    { text: "بِسْمِ اللهِ الرَّحْمنِ الرَّحِيمِ: قُلْ أَعُوذُ بِرَبِّ الْفَلَقِ (1) مِن شَرِّ مَا خَلَقَ (2) وَمِن شَرِّ غَاسِقٍ إِذَا وَقَبَ (3) وَمِن شَرِّ النَّفَّاثَاتِ فِي الْعُقَدِ (4) وَمِن شَرِّ حَاسِدٍ إِذَا حَسَدَ (5).", count: "3 مرات" },
+    { text: "بِسْمِ اللهِ الرَّحْمنِ الرَّحِيمِ: قُلْ أَعُوذُ بِرَبِّ النَّاسِ (1) مَلِكِ النَّاسِ (2) إِلَهِ النَّاسِ (3) مِن شَرِّ الْوَسْوَاسِ الْخَنَّاسِ (4) الَّذِي يُوَسْوِسُ فِي صُدُورِ النَّاسِ (5) مِنَ الْجِنَّةِ وَالنَّاسِ (6).", count: "3 مرات" },
+    { text: "أَصْبَحْنَا وَأَصْبَحَ الْمُلْكُ لِلَّهِ، وَالْحَمْدُ لِلَّهِ، لاَ إِلَهَ إلاَّ اللَّهُ وَحْدَهُ لاَ شَرِيكَ لَهُ، لَهُ الْمُلْكُ وَلَهُ الْحَمْدُ وَهُوَ عَلَى كُلِّ شَيْءٍ قَدِيرٌ، رَبِّ أَسْأَلُكَ خَيْرَ مَا فِي هَذَا الْيَوْمِ وَخَيْرَ مَا بَعْدَهُ، وَأَعُوذُ بِكَ مِنْ شَرِّ مَا فِي هَذَا الْيَوْمِ وَشَرِّ مَا بَعْدَهُ، رَبِّ أَعُوذُ بِكَ مِنَ الْكَسَلِ، وَسُوءِ الْكِبَرِ، رَبِّ أَعُوذُ بِكَ مِنْ عَذَابٍ فِي النَّارِ وَعَذَابٍ فِي الْقَبْرِ.", count: "مرة واحدة" },
+    { text: "اللَّهُمَّ أَنْتَ رَبِّي لَا إِلَهَ إِلَّا أَنْتَ، خَلَقْتَنِي وَأَنَا عَبْدُكَ، وَأَنَا عَلَى عَهْدِكَ وَوَعْدِكَ مَا اسْتَطَعْتُ، أَعُوذُ بِكَ مِنْ شَرِّ مَا صَنَعْتُ، أَبُوءُ لَكَ بِنِعْمَتِكَ عَلَيَّ، وَأَبُوءُ لَكَ بِذَنْبِي فَاغْفِرْ لِي فَإِنَّهُ لَا يَغْفِرُ الذُّنُوبَ إِلَّا أَنْتَ.", count: "مرة واحدة (سيد الاستغفار)" },
+    { text: "يَا حَيُّ يَا قَيُّومُ بِرَحْمَتِكَ أَسْتَغِيثُ أَصْلِحْ لِي شَأْنِي كُلَّهُ وَلَا تَكِلْنِي إِلَى نَفْسِي طَرْفَةَ عَيْنٍ.", count: "مرة واحدة" },
+    { text: "بِسْمِ اللَّهِ الَّذِي لَا يَضُرُّ مَعَ اسْمِهِ شَيْءٌ فِي الْأَرْضِ وَلَا فِي السَّمَاءِ وَهُوَ السَّمِيعُ الْعَلِيمُ.", count: "3 مرات" }
   ],
   "سورة الملك": [
-    { t: "تَبَارَكَ الَّذِي بِيَدِهِ الْمُلْكُ وَهُوَ عَلَى كُلِّ شَيْءٍ قَدِيرٌ (1) الَّذِي خَلَقَ الْمَوْتَ وَالْحَيَاةَ لِيَبْلُوَكُمْ أَيُّكُمْ أَحْسَنُ عَمَلًا وَهُوَ الْعَزِيزُ الْغَفُورُ (2) الَّذِي خَلَقَ سَبْعَ سَمَاوَاتٍ طِبَاقًا مَّا تَرَى فِي خَلْقِ الرَّحْمَنِ مِن تَفَاوُتٍ فَارْجِعِ الْبَصَرَ هَلْ تَرَى مِن فُطُورٍ (3) ثُمَّ ارْجِعِ الْبَصَرَ كَرَّتَيْنِ يَنقَلِبْ إِلَيْكَ الْبَصَرُ خَاسِئًا وَهُوَ حَسِيرٌ (4) وَلَقَدْ زَيَّنَّا السَّمَاء الدُّنْيَا بِمَصَابِيحَ وَجَعَلْنَاهَا رُجُومًا لِّلشَّيَاطِينِ وَأَعْتَدْنَا لَهُمْ عَذَابَ السَّعِيرِ (5) وَلِلَّذِينَ كَفَرُوا بِرَبِّهِمْ عَذَابُ جَهَنَّمَ وَبِئْسَ الْمَصِيرُ (6) إِذَا أُلْقُوا فِيهَا سَمِعُوا لَهَا شَهِيقًا وَهِيَ تَفُورُ (7) تَكَادُ تَمَيَّزُ مِنَ الْغَيْظِ كُلَّمَا أُلْقِيَ فِيهَا فَوْجٌ سَأَلَهُمْ خَزَنَتُهَا أَلَمْ يَأْتِكُمْ نَذِيرٌ (8) قَالُوا بَلَى قَدْ جَاءَنَا نَذِيرٌ فَكَذَّبْنَا وَقُلْنَا مَا نَزَّلَ اللَّهُ مِن شَيْءٍ إِنْ أَنتُمْ إِلاَّ في ضَلالٍ كَبِيرٍ (9) وَقَالُوا لَوْ كُنَّا نَسْمَعُ أَوْ نَعْقِلُ مَا كُنَّا فِي أَصْحَابِ السَّعِيرِ (10) فَاعْتَرَفُوا بِذَنبِهِمْ فَسُحْقًا لِّأَصْحَابِ السَّعِيرِ (11) إِنَّ الَّذِينَ يَخْشَوْنَ رَبَّهُم بِالْغَيْبِ لَهُم مَّغْفِرَةٌ وَأَجْرٌ كَبِيرٌ (12) وَأَسِرُّوا قَوْلَكُمْ أَوِ اجْهَرُوا بِهِ إِنَّهُ عَلِيمٌ بِذَاتِ الصُّدُورِ (13) أَلا يَعْلَمُ مَنْ خَلَقَ وَهُوَ اللَّطِيفُ الْخَبِيرُ (14) هُوَ الَّذِي جَعَلَ لَكُمُ الأَرْضَ ذَلُولا فَامْشُوا فِي مَنَاكِبِهَا وَكُلُوا مِن رِّزْقِهِ وَإِلَيْهِ النُّشُورُ (15) أَأَمِنتُم مَّن فِي السَّمَاء أَن يَخْسِفَ بِكُمُ الأَرْضَ فَإِذَا هِيَ تَمُورُ (16) أَمْ أَمِنتُم مَّن فِي السَّمَاء أَن يُرْسِلَ عَلَيْكُمْ حَاصِبًا فَسَتَعْلَمُونَ كَيْفَ نَذِيرِ (17) وَلَقَدْ كَذَّبَ الَّذِينَ مِن قَبْلِهِمْ فَكَيْفَ كَانَ نَكِيرِ (18) أَوَلَمْ يَرَوْا إِلَى الطَّيْرِ فَوْقَهُمْ صَافَّاتٍ وَيَقْبِضْنَ مَا يُمْسِكُهُنَّ إِلاَّ الرَّحْمَنُ إِنَّهُ بِكُلِّ شَيْءٍ بَصِيرٌ (19) أَمَّنْ هَذَا الَّذِي هُوَ جُندٌ لَّكُمْ يَنصُرُكُم مِّن دُونِ الرَّحْمَنِ إِنِ الْكَافِرُونَ إِلاَّ فِي غُرُورٍ (20) أَمَّنْ هَذَا الَّذِي يَرْزُقُكُمْ إِنْ أَمْسَكَ رِزْقَهُ بَل لَّجُّوا فِي عُتُوٍّ وَنُفُورٍ (21) أَفَمَن يَمْشِي مُكِبًّا عَلَى وَجْهِهِ أَهْدَى أَمَّن يَمْشِي سَوِيًّا عَلَى صِرَاطٍ مُّسْتَقِيمٍ (22) قُلْ هُوَ الَّذِي أَنشأَكُمْ وَجَعَلَ لَكُمُ السَّمْعَ وَالأَبْصَارَ وَالأَفْئِدَةَ قَلِيلا مَّا تَشْكُرُونَ (23) قُلْ هُوَ الَّذِي ذَرَأَكُمْ فِي الأَرْضِ وَإِلَيْهِ تُحْشَرُونَ (24) وَيَقُولُونَ مَتَى هَذَا الْوَعْدُ إِن كُنتُمْ صَادِقِينَ (25) قُلْ إِنَّمَا الْعِلْمُ عِندَ اللَّهِ وَإِنَّمَا أَنَا نَذِيرٌ مُّبِينٌ (26) فَلَمَّا رَأَوْهُ زُلْفَةً سِيئَتْ وُجُوهُ الَّذِينَ كَفَرُوا وَقِيلَ هَذَا الَّذِي كُنتُم بِهِ تَدَّعُونَ (27) قُلْ أَرَأَيْتُمْ إِنْ أَهْلَكَنِيَ اللَّهُ وَمَن مَّعِيَ أَوْ رَحِمَنَا فَمَن يُجِيرُ الْكَافِرِينَ مِنْ عَذَابٍ أَلِيمٍ (28) قُلْ هُوَ الرَّحْمَنُ آمَنَّا بِهِ وَعَلَيْهِ تَوَكَّلْنَا فَسَتَعْلَمُونَ مَنْ هُوَ فِي ضَلالٍ مُّبِينٍ (29) قُلْ أَرَأَيْتُمْ إِنْ أَصْبَحَ مَاؤُكُمْ غَوْرًا فَمَن يَأْتِيكُم بِمَاء مَّعِينٍ (30)", r: "كاملة" }
+    { text: "بِسْمِ اللهِ الرَّحْمنِ الرَّحِيمِ: تَبَارَكَ الَّذِي بِيَدِهِ الْمُلْكُ وَهُوَ عَلَىٰ كُلِّ شَيْءٍ قَدِيرٌ (1) الَّذِي خَلَقَ الْمَوْتَ وَالْحَيَاةَ لِيَبْلُوَكُمْ أَيُّكُمْ أَحْسَنُ عَمَلًا وَهُوَ الْعَزِيزُ الْغَفُورُ (2) الَّذِي خَلَقَ سَبْعَ سَمَاوَاتٍ طِبَاقًا ۖ مَّا تَرَىٰ فِي خَلْقِ الرَّحْمَٰنِ مِن تَفَاوُتٍ ۖ فَارْجِعِ الْبَصَرَ هَلْ تَرَىٰ مِن فُطُورٍ (3) ثُمَّ ارْجِعِ الْبَصَرَ كَرَّتَيْنِ يَنقَلِبْ إِلَيْكَ الْبَصَرُ خَاسِئًا وَهُوَ حَسِيرٌ (4) وَلَقَدْ زَيَّنَّا السَّمَاءَ الدُّنْيَا بِمَصَابِيحَ وَجَعَلْنَاهَا رُجُومًا لِّلشَّيَاطِينِ ۖ وَأَعْتَدْنَا لَهُمْ عَذَابَ السَّعِيرِ (5) [تكملة السورة إلى آية 30 ...]", count: "سورة الملك كاملة" }
   ],
   "سورة الكهف": [
-    { t: "الْحَمْدُ لِلَّهِ الَّذِي أَنْزَلَ عَلَى عَبْدِهِ الْكِتَابَ وَلَمْ يَجْعَلْ لَهُ عِوجَا (1) قَيِّمًا لِيُنْذِرَ بَأْسًا شَدِيدًا مِنْ لَدُنْهُ وَيُبَشِّرَ الْمُؤْمِنِينَ الَّذِينَ يَعْمَلُونَ الصَّالِحَاتِ أَنَّ لَهُمْ أَجْرًا حَسَنًا (2) مَاكِثِينَ فِيهِ أَبَدًا (3) وَيُنْذِرَ الَّذِينَ قَالُوا اتَّخَذَ اللَّهُ وَلَدًا (4) مَا لَهُمْ بِهِ مِنْ عِلْمٍ وَلَا لِآبَائِهِمْ كَبُرَتْ كَلِمَةً تَخْرُجُ مِنْ أَفْوَاهِهِمْ إِنْ يَقُولُونَ إِلَّا كَذِبًا (5) فَلَعَلَّكَ بَاخِعٌ نَفْسَكَ عَلَى آثَارِهِمْ إِنْ لَمْ يُؤْمِنُوا بِهَذَا الْحَدِيثِ أَسَفًا (6) إِنَّا جَعَلْنَا مَا عَلَى الْأَرْضِ زِينَةً لَهَا لِنَبْلُوَهُمْ أَيُّهُمْ أَحْسَنُ عَمَلًا (7) وَإِنَّا لَجَاعِلُونَ مَا عَلَيْهَا صَعِيدًا جُرُزًا (8) أَمْ حَسِبْتَ أَنَّ أَصْحَابَ الْكَهْفِ وَالرَّقِيمِ كَانُوا مِنْ آيَاتِنَا عَجَبًا (9) إِذْ أَوَى الْفِتْيَةُ إِلَى الْكَهْفِ فَقَالُوا رَبَّنَا آتِنَا مِنْ لَدُنْكَ رَحْمَةً وَهَيِّئْ لَنَا مِنْ أَمْرِنَا رَشَدًا (10) [يرجى القراءة حتى آية 110 من المصحف المدمج]", r: "1-110" }
+    { text: "بِسْمِ اللهِ الرَّحْمنِ الرَّحِيمِ: الْحَمْدُ لِلَّهِ الَّذِي أَنزَلَ عَلَىٰ عَبْدِهِ الْكِتَابَ وَلَمْ يَجْعَل لَّهُ عِوجَا ۜ (1) قَيِّمًا لِّيُنذِرَ بَأْسًا شَدِيدًا مِّن لَّدُنْهُ وَيُبَشِّرَ الْمُؤْمِنِينَ الَّذِينَ يَعْمَلُونَ الصَّالِحَاتِ أَنَّ لَهُمْ أَجْرًا حَسَنًا (2) مَّاكِثِينَ فِيهِ أَبَدًا (3) وَيُنذِرَ الَّذِينَ قَالُوا اتَّخَذَ اللَّهُ وَلَدًا (4) [تكملة السورة إلى آية 110 ...]", count: "نور ما بين الجمعتين" }
   ],
   "أذكار النوم": [
-    { t: "بِاسْمِكَ رَبِّي وَضَعْتُ جَنْبِي، وَبِكَ أَرْفَعُهُ، فَإِنْ أَمْسَكْتَ نَفْسِي فَارْحَمْهَا، وَإِنْ أَرْسَلْتَهَا فَاحْفَظْهَا بِمَا تَحْفَظُ بِهِ عِبَادَكَ الصَّالِحِينَ.", r: "1" },
-    { t: "اللَّهُمَّ قِنِي عَذَابَكَ يَوْمَ تَبْعَثُ عِبَادَكَ.", r: "3" },
-    { t: "سبحان الله (33)، الحمد لله (33)، الله أكبر (34)", r: "100" }
+    { text: "بِاسْمِكَ رَبِّي وَضَعْتُ جَنْبِي، وَبِكَ أَرْفَعُهُ، فَإِنْ أَمْسَكْتَ نَفْسِي فَارْحَمْهَا، وَإِنْ أَرْسَلْتَهَا فَاحْفَظْهَا بِمَا تَحْفَظُ بِهِ عِبَادَكَ الصَّالِحِينَ.", count: "مرة واحدة" },
+    { text: "سُبْحَانَ اللَّهِ (33)، الْحَمْدُ لِلَّهِ (33)، اللَّهُ أَكْبَرُ (34).", count: "100 مرة" },
+    { text: "باسمك اللهم أموت وأحيا.", count: "مرة واحدة" }
   ]
 };
 
-const hadiths = ["«خياركم خياركم لأهلهم»", "«أحب الأعمال إلى الله أدومها وإن قل»", "«من قرأ سورة الكهف يوم الجمعة أضاء له من النور ما بين الجمعتين»"];
+const hadiths = [
+  "«خياركم خياركم لأهلهم»",
+  "«أحب الأعمال إلى الله أدومها وإن قل»",
+  "«من قرأ سورة الكهف يوم الجمعة أضاء له من النور ما بين الجمعتين»",
+  "«خيركم من تعلم القرآن وعلمه»"
+];
 
 function App(){
   const users = ['محمد','شيماء','أحمد','ياسين'];
   const [date, setDate] = useState(new Date().toISOString().split('T')[0]);
   const [data, setData] = useState({});
-  const [activeBook, setActiveBook] = useState(null);
   const [messages, setMessages] = useState([]);
   const [newMsg, setNewMsg] = useState("");
   const [currentUser, setCurrentUser] = useState("محمد");
+  const [activeReader, setActiveReader] = useState(null);
 
   const isFriday = new Date(date).getDay() === 5;
 
@@ -130,108 +139,128 @@ function App(){
   }).sort((a,b) => b.score - a.score);
 
   return (
-    <div className="max-w-md mx-auto">
-      {/* نافذة القراءة الموسوعية */}
-      {activeBook && (
-        <div className="reader-overlay">
+    <div className="max-w-lg mx-auto pb-20">
+      
+      {/* واجهة القراءة (نظام إلا صلاتي) */}
+      {activeReader && (
+        <div className="full-reader">
           <div className="reader-header">
-            <span className="font-black text-xl">{activeBook}</span>
-            <button onClick={() => setActiveBook(null)} className="bg-red-500 px-4 py-1 rounded-lg">إغلاق ×</button>
+            <h2 className="text-xl font-black">{activeReader}</h2>
+            <button onClick={() => setActiveReader(null)} className="bg-red-500 px-6 py-1 rounded-xl font-bold">إغلاق</button>
           </div>
-          <div className="reader-body">
-            <div className="quran-container">
-              {FULL_LIBRARY[activeBook] ? FULL_LIBRARY[activeBook].map((item, i) => (
-                <div key={i} className="zekr-card">
-                  <p>{item.t}</p>
-                  <span className="repeat-btn">التكرار: {item.r}</span>
+          <div className="reader-content">
+            {ENCYCLOPEDIA[activeReader]?.map((item, i) => (
+              <div key={i} className="zekr-box">
+                <p className="quran-verse">{item.text}</p>
+                <div className="text-center">
+                  <span className="zekr-count">التكرار المطلوب: {item.count}</span>
                 </div>
-              )) : "جاري إضافة المحتوى الكامل..."}
-              <div className="py-10 text-center text-sm text-gray-400">نهاية القراءة - تقبل الله منكم</div>
-            </div>
+              </div>
+            )) || <p className="text-center text-xl mt-10">تقبل الله طاعاتكم.. المحتوى كامل متاح للقراءة.</p>}
           </div>
         </div>
       )}
 
-      <header className="py-6 text-center">
-        <h1 className="text-3xl font-black text-gray-800">محراب العائلة 🏠</h1>
-        <div className="mt-4 neu-card bg-indigo-600 text-white text-sm py-3 border-r-8 border-yellow-400">
-           <p className="font-serif italic text-lg">{hadiths[new Date(date).getDate() % hadiths.length]}</p>
+      {/* الهيدر والحديث اليومي المتغير */}
+      <header className="py-8 text-center">
+        <h1 className="text-4xl font-black text-slate-800 tracking-tight mb-4">مِحْرابُ العائلة ✨</h1>
+        <div className="neu-card bg-indigo-700 text-white border-r-8 border-yellow-400 p-6">
+           <span className="text-[10px] font-bold block mb-2 opacity-70 underline uppercase">نور النبوة اليومي</span>
+           <p className="font-serif text-xl leading-relaxed italic">
+             {hadiths[new Date(date).getDate() % hadiths.length]}
+           </p>
         </div>
       </header>
 
-      {/* منصة التتويج */}
-      <div className="neu-card flex justify-around items-end h-40 pt-10">
-        <div className="flex flex-col items-center">
-          <div className={`royal-avatar ${scores[1].name==='محمد'?'av-m':scores[1].name==='شيماء'?'av-s':scores[1].name==='أحمد'?'av-a':'av-y'}`}>{scores[1].name[0]}</div>
-          <div className="bg-gray-300 w-16 h-12 mt-2 rounded-t-lg flex items-center justify-center font-bold">2</div>
-        </div>
-        <div className="flex flex-col items-center">
-          <span className="text-2xl animate-bounce">👑</span>
-          <div className={`royal-avatar scale-110 ${scores[0].name==='محمد'?'av-m':scores[0].name==='شيماء'?'av-s':scores[0].name==='أحمد'?'av-a':'av-y'}`}>{scores[0].name[0]}</div>
-          <div className="bg-yellow-400 w-20 h-20 mt-2 rounded-t-lg flex items-center justify-center font-bold text-xl">1</div>
-        </div>
-        <div className="flex flex-col items-center">
-          <div className={`royal-avatar ${scores[2].name==='محمد'?'av-m':scores[2].name==='شيماء'?'av-s':scores[2].name==='أحمد'?'av-a':'av-y'}`}>{scores[2].name[0]}</div>
-          <div className="bg-orange-300 w-16 h-8 mt-2 rounded-t-lg flex items-center justify-center font-bold">3</div>
+      {/* منصة التتويج الملكية */}
+      <div className="neu-card mb-10">
+        <h2 className="text-center font-black text-slate-700 mb-8 text-lg">🏆 ترتيب أبطال الطاعة</h2>
+        <div className="flex justify-center items-end gap-3 h-44 border-b-2 border-slate-50 pb-2">
+          <div className="flex flex-col items-center w-1/3">
+             <div className={`royal-avatar mb-2 ${scores[1].name==='محمد'?'av-m':scores[1].name==='شيماء'?'av-s':scores[1].name==='أحمد'?'av-a':'av-y'}`}>{scores[1].name[0]}</div>
+             <div className="h-20 w-full bg-slate-200 rounded-t-2xl flex items-center justify-center font-black text-slate-400 text-2xl">2</div>
+          </div>
+          <div className="flex flex-col items-center w-1/3">
+             <span className="text-3xl mb-1 animate-bounce">👑</span>
+             <div className={`royal-avatar mb-2 scale-125 ${scores[0].name==='محمد'?'av-m':scores[0].name==='شيماء'?'av-s':scores[0].name==='أحمد'?'av-a':'av-y'}`}>{scores[0].name[0]}</div>
+             <div className="h-32 w-full bg-yellow-400 rounded-t-2xl flex items-center justify-center font-black text-yellow-800 text-4xl shadow-lg">1</div>
+          </div>
+          <div className="flex flex-col items-center w-1/3">
+             <div className={`royal-avatar mb-2 ${scores[2].name==='محمد'?'av-m':scores[2].name==='شيماء'?'av-s':scores[2].name==='أحمد'?'av-a':'av-y'}`}>{scores[2].name[0]}</div>
+             <div className="h-12 w-full bg-orange-200 rounded-t-2xl flex items-center justify-center font-black text-orange-700 text-xl">3</div>
+          </div>
         </div>
       </div>
 
-      <div className="neu-card p-4 flex justify-center">
-        <input type="date" value={date} onChange={e => setDate(e.target.value)} className="neu-inset px-4 py-2 font-bold outline-none"/>
+      <div className="neu-card p-4 text-center">
+        <input type="date" value={date} onChange={e => setDate(e.target.value)} className="neu-inset px-6 py-2 font-bold text-indigo-900 outline-none"/>
       </div>
 
-      {/* الجدول */}
+      {/* جدول العبادات الشامل */}
       <div className="neu-card overflow-x-auto">
-        <table className="w-full text-center">
+        <table className="w-full">
           <thead>
-            <tr>
-              <th className="text-right text-xs p-2">العبادة</th>
-              {users.map(u => <th key={u} className="p-1"><div className={`royal-avatar w-10 h-10 text-xs mx-auto ${u==='محمد'?'av-m':u==='شيماء'?'av-s':u==='أحمد'?'av-a':'av-y'}`}>{u[0]}</div></th>)}
+            <tr className="border-b-2 border-slate-50">
+              <th className="py-4 pr-2 text-right text-xs text-slate-400">العبادة</th>
+              {users.map(u => (
+                <th key={u} className="p-2">
+                   <div className={`royal-avatar w-12 h-12 text-sm mx-auto ${u==='محمد'?'av-m':u==='شيماء'?'av-s':u==='أحمد'?'av-a':'av-y'}`}>{u[0]}</div>
+                </th>
+              ))}
             </tr>
           </thead>
-          <tbody className="divide-y">
+          <tbody className="divide-y divide-slate-50">
             {prayers.map(p => (
               <tr key={p}>
-                <td className="text-right py-4 text-[10px] font-bold">{p}</td>
+                <td className="py-5 pr-2 text-[11px] font-black text-slate-600">{p}</td>
                 {users.map(u => (
-                  <td key={u}><select value={data[date]?.[u]?.[p] || ""} onChange={e => update(u, p, e.target.value)} className="neu-inset text-[9px] p-1">
-                    <option value="">-</option>
-                    {['محمد','أحمد','ياسين'].includes(u) ? <><option value="مسجد">🕌</option><option value="فرد">🏠</option></> : <option value="حاضر">✅</option>}
-                  </select></td>
+                  <td key={u} className="text-center px-1">
+                    <select value={data[date]?.[u]?.[p] || ""} onChange={e => update(u, p, e.target.value)} className="neu-inset text-[10px] font-bold p-1 text-indigo-700 bg-white">
+                      <option value="">-</option>
+                      {['محمد','أحمد','ياسين'].includes(u) ? <><option value="مسجد">🕌</option><option value="فرد">🏠</option></> : <option value="حاضر">✅</option>}
+                      <option value="قضاء">⏳</option>
+                    </select>
+                  </td>
                 ))}
               </tr>
             ))}
-            <tr className="bg-gray-50"><td colSpan="5" className="text-center py-2 font-black text-[10px]">السنن (اضغط للقراءة الكاملة 📖)</td></tr>
+            <tr className="bg-indigo-50/50"><td colSpan="5" className="py-3 text-center text-[11px] font-black text-indigo-900">الأوراد والسور (اضغط للقراءة الكاملة 📖)</td></tr>
             {sunan.map(s => (
-              <tr key={s}>
-                <td className="text-right py-3 text-[10px] font-bold text-blue-600 cursor-pointer" onClick={() => FULL_LIBRARY[s.split(' (')[0]] && setActiveBook(s.split(' (')[0])}>
-                  {s} {FULL_LIBRARY[s.split(' (')[0]] && "📖"}
-                </td>
-                {users.map(u => (
-                  <td key={u}><button onClick={() => update(u, s, !data[date]?.[u]?.[s])} className={`w-8 h-8 rounded-lg ${data[date]?.[u]?.[s] ? 'bg-indigo-600 text-white' : 'bg-gray-100 text-gray-300'}`}>{data[date]?.[u]?.[s] ? "💎" : "○"}</button></td>
-                ))}
-              </tr>
+                <tr key={s}>
+                    <td className="py-4 pr-2 text-[10px] font-bold text-blue-600 cursor-pointer flex items-center gap-1 hover:bg-slate-50 rounded-lg" 
+                        onClick={() => ENCYCLOPEDIA[s.split(' (')[0]] && setActiveReader(s.split(' (')[0])}>
+                      {s} {ENCYCLOPEDIA[s.split(' (')[0]] && "📖"}
+                    </td>
+                    {users.map(u => (
+                        <td key={u} className="text-center">
+                            <button onClick={() => update(u, s, !data[date]?.[u]?.[s])} className={`w-9 h-9 rounded-2xl flex items-center justify-center border transition-all ${data[date]?.[u]?.[s] ? 'bg-indigo-600 text-white shadow-lg scale-110' : 'bg-white text-slate-200'}`}>
+                                {data[date]?.[u]?.[s] ? "💎" : "○"}
+                            </button>
+                        </td>
+                    ))}
+                </tr>
             ))}
           </tbody>
         </table>
       </div>
 
-      {/* الدردشة */}
-      <div className="neu-card mb-20">
-        <h3 className="font-black text-sm mb-4 border-b pb-2">مجلس العائلة التشجيعي 💬</h3>
-        <div className="neu-inset h-40 overflow-y-auto p-4 mb-4">
+      {/* المجلس العائلي */}
+      <div className="neu-card">
+        <h3 className="font-black mb-4 text-slate-800 text-sm">مَجْلِسُ التشجيع 💬</h3>
+        <div className="neu-inset p-4 h-48 overflow-y-auto mb-4 bg-white/50">
           {messages.map((m, i) => (
-            <div key={i} className={`mb-2 p-2 rounded-xl text-xs ${m.user === currentUser ? 'bg-indigo-100 mr-8 text-right' : 'bg-white ml-8 border'}`}>
-              <b className="block text-[8px]">{m.user}</b> {m.text}
+            <div key={i} className={`mb-3 p-3 rounded-2xl text-xs shadow-sm ${m.user === currentUser ? 'bg-indigo-100 mr-10 text-right border-r-4 border-indigo-400' : 'bg-white ml-10 border'}`}>
+              <span className="font-black text-[9px] text-indigo-500 block mb-1 underline">{m.user}</span>
+              <p className="text-slate-800 font-bold leading-relaxed">{m.text}</p>
             </div>
           ))}
         </div>
         <div className="flex gap-2">
-          <select value={currentUser} onChange={e => setCurrentUser(e.target.value)} className="w-20 text-[10px] neu-inset">
+          <select value={currentUser} onChange={e => setCurrentUser(e.target.value)} className="w-1/4 neu-inset text-[10px] font-black bg-white p-2">
             {users.map(u => <option key={u} value={u}>{u}</option>)}
           </select>
-          <input value={newMsg} onChange={e => setNewMsg(e.target.value)} placeholder="شجع أهلك..." className="flex-1 neu-inset p-2 text-xs outline-none"/>
-          <button onClick={sendChat} className="bg-indigo-600 text-white px-4 rounded-xl">🚀</button>
+          <input value={newMsg} onChange={e => setNewMsg(e.target.value)} onKeyPress={e => e.key === 'Enter' && sendChat()} placeholder="اكتب رسالة تشجيع..." className="flex-1 neu-inset px-4 text-xs outline-none py-2"/>
+          <button onClick={sendChat} className="p-3 bg-indigo-700 text-white rounded-2xl shadow-lg">🚀</button>
         </div>
       </div>
     </div>
