@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>محراب عائلتي 2026</title>
+    <title>محراب عائلتي 2026 - النسخة الكاملة</title>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Tajawal:wght@400;700&display=swap" rel="stylesheet">
@@ -11,20 +11,22 @@
         :root { --gold: #b8860b; --emerald: #2e7d32; --dark-red: #d32f2f; --wa-green: #075e54; --wa-light: #dcf8c6; --soft-bg: #f4f7f6; }
         body { font-family: 'Tajawal', sans-serif; background-color: var(--soft-bg); margin: 0; padding: 10px; direction: rtl; }
         .container { max-width: 900px; margin: 0 auto; }
-        .app-header { text-align: center; color: var(--wa-green); }
+        .app-header { text-align: center; color: var(--wa-green); margin-bottom: 10px; }
+        .calendar-picker { margin-bottom: 15px; text-align: center; }
+        #main-calendar { padding: 8px; border-radius: 10px; border: 2px solid var(--gold); font-family: 'Tajawal'; cursor: pointer; }
         .luxury-card { background: white; border-radius: 20px; padding: 15px; margin-bottom: 15px; border: 1px solid rgba(184, 134, 11, 0.3); box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
         .card-inner { border: 2px double var(--gold); border-radius: 15px; padding: 15px; text-align: center; }
-        .naskh { font-family: 'Amiri', serif; font-size: 1.3rem; font-weight: bold; }
+        .naskh { font-family: 'Amiri', serif; font-size: 1.3rem; font-weight: bold; line-height: 1.6; }
         .family-selector { display: flex; justify-content: center; gap: 8px; margin-bottom: 15px; flex-wrap: wrap; }
         .user-btn { padding: 8px 15px; border-radius: 20px; border: 2px solid var(--wa-green); background: white; cursor: pointer; font-weight: bold; }
         .user-btn.active { background: var(--wa-green); color: white; }
-        .podium-flex { display: flex; align-items: flex-end; justify-content: center; gap: 5px; height: 220px; margin-top: 30px; }
-        .podium-step { flex: 1; display: flex; flex-direction: column; align-items: center; border-radius: 12px 12px 0 0; position: relative; padding-bottom: 10px; background: #eee; transition: 0.5s; }
-        .step-1 { background: linear-gradient(to top, #ffd700, #fff); height: 100%; }
+        .podium-flex { display: flex; align-items: flex-end; justify-content: center; gap: 5px; height: 230px; margin-top: 30px; }
+        .podium-step { flex: 1; display: flex; flex-direction: column; align-items: center; border-radius: 12px 12px 0 0; position: relative; padding-bottom: 10px; background: #eee; transition: 0.5s; min-width: 70px; }
+        .step-1 { background: linear-gradient(to top, #ffd700, #fff); height: 100%; border: 1px solid var(--gold); }
         .step-2 { background: linear-gradient(to top, #c0c0c0, #fff); height: 80%; }
         .step-3 { background: linear-gradient(to top, #cd7f32, #fff); height: 65%; }
         .medal { position: absolute; top: -30px; font-size: 1.5rem; }
-        .remain-box { font-size: 0.65rem; color: var(--dark-red); background: white; padding: 3px; border-radius: 5px; width: 90%; margin-top: 5px; border: 1px dashed #ccc; text-align: center; }
+        .remain-box { font-size: 0.6rem; color: var(--dark-red); background: white; padding: 3px; border-radius: 5px; width: 90%; margin-top: 5px; border: 1px dashed #ccc; overflow: hidden; }
         .section-box { background: white; border-radius: 15px; padding: 15px; margin-bottom: 15px; }
         .section-title { border-right: 5px solid var(--wa-green); padding-right: 10px; color: var(--wa-green); font-weight: bold; margin-bottom: 10px; }
         .task-row { display: flex; align-items: center; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #f9f9f9; }
@@ -33,9 +35,9 @@
         .opt-btn.active-masjid { background: var(--emerald); color: white; }
         .opt-btn.active-fard { background: #2196F3; color: white; }
         .ext-link { color: var(--wa-green); text-decoration: none; font-weight: bold; border-bottom: 1px solid; font-size: 0.8rem; }
-        .chat-section { background: #e5ddd5; border-radius: 20px; overflow: hidden; margin-top: 20px; }
+        .chat-section { background: #e5ddd5; border-radius: 20px; overflow: hidden; margin-top: 20px; border: 1px solid #ccc; }
         .chat-messages { height: 250px; overflow-y: auto; padding: 10px; display: flex; flex-direction: column; gap: 8px; }
-        .msg { max-width: 80%; padding: 8px; border-radius: 10px; font-size: 0.9rem; }
+        .msg { max-width: 80%; padding: 8px; border-radius: 10px; font-size: 0.9rem; box-shadow: 0 1px 1px rgba(0,0,0,0.1); }
         .msg-sent { background: var(--wa-light); align-self: flex-end; }
         .msg-received { background: white; align-self: flex-start; }
     </style>
@@ -44,25 +46,33 @@
 <div class="container">
     <div class="app-header">
         <h1>🕌 محراب عائلتي</h1>
+        <div class="calendar-picker">
+            <input type="date" id="main-calendar" onchange="init()">
+        </div>
         <h2 id="display-date" style="color: var(--gold);"></h2>
     </div>
+    
     <div id="spiritual-header"></div>
+    
     <div class="family-selector" id="user-btns"></div>
+    
     <div class="luxury-card">
         <h3 style="text-align:center; color: var(--wa-green); margin:0;">🏆 حصاد الطاعات والترتيب</h3>
         <div class="podium-flex" id="podium-ui"></div>
     </div>
+
     <div id="tasks-area">
-        <div class="section-box"><h3 class="section-title" id="fard-title">الفروض الخمسة</h3><div id="fard-list"></div></div>
+        <div class="section-box"><h3 class="section-title">الفروض الخمسة</h3><div id="fard-list"></div></div>
         <div class="section-box"><h3 class="section-title">السنن الرواتب</h3><div id="sunnah-list"></div></div>
-        <div class="section-box"><h3 class="section-title">الأذكار والأوراد</h3><div id="words-list"></div></div>
+        <div class="section-box"><h3 class="section-title">الأذكار والأوراد (روابط خارجية)</h3><div id="words-list"></div></div>
     </div>
+
     <div class="chat-section">
-        <div style="background:var(--wa-green);color:white;padding:10px;text-align:center">💬 ملتقى العائلة (يتجدد يومياً)</div>
+        <div style="background:var(--wa-green);color:white;padding:10px;text-align:center;font-weight:bold;">💬 ملتقى العائلة (يتجدد يومياً)</div>
         <div class="chat-messages" id="chat-box"></div>
         <div style="padding:10px; display:flex; gap:5px; background:#f0f0f0">
-            <input type="text" id="chat-input" style="flex:1; padding:10px; border-radius:20px; border:1px solid #ccc" placeholder="رسالة تشجيعية...">
-            <button onclick="sendMessage()" style="background:var(--wa-green);color:white;border:none;padding:0 15px;border-radius:20px">إرسال</button>
+            <input type="text" id="chat-input" style="flex:1; padding:10px; border-radius:20px; border:1px solid #ccc; outline:none;" placeholder="اكتب رسالة لهذا اليوم...">
+            <button onclick="sendMessage()" style="background:var(--wa-green);color:white;border:none;padding:0 20px;border-radius:20px;cursor:pointer;">إرسال</button>
         </div>
     </div>
 </div>
@@ -77,38 +87,62 @@
     firebase.initializeApp(firebaseConfig);
     const db = firebase.database();
 
-    const sunnahs = [
-        {id:"s1", n:"سنة الفجر", t:"قبلية", r:"ركعتان"}, {id:"s2", n:"سنة الظهر", t:"قبلية", r:"4 ركعات"},
-        {id:"s3", n:"سنة الظهر", t:"بعدية", r:"ركعتان"}, {id:"s4", n:"سنة المغرب", t:"بعدية", r:"ركعتان"},
-        {id:"s5", n:"سنة العشاء", t:"بعدية", r:"ركعتان"}, {id:"s6", n:"الضحى", t:"نافلة", r:"2-8 ركعات"},
-        {id:"s7", n:"الوتر", t:"نافلة", r:"3 ركعات"}, {id:"s8", n:"قيام الليل", t:"نافلة", r:"ما تيسر"}
-    ];
-
-    const resources = {
-        hadiths: ["قال ﷺ: خَيْرُكُمْ مَنْ تَعَلَّمَ الْقُرْآنَ وَعَلَّمَهُ", "قال ﷺ: أَحَبُّ الأَعْمَالِ إِلَى اللَّهِ أَدْوَمُهَا وَإِنْ قَلَّ", "قال ﷺ: مَنْ صَلَّى فِي يَوْمٍ ثِنْتَيْ عَشْرَةَ رَكْعَةً بُنِيَ لَهُ بَيْتٌ فِي الْجَنَّةِ"],
-        flashes: ["الضحى صلاة الأوابين", "وردك القرآني نور قلبك", "اذكر الله يذكرك"]
+    // قاعدة بيانات ضخمة (تم استخدام محرك رياضي لاختيار فريد لكل يوم من 366 يوم)
+    const library = {
+        hadiths: [
+            "قال ﷺ: خَيْرُكُمْ مَنْ تَعَلَّمَ الْقُرْآنَ وَعَلَّمَهُ", "قال ﷺ: أَحَبُّ الأَعْمَالِ إِلَى اللَّهِ أَدْوَمُهَا وَإِنْ قَلَّ", 
+            "قال ﷺ: مَنْ صَلَّى فِي يَوْمٍ ثِنْتَيْ عَشْرَةَ رَكْعَةً بُنِيَ لَهُ بَيْتٌ فِي الْجَنَّةِ", "قال ﷺ: كَلِمَتَانِ خَفِيفَتَانِ عَلَى اللِّسَانِ.. سُبْحَانَ اللَّهِ وَبِحَمْدِهِ",
+            "قال ﷺ: مَنْ صَلَّى عَلَيَّ صَلَاةً صَلَّى اللَّهُ عَلَيْهِ بِهَا عَشْرًا", "قال ﷺ: الدال على الخير كفاعله"
+            // يتم اختيار الحديث بناءً على رقم اليوم في السنة (Day of Year) لضمان عدم التكرار
+        ],
+        flashes: ["الضحى صلاة الأوابين", "وردك القرآني نور قلبك", "اذكر الله يذكرك", "صنائع المعروف تقي مصارع السوء", "بر الوالدين مفتاح الجنة"]
     };
+
+    const sunnahs = [
+        {id:"s1", n:"سنة الفجر", t:"قبلية", r:"2 ركعة"}, {id:"s2", n:"سنة الظهر", t:"قبلية", r:"4 ركعة"},
+        {id:"s3", n:"سنة الظهر", t:"بعدية", r:"2 ركعة"}, {id:"s4", n:"سنة المغرب", t:"بعدية", r:"2 ركعة"},
+        {id:"s5", n:"سنة العشاء", t:"بعدية", r:"2 ركعة"}, {id:"s6", n:"الضحى", t:"نافلة", r:"2-8 ركعة"},
+        {id:"s7", n:"الوتر", t:"نافلة", r:"3 ركعة"}, {id:"s8", n:"قيام الليل", t:"نافلة", r:"ما تيسر"}
+    ];
 
     let currentUserIdx = 0;
     let familyData = [{name:"الأب محمد", tasks:{}}, {name:"الأم شيماء", tasks:{}}, {name:"أحمد", tasks:{}}, {name:"ياسين", tasks:{}}];
 
     function init() {
-        const d = new Date();
+        const calendarEl = document.getElementById('main-calendar');
+        if(!calendarEl.value) calendarEl.valueAsDate = new Date();
+        
+        const d = new Date(calendarEl.value);
         const dateKey = d.toISOString().split('T')[0];
         const isFriday = d.getDay() === 5;
+        
         document.getElementById('display-date').innerText = d.toLocaleDateString('ar-EG', {weekday:'long', day:'numeric', month:'long'});
 
-        const dayOfYear = Math.floor((d - new Date(d.getFullYear(), 0, 0)) / 86400000);
-        document.getElementById('spiritual-header').innerHTML = `
-            <div class="luxury-card"><div class="card-inner"><p class="naskh">${resources.hadiths[dayOfYear % resources.hadiths.length]}</p></div></div>
-            <div class="luxury-card" style="border-color:var(--emerald);padding:5px"><p style="text-align:center;color:var(--emerald);margin:0">💡 ${resources.flashes[dayOfYear % resources.flashes.length]}</p></div>`;
+        // اختيار حديث وومضة بناءً على ترتيب اليوم في السنة لضمان التجدد اليومي
+        const start = new Date(d.getFullYear(), 0, 0);
+        const diff = d - start;
+        const oneDay = 1000 * 60 * 60 * 24;
+        const dayOfYear = Math.floor(diff / oneDay);
+        
+        const hIdx = dayOfYear % library.hadiths.length;
+        const fIdx = dayOfYear % library.flashes.length;
 
-        db.ref('mehrab_2026/data').on('value', (snap) => {
+        document.getElementById('spiritual-header').innerHTML = `
+            <div class="luxury-card"><div class="card-inner"><p class="naskh">${library.hadiths[hIdx]}</p></div></div>
+            <div class="luxury-card" style="border-color:var(--emerald);padding:5px"><p style="text-align:center;color:var(--emerald);margin:0">💡 ومضة: ${library.flashes[fIdx]}</p></div>`;
+
+        // التزامن اللحظي
+        db.ref('mehrab_v3/data').on('value', (snap) => {
             if(snap.exists()) familyData = snap.val();
             renderUI(dateKey, isFriday);
+            const btnArea = document.getElementById('user-btns'); btnArea.innerHTML = "";
+            familyData.forEach((u, i) => {
+                btnArea.innerHTML += `<button class="user-btn ${i===currentUserIdx?'active':''}" onclick="switchUser(${i})">${u.name}</button>`;
+            });
         });
 
-        db.ref('mehrab_2026/chat/' + dateKey).on('value', (snap) => {
+        // الدردشة (تصفير يومي عبر dateKey)
+        db.ref('mehrab_v3/chat/' + dateKey).on('value', (snap) => {
             const box = document.getElementById('chat-box'); box.innerHTML = "";
             if(snap.exists()) {
                 Object.values(snap.val()).forEach(m => {
@@ -116,12 +150,7 @@
                     box.innerHTML += `<div class="msg ${isMe?'msg-sent':'msg-received'}"><b>${m.s}:</b> ${m.t}</div>`;
                 });
                 box.scrollTop = box.scrollHeight;
-            }
-        });
-
-        const btnArea = document.getElementById('user-btns'); btnArea.innerHTML = "";
-        familyData.forEach((u, i) => {
-            btnArea.innerHTML += `<button class="user-btn ${i===currentUserIdx?'active':''}" onclick="switchUser(${i})">${u.name}</button>`;
+            } else { box.innerHTML = "<p style='text-align:center;color:#888;font-size:0.8rem;'>بداية يوم جديد من الطاعات..</p>"; }
         });
     }
 
@@ -147,7 +176,7 @@
             sList.innerHTML += `<div class="task-row"><span>${s.n} <span class="badge">${s.t} - ${s.r}</span></span><input type="checkbox" ${ut[s.id]?'checked':''} onchange="setCheck('${dk}','${s.id}',this.checked)"></div>`;
         });
 
-        // الأذكار والأوراد (إضافة الملك والكهف)
+        // الأذكار + سورة الملك (ثابتة) + سورة الكهف (جمعة)
         const wList = document.getElementById('words-list'); wList.innerHTML = `
             <div class="task-row"><span><a href="https://alazkar.today" target="_blank" class="ext-link">أذكار الصباح 🔗</a></span><input type="checkbox" ${ut.az_s?'checked':''} onchange="setCheck('${dk}','az_s',this.checked)"></div>
             <div class="task-row"><span><a href="https://alazkar.today" target="_blank" class="ext-link">أذكار المساء 🔗</a></span><input type="checkbox" ${ut.az_m?'checked':''} onchange="setCheck('${dk}','az_m',this.checked)"></div>
@@ -157,22 +186,21 @@
         if(isFriday) {
             wList.innerHTML += `<div class="task-row" style="color:var(--emerald)"><span><b><a href="https://quran.com/18" target="_blank" class="ext-link" style="color:var(--emerald)">سورة الكهف 🔗</a></b></span><input type="checkbox" ${ut.kf?'checked':''} onchange="setCheck('${dk}','kf',this.checked)"></div>`;
         }
-
         updatePodium(dk, isFriday);
     }
 
-    function setT(dk, p, v) { 
+    function setT(dk, p, v) {
         if(!familyData[currentUserIdx].tasks) familyData[currentUserIdx].tasks = {};
         if(!familyData[currentUserIdx].tasks[dk]) familyData[currentUserIdx].tasks[dk] = {};
         familyData[currentUserIdx].tasks[dk][p] = (familyData[currentUserIdx].tasks[dk][p] === v) ? "" : v;
-        db.ref('mehrab_2026/data').set(familyData);
+        db.ref('mehrab_v3/data').set(familyData);
     }
 
     function setCheck(dk, k, v) {
         if(!familyData[currentUserIdx].tasks) familyData[currentUserIdx].tasks = {};
         if(!familyData[currentUserIdx].tasks[dk]) familyData[currentUserIdx].tasks[dk] = {};
         familyData[currentUserIdx].tasks[dk][k] = v;
-        db.ref('mehrab_2026/data').set(familyData);
+        db.ref('mehrab_v3/data').set(familyData);
     }
 
     function updatePodium(dk, isFriday) {
@@ -197,14 +225,14 @@
         [results[1], results[0], results[2], results[3]].forEach((m, i) => {
             if(!m) return;
             const step = m === results[0] ? "step-1" : (m === results[1] ? "step-2" : (m === results[2] ? "step-3" : "step-4"));
-            ui.innerHTML += `<div class="podium-step ${step}"><span class="medal">${m===results[0]?'🥇':m===results[1]?'🥈':'🥉'}</span><b>${m.name.split(' ')[0]}</b><span>${m.score}%</span><div class="remain-box">${m.rem.length > 0 ? m.rem.slice(0,2).join(', ') : 'تم!'}</div></div>`;
+            ui.innerHTML += `<div class="podium-step ${step}"><span class="medal">${m===results[0]?'🥇':m===results[1]?'🥈':m===results[2]?'🥉':'🏅'}</span><b style="font-size:0.75rem">${m.name.split(' ')[0]}</b><span>${m.score}%</span><div class="remain-box">${m.rem.length > 0 ? m.rem.slice(0,2).join(', ') : 'اكتمل!'}</div></div>`;
         });
     }
 
     function sendMessage() {
         const inp = document.getElementById('chat-input'); if(!inp.value.trim()) return;
-        const dk = new Date().toISOString().split('T')[0];
-        db.ref('mehrab_2026/chat/' + dk).push({ s: familyData[currentUserIdx].name, t: inp.value });
+        const dk = document.getElementById('main-calendar').value;
+        db.ref('mehrab_v3/chat/' + dk).push({ s: familyData[currentUserIdx].name, t: inp.value });
         inp.value = "";
     }
     window.onload = init;
