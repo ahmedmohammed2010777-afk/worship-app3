@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>محراب عائلتي - النسخة السنوية بالروابط</title>
+    <title>محراب عائلتي - النسخة السنوية المتجددة</title>
     <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Tajawal:wght@400;700&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -106,6 +106,7 @@
 </div>
 
 <script>
+    // مكتبة شاملة - الخوارزمية تختار بناءً على رقم اليوم في السنة
     const library = {
         hadiths: [
             "قال ﷺ: «خَيْرُكُمْ مَنْ تَعَلَّمَ الْقُرْآنَ وَعَلَّمَهُ»",
@@ -114,8 +115,10 @@
             "قال ﷺ: «كَلِمَتَانِ خَفِيفَتَانِ عَلَى اللِّسَانِ.. سُبْحَانَ اللَّهِ وَبِحَمْدِهِ»",
             "قال ﷺ: «مَنْ لَزِمَ الِاسْتِغْفَارَ جَعَلَ اللَّهُ لَهُ مِنْ كُلِّ ضِيقٍ مَخْرَجًا»",
             "قال ﷺ: «الدال على الخير كفاعله»",
-            "قال ﷺ: «اتقوا النار ولو بشق تمرة»",
-            "قال ﷺ: «من قرأ سورة الملك كل ليلة منعه الله بها من عذاب القبر»"
+            "قال ﷺ: «مَنْ قَرَأَ حَرْفًا مِنْ كِتَابِ اللَّهِ فَلَهُ بِهِ حَسَنَةٌ»",
+            "قال ﷺ: «اتَّقُوا اللَّهَ وَلَوْ بِشِقِّ تَمْرَةٍ»",
+            "قال ﷺ: «مَنْ سَلَكَ طَرِيقًا يَلْتَمِسُ فِيهِ عِلْمًا سَهَّلَ اللَّهُ لَهُ بِهِ طَرِيقًا إِلَى الْجَنَّةِ»",
+            "قال ﷺ: «تَبَسُّمُكَ فِي وَجْهِ أَخِيكَ لَكَ صَدَقَةٌ»"
         ],
         flashes: [
             "الضحى صلاة الأوابين.. ابدأ يومك بصدقة عن مفاصلك.",
@@ -124,7 +127,10 @@
             "وردك القرآني هو الوقود الذي يضيء روحك طوال اليوم.",
             "ابتسامتك في وجه أخيك صدقة.. انشر الحب في بيتك.",
             "صلاة الفجر هي مقياس حبك لله عز وجل.",
-            "بر الوالدين باب من أبواب الجنة مفتوح أمامك."
+            "بر الوالدين باب من أبواب الجنة مفتوح أمامك.",
+            "ما نقص مال من صدقة.. جرب أن تتصدق اليوم ولو بالقليل.",
+            "جدد نيتك في كل عمل تقوم به، فبالنية تتحول العادات إلى عبادات.",
+            "أكثر من الصلاة على النبي ﷺ ليلة الجمعة ويومها."
         ]
     };
 
@@ -140,7 +146,7 @@
     ];
 
     let currentUserIdx = 0;
-    let appStorage = JSON.parse(localStorage.getItem('mehrab_v2026_pro_final')) || { 
+    let appStorage = JSON.parse(localStorage.getItem('mehrab_v2026_annual_links')) || { 
         family: [{ name: "الأب محمد", tasks: {} }, { name: "الأم شيماء", tasks: {} }, { name: "أحمد", tasks: {} }, { name: "ياسين", tasks: {} }],
         chats: {} 
     };
@@ -149,6 +155,7 @@
         const d = new Date(document.getElementById('main-calendar').value || new Date());
         const dateKey = d.toISOString().split('T')[0];
         
+        // حساب رقم اليوم في السنة (1 - 366) لضمان تغير المحتوى يومياً
         const start = new Date(d.getFullYear(), 0, 0);
         const diff = d - start;
         const oneDay = 1000 * 60 * 60 * 24;
@@ -156,11 +163,12 @@
 
         document.getElementById('display-date').innerText = d.toLocaleDateString('ar-EG', {weekday:'long', day:'numeric', month:'long'});
         
+        // اختيار الفهرس بناءً على رقم اليوم
         const hIdx = dayOfYear % library.hadiths.length;
         const fIdx = dayOfYear % library.flashes.length;
 
         document.getElementById('spiritual-header').innerHTML = `
-            <div class="luxury-card"><div class="card-inner"><span style="color:var(--gold)">✨ حديث اليوم (${dayOfYear})</span><p class="naskh-font">${library.hadiths[hIdx]}</p></div></div>
+            <div class="luxury-card"><div class="card-inner"><span style="color:var(--gold)">✨ حديث اليوم</span><p class="naskh-font">${library.hadiths[hIdx]}</p></div></div>
             <div class="luxury-card" style="border-color:var(--emerald)"><div class="card-inner" style="border-color:var(--emerald)"><span style="color:var(--emerald)">💡 ومضة اليوم</span><p class="naskh-font" style="font-size:1.1rem">${library.flashes[fIdx]}</p></div></div>
         `;
 
@@ -233,7 +241,7 @@
 
     function saveTask(dKey, p, t) { appStorage.family[currentUserIdx].tasks[dKey][p] = (appStorage.family[currentUserIdx].tasks[dKey][p] === t) ? "" : t; saveAll(); init(); }
     function saveCheck(dKey, k, v) { appStorage.family[currentUserIdx].tasks[dKey][k] = v; saveAll(); init(); }
-    function saveAll() { localStorage.setItem('mehrab_v2026_pro_final', JSON.stringify(appStorage)); }
+    function saveAll() { localStorage.setItem('mehrab_v2026_annual_links', JSON.stringify(appStorage)); }
 
     function updatePodium(dKey, isFriday) {
         const tracked = ["الفجر", isFriday?"الجمعة":"الظهر", "العصر", "المغرب", "العشاء", "s1", "s2", "s3", "s4", "s5", "s6", "s7", "s8", "az_sabah", "az_masa", "az_noom", "quran", "milk"];
