@@ -66,7 +66,7 @@
     </div>
 
     <div class="chat-section">
-        <div style="background: var(--wa-green); color: white; padding: 10px; text-align: center; font-weight: bold;">💬 ملتقى الطاعة (يتجدد يومياً)</div>
+        <div style="background: var(--wa-green); color: white; padding: 10px; text-align: center; font-weight: bold;">💬 ملتقى العائلة (يتجدد يومياً)</div>
         <div class="chat-messages" id="chat-box"></div>
         <div style="display: flex; padding: 10px; background: #f0f0f0; gap: 5px;">
             <input type="text" id="chat-input" style="flex: 1; padding: 10px; border-radius: 20px; border: 1px solid #ccc; outline: none;" placeholder="اكتب تشجيعاً...">
@@ -76,9 +76,9 @@
 </div>
 
 <script>
-    // بيانات Firebase الخاصة بمشروعك (مأخوذة من صورك)
+    // بيانات Firebase الخاصة بك 
     const firebaseConfig = {
-        apiKey: "AIzaSyC07056086539395ab3609a6f7ccc8675de06", // تأكد من الـ API Key من صفحة Config
+        apiKey: "AIzaSyC07056086539395ab3609a6f7ccc8675de06", 
         authDomain: "ebada-656e1.firebaseapp.com",
         databaseURL: "https://ebada-656e1-default-rtdb.firebaseio.com",
         projectId: "ebada-656e1",
@@ -87,7 +87,10 @@
         appId: "1:705608653939:web:5ab3609a6f7ccc8675de06"
     };
 
-    firebase.initializeApp(firebaseConfig);
+    // تهيئة Firebase
+    if (!firebase.apps.length) {
+        firebase.initializeApp(firebaseConfig);
+    }
     const db = firebase.database();
 
     const library = {
@@ -96,7 +99,10 @@
     };
 
     let currentUserIdx = 0;
-    let familyData = [];
+    let familyData = [
+        {name: "الأب محمد", tasks: {}}, {name: "الأم شيماء", tasks: {}}, {name: "أحمد", tasks: {}}, {name: "ياسين", tasks: {}}
+    ];
+
     const getTodayKey = () => new Date().toISOString().split('T')[0];
 
     function init() {
@@ -104,7 +110,6 @@
         const d = new Date();
         document.getElementById('display-date').innerText = d.toLocaleDateString('ar-EG', {weekday:'long', day:'numeric', month:'long'});
 
-        // تغير المحتوى يومياً
         const dayOfYear = Math.floor((d - new Date(d.getFullYear(), 0, 0)) / 86400000);
         const idx = dayOfYear % library.hadiths.length;
         document.getElementById('spiritual-header').innerHTML = `
@@ -112,20 +117,25 @@
             <div class="luxury-card" style="border-color:var(--emerald); padding:8px;"><p style="text-align:center; color:var(--emerald); margin:0;">💡 ومضة: ${library.flashes[idx]}</p></div>
         `;
 
-        // التزامن اللحظي للمهام
+        // الاستماع المباشر للتغييرات في السحابة
         db.ref('osraty/family').on('value', (snapshot) => {
-            familyData = snapshot.exists() ? snapshot.val() : [
-                {name: "الأب محمد", tasks: {}}, {name: "الأم شيماء", tasks: {}}, {name: "أحمد", tasks: {}}, {name: "ياسين", tasks: {}}
-            ];
-            updateUI(today);
+            if (snapshot.exists()) {
+                familyData = snapshot.val();
+                updateUI(today);
+            } else {
+                // رفع البيانات لأول مرة إذا لم تكن موجودة
+                db.ref('osraty/family').set(familyData);
+            }
         });
 
-        // التزامن اللحظي للدردشة (تتصفر يومياً)
+        // الدردشة المتجددة يومياً
         db.ref('osraty/chats/' + today).on('value', (snapshot) => {
             const box = document.getElementById('chat-box');
             box.innerHTML = "";
             if (snapshot.exists()) {
-                Object.values(snapshot.val()).forEach(m => {
+                const msgs = snapshot.val();
+                Object.keys(msgs).forEach(key => {
+                    const m = msgs[key];
                     const isMe = m.sender === familyData[currentUserIdx].name;
                     box.innerHTML += `<div class="msg ${isMe?'msg-sent':'msg-received'}"><b>${m.sender}:</b> ${m.text}</div>`;
                 });
@@ -142,10 +152,14 @@
 
     function toggleTask(taskId) {
         const today = getTodayKey();
+        // تأكد من وجود هيكل البيانات للمستخدم الحالي
         if (!familyData[currentUserIdx].tasks) familyData[currentUserIdx].tasks = {};
         if (!familyData[currentUserIdx].tasks[today]) familyData[currentUserIdx].tasks[today] = {};
         
+        // عكس حالة المهمة
         familyData[currentUserIdx].tasks[today][taskId] = !familyData[currentUserIdx].tasks[today][taskId];
+        
+        // تحديث السحابة فوراً (هذا ما يجعل التعديل لحظياً عند الجميع)
         db.ref('osraty/family').set(familyData); 
     }
 
