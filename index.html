@@ -3,25 +3,91 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>محراب العائلة الشامل</title>
+<title>محراب العائلة الزاهي</title>
 <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
 <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
 <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 <script src="https://cdn.tailwindcss.com"></script>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Changa:wght@400;700;800&family=Amiri:wght@400;700&display=swap');
-body { font-family: 'Changa', sans-serif; background: #0f172a; color: #f8fafc; margin: 0; padding: 10px; }
-.neu-card { background: #1e293b; border-radius: 30px; padding: 20px; margin-bottom: 20px; border: 1px solid #334155; box-shadow: 0 10px 20px rgba(0,0,0,0.2); }
-.full-reader { position: fixed; inset: 0; background: #0f172a; z-index: 9999; display: flex; flex-direction: column; animation: slideUp 0.3s ease; }
+
+:root {
+    --bg-main: #f0f9ff;
+    --card-bg: #ffffff;
+    --text-main: #1e293b;
+    --primary: #0ea5e9;
+    --accent: #f59e0b;
+}
+
+body { 
+    font-family: 'Changa', sans-serif; 
+    background: var(--bg-main); 
+    color: var(--text-main); 
+    margin: 0; 
+    padding: 10px; 
+}
+
+.neu-card { 
+    background: var(--card-bg); 
+    border-radius: 25px; 
+    padding: 20px; 
+    margin-bottom: 20px; 
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    border: 1px solid #e2e8f0;
+}
+
+.full-reader { 
+    position: fixed; 
+    inset: 0; 
+    background: #ffffff; 
+    z-index: 9999; 
+    display: flex; 
+    flex-direction: column; 
+    animation: slideUp 0.3s ease-out; 
+}
+
 @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
-.reader-content { flex: 1; overflow-y: auto; padding: 20px; font-family: 'Amiri', serif; }
-.zekr-card { background: #1e293b; border-radius: 20px; padding: 20px; margin-bottom: 15px; border-right: 5px solid #fbbf24; border: 1px solid #334155; }
-.royal-avatar { width: 45px; height: 45px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 800; color: white; border: 2px solid rgba(255,255,255,0.1); }
-.av-m { background: linear-gradient(135deg, #b8860b, #ffd700); }
-.av-s { background: linear-gradient(135deg, #db2777, #fbcfe8); }
-.av-a { background: linear-gradient(135deg, #1e3a8a, #3b82f6); }
-.av-y { background: linear-gradient(135deg, #059669, #34d399); }
-.count-badge { background: #fbbf24; color: #000; padding: 2px 10px; border-radius: 8px; font-weight: 800; font-size: 0.8rem; margin-top: 10px; display: inline-block; }
+
+.reader-content { 
+    flex: 1; 
+    overflow-y: auto; 
+    padding: 20px; 
+    font-family: 'Amiri', serif; 
+    background: #fffaf0;
+}
+
+.zekr-card { 
+    background: #ffffff; 
+    border-radius: 20px; 
+    padding: 25px; 
+    margin-bottom: 20px; 
+    border-right: 8px solid var(--primary); 
+    box-shadow: 0 4px 6px rgba(0,0,0,0.02);
+    border: 1px solid #f1f5f9;
+}
+
+.royal-avatar { 
+    width: 45px; height: 45px; border-radius: 50%; 
+    display: flex; align-items: center; justify-content: center; 
+    font-weight: 800; color: white; border: 2px solid white;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+.av-m { background: #f59e0b; }
+.av-s { background: #ec4899; }
+.av-a { background: #3b82f6; }
+.av-y { background: #10b981; }
+
+.count-btn {
+    background: #fef3c7;
+    color: #92400e;
+    padding: 8px 20px;
+    border-radius: 15px;
+    font-weight: bold;
+    border: 1px solid #fde68a;
+    margin-top: 15px;
+    cursor: pointer;
+}
 </style>
 </head>
 <body>
@@ -29,7 +95,7 @@ body { font-family: 'Changa', sans-serif; background: #0f172a; color: #f8fafc; m
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-import { getFirestore, doc, setDoc, onSnapshot, arrayUnion } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+import { getFirestore, doc, setDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyDba3kZK5ibQEIRRjVIHL7JIOHixX_7rVs",
@@ -43,11 +109,8 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 window.docRef = doc(db, "worship", "family");
-window.db = db;
 window.setDoc = setDoc;
 window.onSnapshot = onSnapshot;
-window.arrayUnion = arrayUnion;
-window.docFunc = doc;
 </script>
 
 <script type="text/babel">
@@ -55,40 +118,35 @@ const { useState, useEffect } = React;
 
 const ENCYCLOPEDIA = {
   "أذكار الصباح": [
-    { text: "أَعُوذُ بِاللَّهِ مِنَ الشَّيْطَانِ الرَّجِيمِ: اللَّهُ لَا إِلَهَ إِلَّا هُوَ الْحَيُّ الْقَيُّومُ لَا تَأْخُذُهُ سِنَةٌ وَلَا نَوْمٌ...", count: "مرة واحدة", source: "آية الكرسي: من قالها حين يصبح أجير من الجن حتى يمسي" },
-    { text: "بِسْمِ اللهِ الرَّحْمنِ الرَّحِيمِ: قُلْ هُوَ اللَّهُ أَحَدٌ... قُلْ أَعُوذُ بِرَبِّ الْفَلَقِ... قُلْ أَعُوذُ بِرَبِّ النَّاسِ...", count: "3 مرات", source: "الإخلاص والمعوذتين: تكفيك من كل شيء" },
-    { text: "أَصْبَحْنَا وَأَصْبَحَ الْمُلْكُ لِلَّهِ، وَالْحَمْدُ لِلَّهِ، لَا إِلَهَ إِلَّا اللَّهُ وَحْدَهُ لَا شَرِيكَ لَهُ، لَهُ الْمُلْكُ وَلَهُ الْحَمْدُ وَهُوَ عَلَى كُلِّ شَيْءٍ قَدِيرٌ...", count: "مرة واحدة" },
-    { text: "اللَّهُمَّ أَنْتَ رَبِّي لَا إِلَهَ إِلَّا أَنْتَ، خَلَقْتَنِي وَأَنَا عَبْدُكَ، وَأَنَا عَلَى عَهْدِكَ وَوَعْدِكَ مَا اسْتَطَعْتُ...", count: "مرة واحدة", source: "سيد الاستغفار" }
+    { text: "أَعُوذُ بِاللَّهِ مِنَ الشَّيْطَانِ الرَّجِيمِ: {اللَّهُ لَا إِلَهَ إِلَّا هُوَ الْحَيُّ الْقَيُّومُ لَا تَأْخُذُهُ سِنَةٌ وَلَا نَوْمٌ لَهُ مَا فِي السَّمَاوَاتِ وَمَا فِي الْأَرْضِ مَنْ ذَا الَّذِي يَشْفَعُ عِنْدَهُ إِلَّا بِإِذْنِهِ يَعْلَمُ مَا بَيْنَ أَيْدِيهِمْ وَمَا خَلْفَهُمْ وَلَا يُحِيطُونَ بِشَيْءٍ مِنْ عِلْمِهِ إِلَّا بِمَا شَاءَ وَسِعَ كُرْسِيُّهُ السَّمَاوَاتِ وَالْأَرْضَ وَلَا يَئُودُهُ حِفْظُهُمَا وَهُوَ الْعَلِيُّ الْعَظِيمُ}", count: 1, source: "من قالها حين يصبح أجير من الجن حتى يمسي" },
+    { text: "بِسْمِ اللهِ الرَّحْمنِ الرَّحِيمِ {قُلْ هُوَ اللَّهُ أَحَدٌ...}، {قُلْ أَعُوذُ بِرَبِّ الْفَلَقِ...}، {قُلْ أَعُوذُ بِرَبِّ النَّاسِ...}", count: 3, source: "تكفيك من كل شيء" },
+    { text: "أَصْبَحْنَا وَأَصْبَحَ الْمُلْكُ لِلَّهِ، وَالْحَمْدُ لِلَّهِ، لَا إِلَهَ إِلَّا اللَّهُ وَحْدَهُ لَا شَرِيكَ لَهُ، لَهُ الْمُلْكُ وَلَهُ الْحَمْدُ وَهُوَ عَلَى كُلِّ شَيْءٍ قَدِيرٌ، رَبِّ أَسْأَلُكَ خَيْرَ مَا فِي هَذَا الْيَوْمِ وَخَيْرَ مَا بَعْدَهُ، وَأَعُوذُ بِكَ مِنْ شَرِّ مَا فِي هَذَا الْيَوْمِ وَشَرِّ مَا بَعْدَهُ، رَبِّ أَعُوذُ بِكَ مِنَ الْكَسَلِ، وَسُوءِ الْكِبَرِ، رَبِّ أَعُوذُ بِكَ مِنْ عَذَابٍ فِي النَّارِ وَعَذَابٍ فِي الْقَبْرِ.", count: 1 },
+    { text: "اللَّهُمَّ أَنْتَ رَبِّي لَا إِلَهَ إِلَّا أَنْتَ، خَلَقْتَنِي وَأَنَا عَبْدُكَ، وَأَنَا عَلَى عَهْدِكَ وَوَعْدِكَ مَا اسْتَطَعْتُ، أَعُوذُ بِكَ مِنْ شَرِّ مَا صَنَعْتُ، أَبُوءُ لَكَ بِنِعْمَتِكَ عَلَيَّ، وَأَبُوءُ لَكَ بِذَنْبِي فَاغْفِرْ لِي فَإِنَّهُ لَا يَغْفِرُ الذُّنُوبَ إِلَّا أَنْتَ.", count: 1, source: "سيد الاستغفار" },
+    { text: "اللَّهُمَّ إِنِّي أَصْبَحْتُ أُشْهِدُكَ وَأُشْهِدُ حَمَلَةَ عَرْشِكَ، وَمَلَائِكَتَكَ وَجَمِيعَ خَلْقِكَ، أَنَّكَ أَنْتَ اللَّهُ لَا إِلَهَ إِلَّا أَنْتَ وَحْدَكَ لَا شَرِيكَ لَكَ، وَأَنَّ مُحَمَّدًا عَبْدُكَ وَرَسُولُكَ.", count: 4 }
   ],
   "أذكار المساء": [
-    { text: "أَمْسَيْنَا وَأَمْسَى الْمُلْكُ لِلَّهِ، وَالْحَمْدُ لِلَّهِ، لاَ إِلَهَ إلاَّ اللَّهُ وَحْدَهُ لاَ شَرِيكَ لَهُ، لَهُ الْمُلْكُ وَلَهُ الْحَمْدُ وَهُوَ عَلَى كُلِّ شَيْءٍ قَدِيرٌ...", count: "مرة واحدة" },
-    { text: "اللَّهُمَّ بِكَ أَمْسَيْنَا، وَبِكَ أَصْبَحْنَا، وَبِكَ نَحْيَا، وَبِكَ نَمُوتُ، وَإِلَيْكَ الْمَصِيرُ.", count: "مرة واحدة" },
-    { text: "أَعُوذُ بِكَلِمَاتِ اللهِ التَّامَّاتِ مِنْ شَرِّ مَا خَلَقَ.", count: "3 مرات" },
-    { text: "بِسْمِ اللهِ الَّذِي لَا يَضُرُّ مَعَ اسْمِهِ شَيْءٌ فِي الْأَرْضِ وَلَا فِي السَّمَاءِ وَهُوَ السَّمِيعُ الْعَلِيمُ.", count: "3 مرات" }
+    { text: "أَمْسَيْنَا وَأَمْسَى الْمُلْكُ لِلَّهِ، وَالْحَمْدُ لِلَّهِ، لاَ إِلَهَ إلاَّ اللَّهُ وَحْدَهُ لاَ شَرِيكَ لَهُ، لَهُ الْمُلْكُ وَلَهُ الْحَمْدُ وَهُوَ عَلَى كُلِّ شَيْءٍ قَدِيرٌ، رَبِّ أَسْأَلُكَ خَيْرَ مَا فِي هَذِهِ اللَّيْلَةِ وَخَيْرَ مَا بَعْدَهَا، وَأَعُوذُ بِكَ مِنْ شَرِّ مَا فِي هَذِهِ اللَّيْلَةِ وَشَرِّ مَا بَعْدَهَا.", count: 1 },
+    { text: "اللَّهُمَّ عَالِمَ الغَيْبِ وَالشَّهَادَةِ فَاطِرَ السَّمَواتِ وَالأَرْضِ، رَبَّ كُلِّ شَيْءٍ وَمَلِيكَهُ، أَشْهَدُ أَنْ لاَ إِلَهَ إِلاَّ أَنْتَ، أَعُوذُ بِكَ مِنْ شَرِّ نَفْسِي، وَمِنْ شَرِّ الشَّيْطَانِ وَشِرْكِهِ، وَأَنْ أَقْتَرِفَ عَلَى نَفْسِي سُوءاً، أَوْ أَجُرَّهُ إِلَى مُسْلِمٍ.", count: 1 }
   ],
   "أذكار النوم": [
-    { text: "بِاسْمِكَ رَبِّي وَضَعْتُ جَنْبِي، وَبِكَ أَرْفَعُهُ، فَإِنْ أَمْسَكْتَ نَفْسِي فَارْحَمْهَا، وَإِنْ أَرْسَلْتَهَا فَاحْفَظْهَا بِمَا تَحْفَظُ بِهِ عِبَادَكَ الصَّالِحِينَ.", count: "مرة واحدة" },
-    { text: "اللَّهُمَّ قِنِي عَذَابَكَ يَوْمَ تَبْعَثُ عِبَادَكَ.", count: "3 مرات" },
-    { text: "بِاسْمِكَ اللَّهُمَّ أَمُوتُ وَأَحْيَا.", count: "مرة واحدة" },
-    { text: "سُبْحَانَ اللهِ (33) الْحَمْدُ للهِ (33) اللهُ أَكْبَرُ (34)", count: "مرة واحدة" }
+    { text: "بِاسْمِكَ رَبِّي وَضَعْتُ جَنْبِي، وَبِكَ أَرْفَعُهُ، فَإِنْ أَمْسَكْتَ نَفْسِي فَارْحَمْهَا، وَإِنْ أَرْسَلْتَهَا فَاحْفَظْهَا بِمَا تَحْفَظُ بِهِ عِبَادَكَ الصَّالِحِينَ.", count: 1 },
+    { text: "آمَنَ الرَّسُولُ بِمَا أُنْزِلَ إِلَيْهِ مِنْ رَبِّهِ وَالْمُؤْمِنُونَ كُلٌّ آمَنَ بِاللَّهِ وَمَلَائِكَتِهِ وَكُتُبِهِ وَرُسُلِهِ لَا نُفَرِّقُ بَيْنَ أَحَدٍ مِنْ رُسُلِهِ وَقَالُوا سَمِعْنَا وَأَطَعْنَا غُفْرَانَكَ رَبَّنَا وَإِلَيْكَ الْمَصِيرُ (285) لَا يُكَلِّفُ اللَّهُ نَفْسًا إِلَّا وُسْعَهَا لَهَا مَا كَسَبَتْ وَعَلَيْهَا مَا اكْتَسَبَتْ...", count: 1, source: "خواتيم سورة البقرة" }
   ],
-  "سورة الكهف": [{ text: "بسم الله الرحمن الرحيم: الْحَمْدُ لِلَّهِ الَّذِي أَنزَلَ عَلَى عَبْدِهِ الْكِتَابَ وَلَمْ يَجْعَل لَّهُ عِوَجَا (1)..." }],
-  "سورة الملك": [{ text: "بسم الله الرحمن الرحيم: تَبَارَكَ الَّذِي بِيَدِهِ الْمُلْكُ وَهُوَ عَلَى كُلِّ شَيْءٍ قَدِيرٌ (1)..." }]
+  "سورة الكهف": [{ text: "بسم الله الرحمن الرحيم: الْحَمْدُ لِلَّهِ الَّذِي أَنْزَلَ عَلَى عَبْدِهِ الْكِتَابَ وَلَمْ يَجْعَلْ لَهُ عِوَجًا... [السورة كاملة]" }],
+  "سورة الملك": [{ text: "بسم الله الرحمن الرحيم: تَبَارَكَ الَّذِي بِيَدِهِ الْمُلْكُ وَهُوَ عَلَى كُلِّ شَيْءٍ قَدِيرٌ... [السورة كاملة]" }]
 };
 
 const hadiths = [
-  "«خياركم خياركم لأهلهم»",
-  "«أحب الأعمال إلى الله أدومها وإن قل»",
-  "«من قرأ سورة الكهف يوم الجمعة أضاء له من النور ما بين الجمعتين»"
+  "«مَنْ يُرِدِ اللَّهُ بِهِ خَيْرًا يُفَقِّهْهُ فِي الدِّينِ»",
+  "«إِنَّمَا الأَعْمَالُ بِالنِّيَّاتِ»",
+  "«الْكَلِمَةُ الطَّيِّبَةُ صَدَقَةٌ»"
 ];
 
 function App() {
   const [date, setDate] = useState(new Date().toISOString().split('T')[0]);
   const [data, setData] = useState({});
   const [activeReader, setActiveReader] = useState(null);
-  const [messages, setMessages] = useState([]);
-  const [newMsg, setNewMsg] = useState("");
-  const users = ['محمد','شيماء','أحمد','ياسين'];
+  const users = ['محمد', 'شيماء', 'أحمد', 'ياسين'];
   const isFriday = new Date(date).getDay() === 5;
 
   useEffect(() => {
@@ -106,80 +164,78 @@ function App() {
   if (isFriday) sunan.splice(2, 0, "سورة الكهف");
 
   return (
-    <div className="max-w-md mx-auto pb-10">
-      {/* وضع القراءة */}
+    <div className="max-w-md mx-auto">
+      {/* شاشة القراءة */}
       {activeReader && (
         <div className="full-reader">
-          <div className="flex justify-between items-center p-5 bg-[#1e293b] border-b border-slate-700">
-            <h2 className="text-xl font-bold">{activeReader}</h2>
-            <button onClick={() => setActiveReader(null)} className="bg-red-600 px-5 py-1 rounded-xl">إغلاق</button>
+          <div className="flex justify-between items-center p-5 border-b border-slate-100 bg-white">
+            <h2 className="text-xl font-bold text-sky-600">{activeReader}</h2>
+            <button onClick={() => setActiveReader(null)} className="text-red-500 font-bold">إغلاق</button>
           </div>
           <div className="reader-content">
             {ENCYCLOPEDIA[activeReader]?.map((item, i) => (
               <div key={i} className="zekr-card">
-                <p className="text-2xl leading-relaxed text-center font-bold text-white">{item.text}</p>
-                {item.count && <div className="text-center"><span className="count-badge">التكرار: {item.count}</span></div>}
-                {item.source && <div className="mt-4 text-sm text-slate-400 border-t border-slate-700 pt-2">{item.source}</div>}
+                <p className="text-2xl leading-relaxed text-slate-800 text-center font-bold">{item.text}</p>
+                <div className="flex justify-between items-center mt-6">
+                   <span className="text-xs text-slate-400 italic max-w-[60%]">{item.source}</span>
+                   <div className="count-btn">التكرار: {item.count}</div>
+                </div>
               </div>
             ))}
           </div>
         </div>
       )}
 
-      <header className="py-6 text-center">
-        <h1 className="text-3xl font-black text-yellow-400 mb-4">مِحْرابُ العائلة ✨</h1>
-        <div className="neu-card bg-indigo-900 border-none py-3 px-6">
-           <p className="font-serif italic text-lg leading-relaxed">{hadiths[new Date(date).getDate() % hadiths.length]}</p>
+      <header className="py-8 text-center">
+        <h1 className="text-4xl font-black text-sky-500 mb-2">مِحْرابُ العائلة ✨</h1>
+        <div className="neu-card border-none bg-sky-50 text-sky-700 py-4 px-6">
+           <p className="font-serif italic text-lg">{hadiths[new Date().getDate() % hadiths.length]}</p>
         </div>
       </header>
 
-      {/* منصة التتويج */}
+      {/* المنصة */}
+      <div className="neu-card flex justify-around items-end h-24 pb-2">
+        {users.map(u => (
+          <div key={u} className="flex flex-col items-center">
+            <div className={`royal-avatar ${u==='محمد'?'av-m':u==='شيماء'?'av-s':u==='أحمد'?'av-a':'av-y'}`}>{u[0]}</div>
+            <span className="text-[10px] mt-1 font-bold text-slate-500">{u}</span>
+          </div>
+        ))}
+      </div>
+
+      {/* الصلوات */}
       <div className="neu-card">
-        <h3 className="text-center font-bold text-blue-400 mb-4">🏆 ترتيب العائلة</h3>
-        <div className="flex justify-around items-end h-20">
-          {users.map(u => (
-            <div key={u} className="flex flex-col items-center">
-              <div className={`royal-avatar ${u==='محمد'?'av-m':u==='شيماء'?'av-s':u==='أحمد'?'av-a':'av-y'}`}>{u[0]}</div>
-              <span className="text-[10px] mt-1 font-bold">{u}</span>
+        <h3 className="font-bold text-amber-500 mb-4 border-b border-slate-50 pb-2 flex items-center gap-2">🕌 الفروض اليومية</h3>
+        <div className="space-y-3">
+          {prayers.map(p => (
+            <div key={p} className="flex items-center justify-between p-2 hover:bg-slate-50 rounded-xl transition-all">
+              <span className="font-bold text-slate-700">{p}</span>
+              <div className="flex gap-1">
+                {users.map(u => (
+                  <button key={u} onClick={() => update(u, p, !data[date]?.[u]?.[p])} className={`w-8 h-8 rounded-full border-2 transition-all ${data[date]?.[u]?.[p] ? 'bg-sky-500 border-sky-500 text-white' : 'bg-white border-slate-200 text-slate-300'}`}>
+                    {u[0]}
+                  </button>
+                ))}
+              </div>
             </div>
           ))}
         </div>
       </div>
 
+      {/* السنن والملتقى */}
       <div className="neu-card">
-        <h3 className="font-bold text-yellow-500 mb-4 border-b border-slate-700 pb-2">🕌 الصلوات المفروضة</h3>
-        <table className="w-full text-xs">
-          <thead>
-            <tr><th className="text-right pb-2">الصلاة</th>{users.map(u => <th key={u}>{u[0]}</th>)}</tr>
-          </thead>
-          <tbody className="divide-y divide-slate-700">
-            {prayers.map(p => (
-              <tr key={p}>
-                <td className="py-3 font-bold">{p}</td>
-                {users.map(u => (
-                  <td key={u} className="text-center">
-                    <select value={data[date]?.[u]?.[p] || ""} onChange={e => update(u, p, e.target.value)} className="bg-slate-800 p-1 rounded text-[10px]">
-                      <option value="">-</option><option value="مسجد">🕌</option><option value="حاضر">✅</option><option value="قضاء">⏳</option>
-                    </select>
-                  </td>
-                ))}
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-
-      <div className="neu-card">
-        <h3 className="font-bold text-green-400 mb-4 border-b border-slate-700 pb-2">✨ السنن وملتقى الطاعات</h3>
-        <div className="space-y-3">
+        <h3 className="font-bold text-emerald-500 mb-4 border-b border-slate-50 pb-2">✨ السنن وملتقى الطاعات</h3>
+        <div className="grid grid-cols-1 gap-3">
           {sunan.map(s => (
-            <div key={s} className="flex items-center justify-between bg-slate-800/40 p-3 rounded-2xl border border-slate-700">
-              <span className="text-sm font-bold cursor-pointer" onClick={() => ENCYCLOPEDIA[s] && setActiveReader(s)}>
-                {s} {ENCYCLOPEDIA[s] && <span className="text-[10px] bg-blue-600 px-2 rounded-full">📖</span>}
+            <div key={s} className="flex items-center justify-between bg-emerald-50/30 p-4 rounded-2xl border border-emerald-50">
+              <span className="text-sm font-bold text-slate-700 flex items-center gap-2 cursor-pointer" onClick={() => ENCYCLOPEDIA[s] && setActiveReader(s)}>
+                {s} {ENCYCLOPEDIA[s] && <span className="text-[10px] bg-sky-100 text-sky-600 px-2 rounded-full">قراءة 📖</span>}
               </span>
               <div className="flex gap-1">
                 {users.map(u => (
-                  <button key={u} onClick={() => update(u, s, !data[date]?.[u]?.[s])} className={`w-7 h-7 rounded-lg text-[9px] ${data[date]?.[u]?.[s] ? 'bg-green-600' : 'bg-slate-700 opacity-30'}`}>{u[0]}</button>
+                  <button key={u} onClick={() => update(u, s, !data[date]?.[u]?.[s])} className={`w-7 h-7 rounded-lg text-[9px] font-bold ${data[date]?.[u]?.[s] ? 'bg-emerald-500 text-white' : 'bg-slate-100 text-slate-400'}`}>
+                    {u[0]}
+                  </button>
                 ))}
               </div>
             </div>
