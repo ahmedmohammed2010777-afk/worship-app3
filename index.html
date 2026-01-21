@@ -3,52 +3,75 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>محراب عائلتي 2026</title>
+    <title>محراب عائلتي 2026 - الإصدار الملحمي</title>
     <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Reem+Kufi:wght@400;700&display=swap" rel="stylesheet">
     <style>
-        :root { --primary: #1a4d2e; --gold: #c5a059; --bg: #f9f6f0; }
+        :root { --primary: #1a4d2e; --gold: #c5a059; --bg: #f9f6f0; --accent: #8e44ad; }
         body {
             font-family: 'Amiri', serif; background-color: var(--bg);
             background-image: url('https://www.transparenttextures.com/patterns/islamic-art.png');
             margin: 0; padding: 10px; color: #2c3e50;
+            position: relative;
         }
+        /* زخارف مائية */
+        body::before {
+            content: ""; position: fixed; top: 10%; left: -5%; width: 300px; height: 300px;
+            background: url('https://www.transparenttextures.com/patterns/arabesque.png');
+            opacity: 0.1; pointer-events: none; z-index: -1;
+        }
+
         .main-container {
-            max-width: 800px; margin: auto; background: rgba(255,255,255,0.98);
+            max-width: 850px; margin: auto; background: rgba(255,255,255,0.98);
             border: 3px double var(--gold); border-radius: 20px; padding: 15px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+            position: relative; overflow: hidden;
         }
+
         h1, h2, h3 { font-family: 'Reem Kufi', sans-serif; color: var(--primary); text-align: center; }
 
         .header-bar {
             background: var(--primary); color: white; padding: 15px;
             border-radius: 15px; border: 1px solid var(--gold); margin-bottom: 20px; text-align: center;
         }
-        input[type="date"] { background: var(--gold); border: none; color: white; padding: 5px; border-radius: 5px; font-family: 'Amiri'; cursor: pointer; }
+        input[type="date"] { background: var(--gold); border: none; color: white; padding: 8px; border-radius: 8px; font-family: 'Amiri'; cursor: pointer; }
 
-        /* بوديوم المنافسة */
-        .podium-container { display: flex; justify-content: center; align-items: flex-end; gap: 10px; margin: 30px 0; height: 150px; }
-        .podium-step { background: var(--primary); color: white; width: 80px; text-align: center; border-radius: 10px 10px 0 0; position: relative; border: 1px solid var(--gold); }
-        .step-2 { height: 70%; background: #95a5a6; } /* فضي */
-        .step-1 { height: 100%; background: var(--gold); } /* ذهبي */
-        .step-3 { height: 50%; background: #cd7f32; } /* برونزي */
-        .podium-name { position: absolute; top: -25px; width: 100%; font-weight: bold; color: var(--primary); font-size: 0.9rem; }
+        /* بوديوم المتنافسين الأربعة */
+        .podium-container { display: flex; justify-content: center; align-items: flex-end; gap: 8px; margin: 40px 0; height: 180px; padding-bottom: 10px; border-bottom: 2px solid #eee; }
+        .podium-step { background: var(--primary); color: white; width: 75px; text-align: center; border-radius: 10px 10px 2px 2px; position: relative; border: 2px solid var(--gold); transition: 0.5s; }
+        .p1 { height: 100%; background: linear-gradient(to top, #b8860b, var(--gold)); }
+        .p2 { height: 75%; background: #bdc3c7; }
+        .p3 { height: 55%; background: #cd7f32; }
+        .p4 { height: 40%; background: #34495e; border-color: #95a5a6; }
+        .podium-name { position: absolute; top: -30px; width: 100%; font-weight: bold; color: var(--primary); font-size: 0.85rem; white-space: nowrap; }
+        .podium-score { position: absolute; bottom: 5px; width: 100%; font-size: 0.75rem; color: #fff; }
+        
+        /* رسائل تحفيزية */
+        .motivation-banner { text-align: center; font-weight: bold; color: var(--gold); margin-top: -15px; margin-bottom: 15px; font-size: 0.9rem; min-height: 20px; }
 
-        /* المتنافسون */
-        .competitors-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 10px; margin-bottom: 20px; }
-        .comp-card { background: white; border: 2px solid var(--gold); border-radius: 15px; padding: 10px; transition: 0.3s; cursor: pointer; }
-        .comp-card.active { box-shadow: 0 0 15px var(--gold); border-width: 3px; background: #fffdf5; }
-        .comp-name { font-weight: bold; color: var(--primary); border-bottom: 1px solid var(--gold); }
-        .score { font-size: 1.2rem; color: var(--gold); font-weight: bold; }
-        .remaining-list { font-size: 0.75rem; color: #a04040; margin-top: 5px; height: 35px; overflow: hidden; }
+        /* بطاقات المتنافسين */
+        .competitors-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; margin-bottom: 25px; }
+        .comp-card { background: white; border: 2px solid var(--gold); border-radius: 15px; padding: 12px; cursor: pointer; position: relative; transition: 0.3s; }
+        .comp-card.active { border-color: var(--primary); box-shadow: 0 0 15px rgba(26, 77, 46, 0.3); background: #f0f7f2; transform: scale(1.03); }
+        .score-tag { color: var(--gold); font-weight: bold; font-size: 1.2rem; }
+        .rem-detail { font-size: 0.75rem; color: #c0392b; margin-top: 10px; line-height: 1.4; border-top: 1px solid #f1f1f1; padding-top: 5px; max-height: 60px; overflow-y: auto; }
 
-        /* خيارات الصلاة (مسجد/فرد/قضاء) */
-        .prayer-options { display: flex; gap: 5px; }
-        .opt-btn { font-size: 0.7rem; padding: 3px 6px; border-radius: 4px; border: 1px solid #ddd; cursor: pointer; background: #f9f9f9; }
-        .opt-btn.selected { background: var(--primary); color: white; border-color: var(--primary); }
+        /* خيارات الصلاة */
+        .prayer-options { display: flex; gap: 4px; }
+        .opt-btn { font-size: 0.7rem; padding: 4px 6px; border-radius: 6px; border: 1px solid #ddd; cursor: pointer; background: #fff; flex: 1; text-align: center; }
+        .opt-btn.selected { background: var(--primary); color: white; border-color: var(--primary); font-weight: bold; }
+        .pts-badge { font-size: 0.65rem; display: block; color: var(--gold); }
 
-        .section-card { background: white; border: 1px solid #ddd; border-radius: 12px; padding: 15px; margin-bottom: 15px; }
-        .habit-row { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px dashed #eee; }
-        .chat-box { height: 100px; overflow-y: auto; border: 1px solid #ccc; padding: 10px; background: #fff; border-radius: 8px; margin-bottom: 10px; font-size: 0.85rem; }
+        /* القوائم */
+        .section-card { background: white; border: 1px solid #ddd; border-radius: 15px; padding: 15px; margin-bottom: 20px; box-shadow: 0 4px 6px rgba(0,0,0,0.02); }
+        .section-title { color: var(--primary); border-bottom: 2px solid var(--gold); margin-bottom: 15px; font-weight: bold; }
+        .habit-row { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px dashed #eee; }
+        
+        /* إحصائيات الشهر */
+        .monthly-stats { background: var(--primary); color: white; padding: 15px; border-radius: 15px; margin-bottom: 20px; border: 2px solid var(--gold); }
+        .stats-table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 0.9rem; }
+        .stats-table th, .stats-table td { border-bottom: 1px solid rgba(197, 160, 89, 0.3); padding: 8px; text-align: center; }
+
+        .chat-area { height: 120px; overflow-y: auto; border: 1px solid #ccc; padding: 10px; border-radius: 10px; background: #fff; margin-bottom: 10px; }
     </style>
 </head>
 <body>
@@ -57,62 +80,75 @@
     <h1>🕌 محراب عائلتي</h1>
 
     <div class="header-bar">
-        <div><span>📅 التاريخ: </span><input type="date" id="date-picker" onchange="updateView()"></div>
-        <div id="hijri-display" style="margin-top:10px; color: var(--gold); font-weight: bold;"></div>
+        <input type="date" id="date-picker" onchange="updateView()">
+        <div id="h-display" style="margin-top:8px; font-weight: bold; color: var(--gold);"></div>
     </div>
 
-    <h3>🏆 منصة التتويج</h3>
-    <div class="podium-container" id="podium">
-        <div class="podium-step step-2"><div class="podium-name" id="rank-2">-</div>٢</div>
-        <div class="podium-step step-1"><div class="podium-name" id="rank-1">-</div>١</div>
-        <div class="podium-step step-3"><div class="podium-name" id="rank-3">-</div>٣</div>
+    <div class="monthly-stats">
+        <div style="text-align:center; font-family:'Reem Kufi'; margin-bottom:5px;">📊 فرسان الشهر (إنجازات تراكمية)</div>
+        <table class="stats-table">
+            <thead>
+                <tr><th>المتسابق</th><th>نقاط الشهر</th><th>الرتبة</th></tr>
+            </thead>
+            <tbody id="monthly-body"></tbody>
+        </table>
     </div>
+
+    <h3>🏆 منصة التتويج اليومية</h3>
+    <div class="podium-container">
+        <div class="podium-step p4"><div class="podium-name" id="rank-4">-</div><div class="podium-score" id="ps-4">0</div>٤</div>
+        <div class="podium-step p2"><div class="podium-name" id="rank-2">-</div><div class="podium-score" id="ps-2">0</div>٢</div>
+        <div class="podium-step p1"><div class="podium-name" id="rank-1">-</div><div class="podium-score" id="ps-1">0</div>١</div>
+        <div class="podium-step p3"><div class="podium-name" id="rank-3">-</div><div class="podium-score" id="ps-3">0</div>٣</div>
+    </div>
+    <div id="motivation-text" class="motivation-banner"></div>
 
     <div class="competitors-grid">
         <div class="comp-card active" id="card-محمد" onclick="selectUser('محمد')">
-            <div class="comp-name">الأب محمد</div>
-            <div class="score">✨ <span id="score-محمد">0</span></div>
-            <div class="remaining-list" id="rem-محمد"></div>
+            <div style="font-weight:bold; color:var(--primary);">الأب محمد</div>
+            <div class="score-tag" id="sc-محمد">0</div>
+            <div class="rem-detail" id="rem-محمد"></div>
         </div>
         <div class="comp-card" id="card-شيماء" onclick="selectUser('شيماء')">
-            <div class="comp-name">الأم شيماء</div>
-            <div class="score">✨ <span id="score-شيماء">0</span></div>
-            <div class="remaining-list" id="rem-شيماء"></div>
+            <div style="font-weight:bold; color:var(--primary);">الأم شيماء</div>
+            <div class="score-tag" id="sc-شيماء">0</div>
+            <div class="rem-detail" id="rem-شيماء"></div>
         </div>
         <div class="comp-card" id="card-أحمد" onclick="selectUser('أحمد')">
-            <div class="comp-name">أحمد</div>
-            <div class="score">✨ <span id="score-أحمد">0</span></div>
-            <div class="remaining-list" id="rem-أحمد"></div>
+            <div style="font-weight:bold; color:var(--primary);">أحمد</div>
+            <div class="score-tag" id="sc-أحمد">0</div>
+            <div class="rem-detail" id="rem-أحمد"></div>
         </div>
         <div class="comp-card" id="card-ياسين" onclick="selectUser('ياسين')">
-            <div class="comp-name">ياسين</div>
-            <div class="score">✨ <span id="score-ياسين">0</span></div>
-            <div class="remaining-list" id="rem-ياسين"></div>
+            <div style="font-weight:bold; color:var(--primary);">ياسين</div>
+            <div class="score-tag" id="sc-ياسين">0</div>
+            <div class="rem-detail" id="rem-ياسين"></div>
         </div>
     </div>
 
-    <h2 id="current-user-title" style="font-size: 1.2rem;">تسجيل: محمد</h2>
+    <h2 id="user-title">تسجيل: الأب محمد</h2>
 
     <div class="section-card">
-        <h3>🕋 الفروض (مسجد 50ن | فرد 25ن | قضاء 10ن)</h3>
-        <div id="list-fard"></div>
+        <div class="section-title">🕋 الفروض الخمسة</div>
+        <div id="fard-list"></div>
     </div>
 
     <div class="section-card">
-        <h3>✨ السنن والرواتب والنوافل</h3>
-        <div id="list-sunan"></div>
+        <div class="section-title">✨ السنن والرواتب والنوافل</div>
+        <div id="sunan-list"></div>
     </div>
 
     <div class="section-card">
-        <h3>📖 الأذكار والأوراد</h3>
-        <div id="list-azkar"></div>
+        <div class="section-title">📖 الأذكار والأوراد والقرآن</div>
+        <div id="azkar-list"></div>
     </div>
 
     <div class="section-card">
-        <div id="chat-msgs" class="chat-box"></div>
-        <div style="display: flex; gap: 5px;">
-            <input type="text" id="chat-input" placeholder="رسالة اليوم..." style="flex:1;">
-            <button onclick="sendMsg()" style="background:var(--primary); color:white; border:none; padding:5px 15px; border-radius:5px;">إرسال</button>
+        <div class="section-title">💬 ملتقى العائلة (تصفير يومي)</div>
+        <div id="chat-box" class="chat-area"></div>
+        <div style="display:flex; gap:8px;">
+            <input type="text" id="chat-in" placeholder="كلمة طيبة..." style="flex:1; border-radius:8px; border:1px solid #ccc; padding:8px;">
+            <button onclick="sendMsg()" style="background:var(--primary); color:white; border:none; padding:8px 20px; border-radius:8px; cursor:pointer;">إرسال</button>
         </div>
     </div>
 </div>
@@ -120,137 +156,183 @@
 <script>
     let currentUser = 'محمد';
     const users = ['محمد', 'شيماء', 'أحمد', 'ياسين'];
-    const habits = {
+    const dataModel = {
         fard: [
-            {id: 'fajr', name: 'الفجر'}, {id: 'dhuhr', name: 'الظهر'},
-            {id: 'asr', name: 'العصر'}, {id: 'maghrib', name: 'المغرب'}, {id: 'isha', name: 'العشاء'}
+            {id:'fajr', name:'الفجر'}, {id:'dhuhr', name:'الظهر'}, {id:'asr', name:'العصر'}, 
+            {id:'maghrib', name:'المغرب'}, {id:'isha', name:'العشاء'}
         ],
         sunan: [
-            {id: 's_fajr', name: 'سنة الفجر (٢ قبل)', pts: 10},
-            {id: 's_dhuhr_b', name: 'سنة الظهر (٤ قبل)', pts: 10},
-            {id: 's_dhuhr_a', name: 'سنة الظهر (٢ بعد)', pts: 10},
-            {id: 's_maghrib', name: 'سنة المغرب (٢ بعد)', pts: 10},
-            {id: 's_isha', name: 'سنة العشاء (٢ بعد)', pts: 10},
-            {id: 'duha', name: 'الضحى', pts: 15}, {id: 'witr', name: 'الشفع والوتر', pts: 15}
+            {id:'s_fajr', name:'سنة الفجر (٢ قبل)', pts:10},
+            {id:'s_dhuhr_b', name:'سنة الظهر (٤ قبل)', pts:10},
+            {id:'s_dhuhr_a', name:'سنة الظهر (٢ بعد)', pts:10},
+            {id:'s_maghrib', name:'سنة المغرب (٢ بعد)', pts:10},
+            {id:'s_isha', name:'سنة العشاء (٢ بعد)', pts:10},
+            {id:'duha', name:'صلاة الضحى', pts:15},
+            {id:'witr', name:'الشفع والوتر', pts:15},
+            {id:'qiyam', name:'قيام الليل', pts:25}
         ],
         azkar: [
-            {id: 'morn', name: 'أذكار الصباح', pts: 20, link: 'https://alazkar.today/'},
-            {id: 'even', name: 'أذكار المساء', pts: 20, link: 'https://alazkar.today/'},
-            {id: 'sleep', name: 'أذكار النوم', pts: 20, link: 'https://alazkar.today/'},
-            {id: 'mulk', name: 'سورة الملك', pts: 30, link: 'https://quran.com/67'},
-            {id: 'kahf', name: 'سورة الكهف', pts: 50, link: 'https://quran.com/18', friday: true}
+            {id:'quran_ward', name:'الورد القرآني اليومي', pts:40},
+            {id:'morn', name:'أذكار الصباح', pts:20, link:'https://alazkar.today/'},
+            {id:'even', name:'أذكار المساء', pts:20, link:'https://alazkar.today/'},
+            {id:'sleep', name:'أذكار النوم', pts:15, link:'https://alazkar.today/'},
+            {id:'mulk', name:'سورة الملك', pts:30, link:'https://quran.com/67'},
+            {id:'kahf', name:'سورة الكهف', pts:50, link:'https://quran.com/18', friday:true}
         ]
     };
 
     function updateView() {
-        const date = document.getElementById('date-picker').value;
-        document.getElementById('hijri-display').innerText = new Intl.DateTimeFormat('ar-SA-u-ca-islamic-uma', {day:'numeric', month:'long', year:'numeric'}).format(new Date(date));
-        refreshAll();
+        const d = document.getElementById('date-picker').value;
+        document.getElementById('h-display').innerText = new Intl.DateTimeFormat('ar-SA-u-ca-islamic-uma', {day:'numeric', month:'long', year:'numeric'}).format(new Date(d));
+        refresh();
     }
 
-    function selectUser(user) {
-        currentUser = user;
+    function selectUser(u) {
+        currentUser = u;
         document.querySelectorAll('.comp-card').forEach(c => c.classList.remove('active'));
-        document.getElementById('card-' + user).classList.add('active');
-        document.getElementById('current-user-title').innerText = "تسجيل: " + user;
-        refreshAll();
+        document.getElementById('card-'+u).classList.add('active');
+        document.getElementById('user-title').innerText = "تسجيل: " + (u === 'محمد' ? 'الأب محمد' : u === 'شيماء' ? 'الأم شيماء' : u);
+        refresh();
     }
 
     function setFard(id, type, pts) {
-        const date = document.getElementById('date-picker').value;
-        const key = `v4_${currentUser}_${date}_${id}`;
-        localStorage.setItem(key, type);
-        localStorage.setItem(key+'_pts', pts);
-        refreshAll();
+        const d = document.getElementById('date-picker').value;
+        const k = `final_${currentUser}_${d}_${id}`;
+        localStorage.setItem(k, type);
+        localStorage.setItem(k+'_pts', pts);
+        refresh();
     }
 
     function toggleHabit(id, pts) {
-        const date = document.getElementById('date-picker').value;
-        const key = `v4_${currentUser}_${date}_${id}`;
-        const done = localStorage.getItem(key) === 'true';
-        localStorage.setItem(key, !done);
-        localStorage.setItem(key+'_pts', !done ? pts : 0);
-        refreshAll();
+        const d = document.getElementById('date-picker').value;
+        const k = `final_${currentUser}_${d}_${id}`;
+        const done = localStorage.getItem(k) === 'true';
+        localStorage.setItem(k, !done);
+        localStorage.setItem(k+'_pts', !done ? pts : 0);
+        refresh();
     }
 
-    function refreshAll() {
-        const date = document.getElementById('date-picker').value;
-        const isFriday = new Date(date).getDay() === 5;
-        let rankings = [];
+    function getMotivation(rank, score) {
+        if(score === 0) return "بانتظار انطلاقك نحو الجنة اليوم 🌸";
+        const quotes = [
+            "أنت في المقدمة.. هنيئاً لك القرب من الله 👑",
+            "خطواتك مباركة.. استمر في طريق النور ✨",
+            "أحسنت! الإيمان يزيد بالطاعة، واصل 🌿",
+            "لا بأس، القليل الدائم خير من الكثير المنقطع 💧"
+        ];
+        return quotes[rank-1] || "طابت أيامكم بذكر الله";
+    }
 
-        users.forEach(u => {
-            let score = 0; let rem = [];
-            habits.fard.forEach(h => {
-                const status = localStorage.getItem(`v4_${u}_${date}_${h.id}`) || 'none';
-                if(status === 'none') rem.push(h.name);
-                else score += parseInt(localStorage.getItem(`v4_${u}_${date}_${h.id}_pts`) || 0);
+    function refresh() {
+        const d = document.getElementById('date-picker').value;
+        const selDate = new Date(d);
+        const isFri = selDate.getDay() === 5;
+        let ranks = [];
+        let monthlyStats = users.map(u => ({name: u, score: 0}));
+
+        // حساب نقاط الشهر
+        const currentMonth = selDate.getMonth();
+        const currentYear = selDate.getFullYear();
+        
+        users.forEach((u, idx) => {
+            let s = 0; let rem = [];
+            
+            // حساب اليوم
+            dataModel.fard.forEach(h => {
+                const v = localStorage.getItem(`final_${u}_${d}_${h.id}`) || 'none';
+                if(v === 'none') rem.push(h.name);
+                else s += parseInt(localStorage.getItem(`final_${u}_${d}_${h.id}_pts`) || 0);
             });
-            [...habits.sunan, ...habits.azkar].forEach(h => {
-                if(h.friday && !isFriday) return;
-                const done = localStorage.getItem(`v4_${u}_${date}_${h.id}`) === 'true';
-                if(done) score += h.pts; else rem.push(h.name);
+            [...dataModel.sunan, ...dataModel.azkar].forEach(h => {
+                if(h.friday && !isFri) return;
+                const done = localStorage.getItem(`final_${u}_${d}_${h.id}`) === 'true';
+                if(done) s += h.pts; else rem.push(h.name);
             });
-            document.getElementById(`score-${u}`).innerText = score;
-            document.getElementById(`rem-${u}`).innerText = "باقي: " + rem.slice(0,2).join('، ');
-            rankings.push({name: u, score: score});
+            
+            document.getElementById(`sc-${u}`).innerText = s;
+            document.getElementById(`rem-${u}`).innerText = "باقي: " + (rem.length > 0 ? rem.join('، ') : '✅ اكتملت الطاعات');
+            ranks.push({n: u, s: s});
+
+            // حساب الشهر (تقريبي لآخر 30 يوم من الشهر المختار)
+            for(let day = 1; day <= 31; day++){
+                let tempD = `${currentYear}-${String(currentMonth+1).padStart(2,'0')}-${String(day).padStart(2,'0')}`;
+                [...dataModel.fard, ...dataModel.sunan, ...dataModel.azkar].forEach(h => {
+                    monthlyStats[idx].score += parseInt(localStorage.getItem(`final_${u}_${tempD}_${h.id}_pts`) || 0);
+                });
+            }
         });
 
-        // تحديث البوديوم
-        rankings.sort((a,b) => b.score - a.score);
-        document.getElementById('rank-1').innerText = rankings[0].name;
-        document.getElementById('rank-2').innerText = rankings[1].name;
-        document.getElementById('rank-3').innerText = rankings[2].name;
+        // ترتيب اليوم
+        ranks.sort((a,b) => b.s - a.s);
+        for(let i=1; i<=4; i++) {
+            document.getElementById(`rank-${i}`).innerText = ranks[i-1].n;
+            document.getElementById(`ps-${i}`).innerText = ranks[i-1].s;
+            if(ranks[i-1].n === currentUser) {
+                document.getElementById('motivation-text').innerText = getMotivation(i, ranks[i-1].s);
+            }
+        }
 
-        renderFard(date);
-        renderSimpleList('list-sunan', habits.sunan, date);
-        renderSimpleList('list-azkar', habits.azkar, date, isFriday);
+        // ترتيب الشهر
+        monthlyStats.sort((a,b) => b.score - a.score);
+        document.getElementById('monthly-body').innerHTML = monthlyStats.map((u, i) => `
+            <tr><td>${u.name}</td><td>${u.score}</td><td>${i===0?'👑':i+1}</td></tr>
+        `).join('');
+
+        renderLists(d, isFri);
     }
 
-    function renderFard(date) {
-        const container = document.getElementById('list-fard');
-        container.innerHTML = habits.fard.map(h => {
-            const val = localStorage.getItem(`v4_${currentUser}_${date}_${h.id}`) || 'none';
+    function renderLists(d, isFri) {
+        document.getElementById('fard-list').innerHTML = dataModel.fard.map(h => {
+            const v = localStorage.getItem(`final_${currentUser}_${d}_${h.id}`) || 'none';
             return `
-                <div class="habit-row">
-                    <span>${h.name}</span>
-                    <div class="prayer-options">
-                        <div class="opt-btn ${val==='mosque'?'selected':''}" onclick="setFard('${h.id}','mosque',50)">مسجد</div>
-                        <div class="opt-btn ${val==='home'?'selected':''}" onclick="setFard('${h.id}','home',25)">فرد</div>
-                        <div class="opt-btn ${val==='late'?'selected':''}" onclick="setFard('${h.id}','late',10)">قضاء</div>
-                        <div class="opt-btn ${val==='none'?'selected':''}" onclick="setFard('${h.id}','none',0)">✖</div>
-                    </div>
-                </div>`;
+            <div class="habit-row">
+                <span>${h.name}</span>
+                <div class="prayer-options">
+                    <div class="opt-btn ${v==='m'?'selected':''}" onclick="setFard('${h.id}','m',50)"><span class="pts-badge">50ن</span>مسجد</div>
+                    <div class="opt-btn ${v==='h'?'selected':''}" onclick="setFard('${h.id}','h',25)"><span class="pts-badge">25ن</span>فرد</div>
+                    <div class="opt-btn ${v==='q'?'selected':''}" onclick="setFard('${h.id}','q',10)"><span class="pts-badge">10ن</span>قضاء</div>
+                    <div class="opt-btn ${v==='none'?'selected':''}" onclick="setFard('${h.id}','none',0)">✖</div>
+                </div>
+            </div>`;
         }).join('');
-    }
 
-    function renderSimpleList(target, items, date, isFriday = true) {
-        const container = document.getElementById(target);
-        container.innerHTML = items.map(h => {
-            if(h.friday && !isFriday) return '';
-            const done = localStorage.getItem(`v4_${currentUser}_${date}_${h.id}`) === 'true';
-            return `
+        const renderH = (items, target) => {
+            document.getElementById(target).innerHTML = items.map(h => {
+                if(h.friday && !isFri) return '';
+                const done = localStorage.getItem(`final_${currentUser}_${d}_${h.id}`) === 'true';
+                return `
                 <div class="habit-row">
                     ${h.link ? `<a href="${h.link}" target="_blank">🔗 ${h.name}</a>` : `<span>${h.name}</span>`}
-                    <input type="checkbox" ${done?'checked':''} onchange="toggleHabit('${h.id}', ${h.pts})">
+                    <div style="display:flex; align-items:center; gap:10px;">
+                        <span style="font-size:0.8rem; color:var(--gold);">${h.pts}ن</span>
+                        <input type="checkbox" ${done?'checked':''} onchange="toggleHabit('${h.id}', ${h.pts})" style="transform:scale(1.2);">
+                    </div>
                 </div>`;
-        }).join('');
+            }).join('');
+        };
+        renderH(dataModel.sunan, 'sunan-list');
+        renderH(dataModel.azkar, 'azkar-list');
     }
 
     function manageChat() {
-        const today = new Date().toDateString();
-        if(localStorage.getItem('chat_v4_date') !== today) { localStorage.setItem('chat_v4_log', JSON.stringify([])); localStorage.setItem('chat_v4_date', today); }
-        displayChat();
+        const t = new Date().toDateString();
+        if(localStorage.getItem('chat_final_date') !== t) {
+            localStorage.setItem('chat_final_log', JSON.stringify([]));
+            localStorage.setItem('chat_final_date', t);
+        }
+        showChat();
     }
     function sendMsg() {
-        const inp = document.getElementById('chat-input'); if(!inp.value) return;
-        let msgs = JSON.parse(localStorage.getItem('chat_v4_log') || "[]");
-        msgs.push({ u: currentUser, t: inp.value }); localStorage.setItem('chat_v4_log', JSON.stringify(msgs));
-        inp.value = ""; displayChat();
+        const i = document.getElementById('chat-in'); if(!i.value) return;
+        let m = JSON.parse(localStorage.getItem('chat_final_log') || "[]");
+        m.push({ u: currentUser, t: i.value });
+        localStorage.setItem('chat_final_log', JSON.stringify(m));
+        i.value = ""; showChat();
     }
-    function displayChat() {
-        const box = document.getElementById('chat-msgs');
-        box.innerHTML = JSON.parse(localStorage.getItem('chat_v4_log') || "[]").map(m => `<div><b>${m.u}:</b> ${m.t}</div>`).join('');
-        box.scrollTop = box.scrollHeight;
+    function showChat() {
+        const b = document.getElementById('chat-box');
+        b.innerHTML = JSON.parse(localStorage.getItem('chat_final_log') || "[]").map(m => `<div><b>${m.u}:</b> ${m.t}</div>`).join('');
+        b.scrollTop = b.scrollHeight;
     }
 
     window.onload = () => {
