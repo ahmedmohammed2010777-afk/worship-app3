@@ -131,7 +131,10 @@
     function render(allData, isFri) {
         let stats = users.map(u => {
             let score = 0; let rem = []; let uData = allData[u] || {};
-            model.fard.forEach(h => { if(uData[h.id]) score += (uData[h.id].p || 0); else rem.push(h.n); });
+            model.fard.forEach(h => { 
+                let name = (h.id === 'dhuhr' && isFri) ? 'صلاة الجمعة' : h.n;
+                if(uData[h.id]) score += (uData[h.id].p || 0); else rem.push(name); 
+            });
             model.extra.forEach(h => {
                 if(h.friday && !isFri) return;
                 if(uData[h.id] && uData[h.id].done) score += h.p; else rem.push(h.n);
@@ -173,7 +176,8 @@
     function renderUserForms(userData, isFri) {
         document.getElementById('fard-list').innerHTML = model.fard.map(h => {
             const v = userData[h.id] ? userData[h.id].type : 'none';
-            return `<div class="habit-row"><span><b>${h.n}</b></span><div style="display:flex; gap:2px;">
+            let displayName = (h.id === 'dhuhr' && isFri) ? 'صلاة الجمعة' : h.n;
+            return `<div class="habit-row"><span><b>${displayName}</b></span><div style="display:flex; gap:2px;">
                 <button class="opt-btn ${v==='m'?'selected':''}" onclick="saveFard('${h.id}','m',50)">مسجد(50)</button>
                 <button class="opt-btn ${v==='f'?'selected':''}" onclick="saveFard('${h.id}','f',25)">فرد(25)</button>
                 <button class="opt-btn ${v==='q'?'selected':''}" onclick="saveFard('${h.id}','q',10)">قضاء(10)</button>
