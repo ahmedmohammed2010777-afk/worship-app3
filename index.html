@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>محراب عائلتي 2026 - النسخة المصححة</title>
+    <title>محراب عائلتي 2026 - الإصدار المصحح</title>
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Reem+Kufi:wght@400;700&display=swap" rel="stylesheet">
@@ -99,7 +99,7 @@
             let score = 0; let rem = []; let uData = allData[u] || {};
             model.fard.forEach(h => { 
                 let name = (h.id === 'dhuhr' && isFri) ? 'صلاة الجمعة' : h.n;
-                if(uData[h.id]) score += parseInt(uData[h.id].p || 0); else rem.push(name); 
+                if(uData[h.id] && uData[h.id].p !== undefined) score += Number(uData[h.id].p); else rem.push(name); 
             });
             model.extra.forEach(h => {
                 if(h.friday && !isFri) return;
@@ -120,10 +120,20 @@
         db.ref('osraty').once('value', snap => {
             const data = snap.val() || {}; let annual = users.map(u => ({n:u, s:0}));
             Object.values(data).forEach(dayData => {
-                users.forEach((u, i) => {
-                    if(dayData[u]) {
-                        Object.values(dayData[u]).forEach(task => {
-                            if(task && typeof task === 'object') annual[i].s += parseInt(task.p || 0);
+                users.forEach((userName, userIdx) => {
+                    const uData = dayData[userName];
+                    if(uData) {
+                        // حساب الفروض
+                        model.fard.forEach(f => {
+                            if(uData[f.id] && uData[f.id].p !== undefined) {
+                                annual[userIdx].s += Number(uData[f.id].p);
+                            }
+                        });
+                        // حساب السنن والأوراد
+                        model.extra.forEach(e => {
+                            if(uData[e.id] && uData[e.id].done === true) {
+                                annual[userIdx].s += Number(e.p);
+                            }
                         });
                     }
                 });
@@ -164,8 +174,8 @@
         }).join('');
     }
 
-    function saveFard(id, type, p) { db.ref(`osraty/${document.getElementById('date-picker').value}/${currentUser}/${id}`).set({type, p}); }
-    function saveExtra(id, p, done) { db.ref(`osraty/${document.getElementById('date-picker').value}/${currentUser}/${id}`).set({done, p}); }
+    function saveFard(id, type, p) { db.ref(`osraty/${document.getElementById('date-picker').value}/${currentUser}/${id}`).set({type, p: Number(p)}); }
+    function saveExtra(id, p, done) { db.ref(`osraty/${document.getElementById('date-picker').value}/${currentUser}/${id}`).set({done, p: Number(p)}); }
     function sendMsg() {
         const i = document.getElementById('chat-in'); if(!i.value) return;
         const d = document.getElementById('date-picker').value;
