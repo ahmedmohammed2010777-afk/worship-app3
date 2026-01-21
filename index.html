@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>محراب عائلتي 2026 - الإصدار المصحح</title>
+    <title>محراب عائلتي 2026 - الإصدار المكتمل</title>
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Reem+Kufi:wght@400;700&display=swap" rel="stylesheet">
@@ -13,17 +13,23 @@
         .main-container { max-width: 850px; margin: auto; background: rgba(255,255,255,0.98); border: 3px double var(--gold); border-radius: 20px; padding: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.15); }
         .header-bar { background: var(--primary); color: white; padding: 15px; border-radius: 15px; border: 1px solid var(--gold); text-align: center; margin-bottom: 20px; }
         #hijri-display { color: var(--gold); font-weight: bold; margin-top: 5px; }
+        
+        .daily-wisdom { background: #fffde7; padding: 15px; border-radius: 12px; border-right: 5px solid var(--gold); margin-bottom: 15px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+        .wisdom-title { color: var(--primary); font-weight: bold; font-family: 'Reem Kufi'; font-size: 1rem; margin-bottom: 5px; display: block; }
+        
         .podiums-wrapper { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 25px; }
         .podium-title { font-family: 'Reem Kufi'; font-size: 0.9rem; color: var(--primary); text-align: center; margin-bottom: 35px; }
         .podium-container { display: flex; justify-content: center; align-items: flex-end; gap: 5px; height: 120px; border-bottom: 2px solid var(--gold); padding-bottom: 5px; position: relative; }
         .podium-step { background: var(--primary); color: white; width: 45px; text-align: center; border-radius: 8px 8px 0 0; position: relative; border: 1px solid var(--gold); transition: height 0.8s ease; }
         .p1 { background: linear-gradient(to top, #b8860b, var(--gold)); }
-        .podium-name { position: absolute; top: -25px; width: 100%; font-weight: bold; font-size: 0.7rem; color: var(--primary); white-space: nowrap; left: 0; }
+        .podium-name { position: absolute; top: -25px; width: 100%; font-weight: bold; font-size: 0.7rem; color: var(--primary); white-space: nowrap; }
         .podium-score { font-size: 0.65rem; display: block; margin-top: 5px; }
+
         .competitors-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; }
         .comp-card { background: white; border: 2px solid var(--gold); border-radius: 15px; padding: 12px; cursor: pointer; text-align: center; }
         .comp-card.active { border-color: var(--primary); background: #f0f7f2; }
         .rem-detail { font-size: 0.75rem; color: #c0392b; margin-top: 8px; border-top: 1px solid #eee; padding-top: 5px; min-height: 50px; text-align: right; }
+
         .section-card { background: white; border: 1px solid #ddd; border-radius: 15px; padding: 15px; margin-top: 15px; }
         .habit-row { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px dashed #eee; }
         .opt-btn { font-size: 0.6rem; padding: 5px 2px; border-radius: 5px; border: 1px solid #ddd; cursor: pointer; background: #fff; min-width: 38px; font-weight: bold; }
@@ -33,41 +39,51 @@
     </style>
 </head>
 <body>
+
 <div class="main-container">
     <div class="header-bar">
         <h1 style="margin:0; font-family:'Reem Kufi';">🕌 محراب عائلتي</h1>
         <input type="date" id="date-picker" style="margin-top:10px;">
         <div id="hijri-display"></div>
     </div>
+
+    <div class="daily-wisdom">
+        <div><span class="wisdom-title">📖 حديث اليوم:</span> <span id="hadith-text">...</span></div>
+        <div style="margin-top:10px; border-top: 1px dashed var(--gold); padding-top:5px;">
+            <span class="wisdom-title">💡 ومضة اليوم:</span> <span id="flash-text">...</span>
+        </div>
+    </div>
+
     <div class="podiums-wrapper">
         <div><div class="podium-title">🏆 متصدري اليوم</div><div class="podium-container" id="daily-podium"></div></div>
         <div><div class="podium-title">🌟 فرسان العام 2026</div><div class="podium-container" id="annual-podium"></div></div>
     </div>
+
     <div class="competitors-grid" id="cards-ui"></div>
+
     <div id="user-ui" style="display:none; margin-top:20px;">
         <h2 id="current-user-title" style="text-align:center; color:var(--primary);"></h2>
         <div class="section-card"><h3>🕋 الصلوات المفروضة</h3><div id="fard-list"></div></div>
-        <div class="section-card"><h3>✨ السنن والأوراد</h3><div id="extra-list"></div></div>
-        <div class="section-card"><h3>💬 مجلس العائلة</h3><div id="chat-box" class="chat-area"></div>
+        <div class="section-card"><h3>✨ السنن والأوراد والقيام</h3><div id="extra-list"></div></div>
+        <div class="section-card"><h3>💬 مجلس العائلة (يومي)</h3><div id="chat-box" class="chat-area"></div>
             <div style="display:flex; gap:5px;"><input type="text" id="chat-in" placeholder="رسالة..." style="flex:1; padding:8px; border-radius:5px; border:1px solid #ccc;"><button onclick="sendMsg()" style="background:var(--primary); color:white; border:none; padding:10px; border-radius:5px; cursor:pointer;">إرسال</button></div>
         </div>
     </div>
 </div>
+
 <script>
-    const firebaseConfig = {
-      apiKey: "AIzaSyDBa3kZK5ibQEIRRjVIHL7JIOHixX_7rVs",
-      authDomain: "ebada-656e1.firebaseapp.com",
-      databaseURL: "https://ebada-656e1-default-rtdb.firebaseio.com",
-      projectId: "ebada-656e1",
-      storageBucket: "ebada-656e1.firebasestorage.app",
-      messagingSenderId: "705608653939",
-      appId: "1:705608653939:web:5ab3609a6f7ccc8675de06",
-      measurementId: "G-C1D8K66M3R"
-    };
+    // الإعدادات وقاعدة البيانات
+    const firebaseConfig = { apiKey: "AIzaSyDBa3kZK5ibQEIRRjVIHL7JIOHixX_7rVs", authDomain: "ebada-656e1.firebaseapp.com", databaseURL: "https://ebada-656e1-default-rtdb.firebaseio.com", projectId: "ebada-656e1", storageBucket: "ebada-656e1.firebasestorage.app", messagingSenderId: "705608653939", appId: "1:705608653939:web:5ab3609a6f7ccc8675de06" };
     firebase.initializeApp(firebaseConfig);
     const db = firebase.database();
+    
     let currentUser = null;
     const users = ['محمد', 'شيماء', 'أحمد', 'ياسين'];
+    
+    // البيانات اليومية المتجددة (أمثلة لآلية الاختيار غير المكرر)
+    const hadiths = ["قال ﷺ: من سلك طريقاً يلتمس فيه علماً سهل الله له به طريقاً إلى الجنة", "قال ﷺ: المؤمن القوي خير وأحب إلى الله من المؤمن الضعيف", "قال ﷺ: أحب الأعمال إلى الله أدومها وإن قل"];
+    const flashes = ["اجعل صلاتك أولى أولوياتك، يبارك الله في سائر يومك.", "كلمة طيبة قد تبني يوماً كاملاً لشخص تحبه.", "الاستغفار يفتح الأقفال ويشرح البال."];
+
     const model = {
         fard: [{id:'fajr', n:'الفجر'}, {id:'dhuhr', n:'الظهر'}, {id:'asr', n:'العصر'}, {id:'maghrib', n:'المغرب'}, {id:'isha', n:'العشاء'}],
         extra: [
@@ -83,8 +99,15 @@
 
     function sync() {
         const d = document.getElementById('date-picker').value;
-        const isFri = new Date(d).getDay() === 5;
-        document.getElementById('hijri-display').innerText = new Intl.DateTimeFormat('ar-SA-u-ca-islamic-uma', {day:'numeric', month:'long', year:'numeric'}).format(new Date(d));
+        const dateObj = new Date(d);
+        const dayOfYear = Math.floor((dateObj - new Date(dateObj.getFullYear(), 0, 0)) / 1000 / 60 / 60 / 24);
+        const isFri = dateObj.getDay() === 5;
+
+        // تحديث التاريخ الهجري والحديث والومضة
+        document.getElementById('hijri-display').innerText = new Intl.DateTimeFormat('ar-SA-u-ca-islamic-uma', {day:'numeric', month:'long', year:'numeric'}).format(dateObj);
+        document.getElementById('hadith-text').innerText = hadiths[dayOfYear % hadiths.length];
+        document.getElementById('flash-text').innerText = flashes[dayOfYear % flashes.length];
+
         db.ref('osraty/' + d).on('value', snap => render(snap.val() || {}, isFri));
         db.ref('chat/' + d).on('value', snap => {
             const m = snap.val() || [];
@@ -121,20 +144,9 @@
             const data = snap.val() || {}; let annual = users.map(u => ({n:u, s:0}));
             Object.values(data).forEach(dayData => {
                 users.forEach((userName, userIdx) => {
-                    const uData = dayData[userName];
-                    if(uData) {
-                        // حساب الفروض
-                        model.fard.forEach(f => {
-                            if(uData[f.id] && uData[f.id].p !== undefined) {
-                                annual[userIdx].s += Number(uData[f.id].p);
-                            }
-                        });
-                        // حساب السنن والأوراد
-                        model.extra.forEach(e => {
-                            if(uData[e.id] && uData[e.id].done === true) {
-                                annual[userIdx].s += Number(e.p);
-                            }
-                        });
+                    if(dayData[userName]) {
+                        model.fard.forEach(f => { if(dayData[userName][f.id]) annual[userIdx].s += Number(dayData[userName][f.id].p || 0); });
+                        model.extra.forEach(e => { if(dayData[userName][e.id] && dayData[userName][e.id].done) annual[userIdx].s += Number(e.p); });
                     }
                 });
             });
