@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>محراب عائلتي 2026 - النسخة النهائية المصححة</title>
+    <title>محراب عائلتي 2026 - الإصدار الذهبي المصحح</title>
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Reem+Kufi:wght@400;700&display=swap" rel="stylesheet">
@@ -16,12 +16,12 @@
         @keyframes pulse { 0% {box-shadow: 0 0 0 0 rgba(197, 160, 89, 0.4);} 70% {box-shadow: 0 0 0 10px rgba(197, 160, 89, 0);} 100% {box-shadow: 0 0 0 0 rgba(197, 160, 89, 0);} }
         .daily-wisdom { background: #fffde7; padding: 15px; border-radius: 12px; border-right: 5px solid var(--gold); margin-bottom: 15px; }
         .podiums-wrapper { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 25px; }
-        .podium-container { display: flex; justify-content: center; align-items: flex-end; gap: 5px; height: 110px; border-bottom: 2px solid var(--gold); padding-bottom: 5px; position: relative; margin-top: 25px; }
-        .podium-step { background: var(--primary); color: white; width: 40px; text-align: center; border-radius: 8px 8px 0 0; position: relative; border: 1px solid var(--gold); transition: height 0.8s ease; }
+        .podium-container { display: flex; justify-content: center; align-items: flex-end; gap: 5px; height: 110px; border-bottom: 2px solid var(--gold); padding-bottom: 5px; position: relative; margin-top: 30px; }
+        .podium-step { background: var(--primary); color: white; width: 42px; text-align: center; border-radius: 8px 8px 0 0; position: relative; border: 1px solid var(--gold); transition: height 0.8s ease; }
         .p1 { background: linear-gradient(to top, #b8860b, var(--gold)); }
-        .podium-label { position: absolute; top: -35px; width: 100%; text-align: center; left: 0; }
-        .pod-name { font-weight: bold; font-size: 0.7rem; color: var(--primary); display: block; white-space: nowrap; }
-        .pod-score { font-size: 0.65rem; color: var(--accent); font-weight: bold; display: block; }
+        .podium-label { position: absolute; top: -40px; width: 100%; text-align: center; left: 0; }
+        .pod-name { font-weight: bold; font-size: 0.75rem; color: var(--primary); display: block; white-space: nowrap; }
+        .pod-score { font-size: 0.7rem; color: var(--accent); font-weight: bold; display: block; }
         .competitors-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; }
         .comp-card { background: white; border: 2px solid var(--gold); border-radius: 15px; padding: 12px; cursor: pointer; text-align: center; position: relative; }
         .comp-card.active { border-color: var(--primary); background: #f0f7f2; }
@@ -29,8 +29,9 @@
         .rem-detail { font-size: 0.75rem; color: #c0392b; margin-top: 8px; border-top: 1px solid #eee; padding-top: 5px; min-height: 50px; text-align: right; }
         .section-card { background: white; border: 1px solid #ddd; border-radius: 15px; padding: 15px; margin-top: 15px; }
         .habit-row { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px dashed #eee; }
-        .opt-btn { font-size: 0.6rem; padding: 5px 2px; border-radius: 5px; border: 1px solid #ddd; cursor: pointer; background: #fff; min-width: 38px; font-weight: bold; }
+        .opt-btn { font-size: 0.6rem; padding: 5px 2px; border-radius: 5px; border: 1px solid #ddd; cursor: pointer; background: #fff; min-width: 40px; font-weight: bold; }
         .opt-btn.selected { background: var(--primary); color: white; }
+        .pts-badge { background: var(--gold); color: white; padding: 2px 6px; border-radius: 10px; font-size: 0.75rem; font-weight: bold; }
         .chat-area { height: 110px; overflow-y: auto; background: #fff; border: 1px solid #eee; padding: 10px; border-radius: 10px; border-right: 4px solid var(--primary); }
         .remind-btn { background: #e67e22; color: white; border: none; padding: 5px 12px; border-radius: 15px; font-size: 0.75rem; cursor: pointer; margin-bottom: 10px; }
     </style>
@@ -68,20 +69,34 @@
         <div class="section-card"><h3>🕋 الصلوات المفروضة</h3><div id="fard-list"></div></div>
         <div class="section-card"><h3>✨ السنن والقيام والأوراد</h3><div id="extra-list"></div></div>
         <div class="section-card"><h3>💬 مجلس العائلة</h3><div id="chat-box" class="chat-area"></div>
-            <div style="flex:1; display:flex; gap:5px; margin-top:5px;"><input type="text" id="chat-in" placeholder="رسالة..." style="flex:1; padding:8px; border-radius:5px; border:1px solid #ccc;"><button onclick="sendMsg()" style="background:var(--primary); color:white; border:none; padding:10px; border-radius:5px; cursor:pointer;">إرسال</button></div>
+            <div style="display:flex; gap:5px; margin-top:5px;"><input type="text" id="chat-in" placeholder="رسالة..." style="flex:1; padding:8px; border-radius:5px; border:1px solid #ccc;"><button onclick="sendMsg()" style="background:var(--primary); color:white; border:none; padding:10px; border-radius:5px; cursor:pointer;">إرسال</button></div>
         </div>
     </div>
 </div>
+
 <script>
     const firebaseConfig = { apiKey: "AIzaSyDBa3kZK5ibQEIRRjVIHL7JIOHixX_7rVs", authDomain: "ebada-656e1.firebaseapp.com", databaseURL: "https://ebada-656e1-default-rtdb.firebaseio.com", projectId: "ebada-656e1", storageBucket: "ebada-656e1.firebasestorage.app", messagingSenderId: "705608653939", appId: "1:705608653939:web:5ab3609a6f7ccc8675de06" };
     firebase.initializeApp(firebaseConfig); const db = firebase.database();
     let currentUser = null; const users = ['محمد', 'شيماء', 'أحمد', 'ياسين'];
+    
     const hadiths = ["قال ﷺ: من سلك طريقاً يلتمس فيه علماً سهل الله له به طريقاً إلى الجنة", "قال ﷺ: المؤمن القوي خير وأحب إلى الله من المؤمن الضعيف", "قال ﷺ: أحب الأعمال إلى الله أدومها وإن قل", "قال ﷺ: صلاة الجماعة تفضل صلاة الفذ بسبع وعشرين درجة"];
-    const flashes = ["بركة يومك تبدأ من فجرك.", "صلة الرحم تزيد في الرزق والعمر.", "الاستغفار يمسح أثر الذنوب.", "اجعل لك خبيئة من عمل صالح."];
+    const flashes = ["بركة يومك تبدأ من فجرك.", "صلة الرحم تزيد في الرزق والعمر.", "الاستغفار يمسح أثر الذنوب.", "اجعل لك خبيئة من عمل صالح لا يعلمها إلا الله."];
     const weeklyChallenges = [{t: "صلة رحم (اتصال أو زيارة)", p: 100}, {t: "كفالة يتيم أو صدقة خفية", p: 80}, {t: "صيام يوم تطوع", p: 150}, {t: "إدخال سرور على قلب مسلم", p: 70}];
+
     const model = {
-        fard: [{id:'fajr', n:'الفجر'}, {id:'dhuhr', n:'الظهر'}, {id:'asr', n:'العصر'}, {id:'maghrib', n:'المغرب'}, {id:'isha', n:'العشاء'}],
-        extra: [{id:'qiyam', n:'صلاة القيام', p:30}, {id:'duha', n:'صلاة الضحى', p:15}, {id:'s_f', n:'سنة الفجر', p:10}, {id:'s_d_b', n:'سنة الظهر ق', p:10}, {id:'s_d_a', n:'سنة الظهر ب', p:10}, {id:'s_m', n:'سنة المغرب', p:10}, {id:'s_i', n:'سنة العشاء', p:10}, {id:'mulk', n:'سورة الملك', p:30, l:'https://quran.com/67'}, {id:'kahf', n:'سورة الكهف', p:50, l:'https://quran.com/18', friday: true}, {id:'quran', n:'الورد القرآني', p:40, l:'https://quran.com'}, {id:'azkar_m', n:'أذكار الصباح', p:20, l:'https://alazkar.today/'}, {id:'azkar_e', n:'أذكار المساء', p:20, l:'https://alazkar.today/'}]
+        fard: [
+            {id:'fajr', n:'الفجر (50ن)'}, {id:'dhuhr', n:'الظهر (50ن)'}, 
+            {id:'asr', n:'العصر (50ن)'}, {id:'maghrib', n:'المغرب (50ن)'}, {id:'isha', n:'العشاء (50ن)'}
+        ],
+        extra: [
+            {id:'qiyam', n:'صلاة القيام', p:30}, {id:'duha', n:'صلاة الضحى', p:15},
+            {id:'s_f', n:'سنة الفجر (2 قبلية)', p:10}, {id:'s_d_b', n:'سنة الظهر (4 قبلية)', p:10},
+            {id:'s_d_a', n:'سنة الظهر (2 بعدية)', p:10}, {id:'s_m', n:'سنة المغرب (2 بعدية)', p:10},
+            {id:'s_i', n:'سنة العشاء (2 بعدية)', p:10}, {id:'mulk', n:'سورة الملك', p:30, l:'https://quran.com/67'},
+            {id:'kahf', n:'سورة الكهف', p:50, l:'https://quran.com/18', friday: true},
+            {id:'quran', n:'الورد القرآني', p:40, l:'https://quran.com'},
+            {id:'azkar_m', n:'أذكار الصباح', p:20, l:'https://alazkar.today/'}, {id:'azkar_e', n:'أذكار المساء', p:20, l:'https://alazkar.today/'}
+        ]
     };
 
     function sync() {
@@ -105,16 +120,22 @@
     function render(allData, isFri, currentChallenge) {
         let stats = users.map(u => {
             let score = 0; let rem = []; let uData = allData[u] || {};
-            model.fard.forEach(h => { if(uData[h.id]) score += Number(uData[h.id].p || 0); else rem.push(h.n); });
-            model.extra.forEach(h => { if(h.friday && !isFri) return; if(uData[h.id] && uData[h.id].done) score += h.p; else rem.push(h.n); });
+            model.fard.forEach(h => { 
+                let label = (h.id === 'dhuhr' && isFri) ? 'الجمعة' : h.n.split(' ')[0];
+                if(uData[h.id] && uData[h.id].p) score += Number(uData[h.id].p); else rem.push(label); 
+            });
+            model.extra.forEach(h => {
+                if(h.friday && !isFri) return;
+                if(uData[h.id] && uData[h.id].done) score += h.p; else rem.push(h.n);
+            });
             if(uData['weekly_challenge'] && uData['weekly_challenge'].done) score += currentChallenge.p;
             return { n: u, s: score, rem: rem };
         });
         drawPodium('daily-podium', [...stats]);
         document.getElementById('cards-ui').innerHTML = stats.map(st => `
             <div class="comp-card ${st.n === currentUser ? 'active' : ''}" onclick="selectUser('${st.n}')">
-                <div class="streak-star">🔥3</div><b>${st.n}</b> ${st.s > 200 ? '🏆' : ''} | <span style="color:var(--gold); font-weight:bold;">${st.s}ن</span>
-                <div class="rem-detail">${st.rem.length ? 'المتبقي: ' + st.rem.join('، ') : '✅ تم الورد'}</div>
+                <div class="streak-star">🔥3</div><b>${st.n}</b> ${st.s > 220 ? '🏆' : ''} | <span style="color:var(--gold); font-weight:bold;">${st.s}ن</span>
+                <div class="rem-detail">${st.rem.length ? 'المتبقي: ' + st.rem.join('، ') : '✅ تم بحمد الله'}</div>
             </div>`).join('');
         if(currentUser) {
             document.getElementById('special-challenge-card').style.display = 'block';
@@ -129,7 +150,10 @@
             Object.values(data).forEach(dayData => {
                 users.forEach((userName, i) => {
                     const uD = dayData[userName]; if(!uD) return;
-                    Object.values(uD).forEach(task => { if(task && typeof task === 'object' && task.p) annual[i].s += Number(task.p); });
+                    // فحص صارم: نجمع فقط الحقول المعرفة في الموديل لضمان عدم تكرار أي نقاط
+                    model.fard.forEach(f => { if(uD[f.id] && uD[f.id].p) annual[i].s += Number(uD[f.id].p); });
+                    model.extra.forEach(e => { if(uD[e.id] && uD[e.id].done) annual[i].s += Number(e.p); });
+                    if(uD.weekly_challenge && uD.weekly_challenge.done) annual[i].s += Number(uD.weekly_challenge.p || 0);
                 });
             });
             drawPodium('annual-podium', annual);
@@ -148,17 +172,18 @@
     function renderUserForms(userData, isFri) {
         document.getElementById('fard-list').innerHTML = model.fard.map(h => {
             const v = userData[h.id]?.type || 'none';
-            return `<div class="habit-row"><span><b>${h.n}</b></span><div style="display:flex; gap:2px;">
-                <button class="opt-btn ${v==='m'?'selected':''}" onclick="saveFard('${h.id}','m',50)">مسجد</button>
-                <button class="opt-btn ${v==='f'?'selected':''}" onclick="saveFard('${h.id}','f',25)">فرد</button>
-                <button class="opt-btn ${v==='q'?'selected':''}" onclick="saveFard('${h.id}','q',10)">قضاء</button>
-                <button class="opt-btn ${v==='x'?'selected':''}" onclick="saveFard('${h.id}','x',0)">X</button>
+            const label = (h.id === 'dhuhr' && isFri) ? 'صلاة الجمعة' : h.n;
+            return `<div class="habit-row"><span><b>${label}</b></span><div style="display:flex; gap:2px;">
+                <button class="opt-btn ${v==='m'?'selected':''}" onclick="saveFard('${h.id}','m',50)">مسجد(50)</button>
+                <button class="opt-btn ${v==='f'?'selected':''}" onclick="saveFard('${h.id}','f',25)">فرد(25)</button>
+                <button class="opt-btn ${v==='q'?'selected':''}" onclick="saveFard('${h.id}','q',10)">قضاء(10)</button>
+                <button class="opt-btn ${v==='x'?'selected':''}" onclick="saveFard('${h.id}','x',0)">X(0)</button>
             </div></div>`;
         }).join('');
         document.getElementById('extra-list').innerHTML = model.extra.map(h => {
             if(h.friday && !isFri) return ''; const done = userData[h.id]?.done || false;
             return `<div class="habit-row">${h.l?`<a href="${h.l}" target="_blank" style="text-decoration:none; color:var(--primary)">🔗 ${h.n}</a>`:h.n}
-                <div><span style="background:var(--gold); color:white; padding:2px 6px; border-radius:10px; font-size:0.7rem;">${h.p}ن</span><input type="checkbox" ${done?'checked':''} onchange="saveExtra('${h.id}', ${h.p}, this.checked)" style="transform:scale(1.2);"></div></div>`;
+                <div><span class="pts-badge">${h.p}ن</span><input type="checkbox" ${done?'checked':''} onchange="saveExtra('${h.id}', ${h.p}, this.checked)" style="transform:scale(1.3);"></div></div>`;
         }).join('');
     }
 
