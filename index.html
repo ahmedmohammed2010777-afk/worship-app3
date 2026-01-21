@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>محراب عائلتي 2026 - الإصدار النهائي المطور</title>
+    <title>محراب عائلتي 2026 - الإصدار الملحمي</title>
     <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Reem+Kufi:wght@400;700&display=swap" rel="stylesheet">
     <style>
         :root { --primary: #1a4d2e; --gold: #c5a059; --bg: #f9f6f0; --accent: #8e44ad; }
@@ -25,34 +25,40 @@
         }
         input[type="date"] { background: var(--gold); border: none; color: white; padding: 8px; border-radius: 8px; font-family: 'Amiri'; cursor: pointer; }
 
-        /* بوديوم المتنافسين الأربعة */
+        /* بوديوم المتنافسين */
         .podium-container { display: flex; justify-content: center; align-items: flex-end; gap: 8px; margin: 40px 0; height: 180px; padding-bottom: 10px; border-bottom: 2px solid #eee; }
-        .podium-step { background: var(--primary); color: white; width: 75px; text-align: center; border-radius: 10px 10px 2px 2px; position: relative; border: 2px solid var(--gold); }
+        .podium-step { background: var(--primary); color: white; width: 85px; text-align: center; border-radius: 10px 10px 2px 2px; position: relative; border: 2px solid var(--gold); }
         .p1 { height: 100%; background: linear-gradient(to top, #b8860b, var(--gold)); }
         .p2 { height: 75%; background: #bdc3c7; }
         .p3 { height: 55%; background: #cd7f32; }
         .p4 { height: 40%; background: #34495e; border-color: #95a5a6; }
-        .podium-name { position: absolute; top: -30px; width: 100%; font-weight: bold; color: var(--primary); font-size: 0.85rem; white-space: nowrap; }
+        .podium-name { position: absolute; top: -35px; width: 100%; font-weight: bold; color: var(--primary); font-size: 0.85rem; }
         .podium-score { position: absolute; bottom: 5px; width: 100%; font-size: 0.75rem; color: #fff; }
+        .podium-rem { position: absolute; top: 105%; width: 100%; font-size: 0.65rem; color: #8e44ad; font-weight: bold; line-height: 1.1; }
 
-        /* بطاقات المتنافسين والمتبقي التفصيلي */
-        .competitors-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; margin-bottom: 25px; align-items: start; }
-        .comp-card { background: white; border: 2px solid var(--gold); border-radius: 15px; padding: 12px; cursor: pointer; transition: 0.3s; display: flex; flex-direction: column; min-height: 180px; }
+        /* بطاقات المتنافسين */
+        .competitors-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; margin-bottom: 25px; }
+        .comp-card { background: white; border: 2px solid var(--gold); border-radius: 15px; padding: 12px; cursor: pointer; position: relative; transition: 0.3s; }
         .comp-card.active { border-color: var(--primary); box-shadow: 0 0 15px rgba(26, 77, 46, 0.3); background: #f0f7f2; transform: scale(1.03); }
         .score-tag { color: var(--gold); font-weight: bold; font-size: 1.2rem; }
-        .rem-detail { font-size: 0.75rem; color: #c0392b; margin-top: 10px; line-height: 1.5; border-top: 1px solid #f1f1f1; padding-top: 8px; flex-grow: 1; }
+        .rem-detail { font-size: 0.75rem; color: #c0392b; margin-top: 10px; line-height: 1.4; border-top: 1px solid #f1f1f1; padding-top: 5px; height: 60px; overflow-y: auto; }
 
+        /* خيارات الصلاة */
         .prayer-options { display: flex; gap: 4px; }
         .opt-btn { font-size: 0.7rem; padding: 4px 6px; border-radius: 6px; border: 1px solid #ddd; cursor: pointer; background: #fff; flex: 1; text-align: center; }
         .opt-btn.selected { background: var(--primary); color: white; border-color: var(--primary); font-weight: bold; }
         .pts-badge { font-size: 0.65rem; display: block; color: var(--gold); }
 
+        /* الأقسام */
         .section-card { background: white; border: 1px solid #ddd; border-radius: 15px; padding: 15px; margin-bottom: 20px; box-shadow: 0 4px 6px rgba(0,0,0,0.02); }
-        .section-title { color: var(--primary); border-bottom: 2px solid var(--gold); margin-bottom: 15px; font-weight: bold; }
+        .section-title { color: var(--primary); border-bottom: 2px solid var(--gold); margin-bottom: 15px; font-weight: bold; font-size: 1.1rem; }
         .habit-row { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px dashed #eee; }
-        .habit-row:last-child { border-bottom: none; }
         .habit-row a { text-decoration: none; color: var(--primary); font-weight: bold; }
-        
+
+        /* الإحصائيات الشهرية والتحفيز */
+        .stats-card { background: var(--primary); color: white; border-radius: 15px; padding: 15px; margin-bottom: 20px; text-align: center; border: 1px solid var(--gold); }
+        .motivation-text { font-style: italic; color: var(--gold); margin-top: 10px; font-weight: bold; }
+
         .chat-area { height: 120px; overflow-y: auto; border: 1px solid #ccc; padding: 10px; border-radius: 10px; background: #fff; margin-bottom: 10px; }
     </style>
 </head>
@@ -66,12 +72,18 @@
         <div id="h-display" style="margin-top:8px; font-weight: bold; color: var(--gold);"></div>
     </div>
 
+    <div class="stats-card">
+        <h3>📊 حصاد الشهر الحالي</h3>
+        <div id="monthly-rankings" style="display: flex; justify-content: space-around; font-size: 0.9rem;"></div>
+        <div id="motivation" class="motivation-text">"وفي ذلك فليتنافس المتنافسون"</div>
+    </div>
+
     <h3>🏆 منصة التتويج اليومية</h3>
     <div class="podium-container">
-        <div class="podium-step p4"><div class="podium-name" id="rank-4">-</div><div class="podium-score" id="ps-4">0</div>٤</div>
-        <div class="podium-step p2"><div class="podium-name" id="rank-2">-</div><div class="podium-score" id="ps-2">0</div>٢</div>
-        <div class="podium-step p1"><div class="podium-name" id="rank-1">-</div><div class="podium-score" id="ps-1">0</div>١</div>
-        <div class="podium-step p3"><div class="podium-name" id="rank-3">-</div><div class="podium-score" id="ps-3">0</div>٣</div>
+        <div class="podium-step p4"><div class="podium-name" id="rank-4">-</div><div class="podium-score" id="ps-4">0</div><div class="podium-rem" id="pr-4"></div>٤</div>
+        <div class="podium-step p2"><div class="podium-name" id="rank-2">-</div><div class="podium-score" id="ps-2">0</div><div class="podium-rem" id="pr-2"></div>٢</div>
+        <div class="podium-step p1"><div class="podium-name" id="rank-1">-</div><div class="podium-score" id="ps-1">0</div><div class="podium-rem" id="pr-1"></div>١</div>
+        <div class="podium-step p3"><div class="podium-name" id="rank-3">-</div><div class="podium-score" id="ps-3">0</div><div class="podium-rem" id="pr-3"></div>٣</div>
     </div>
 
     <div class="competitors-grid">
@@ -110,15 +122,15 @@
     </div>
 
     <div class="section-card">
-        <div class="section-title">📖 الأذكار والأوراد والطاعات</div>
+        <div class="section-title">📖 الأذكار والأوراد والقيام</div>
         <div id="azkar-list"></div>
     </div>
 
     <div class="section-card">
-        <div class="section-title">💬 ملتقى العائلة (تصفير يومي)</div>
+        <div class="section-title">💬 ملتقى العائلة اليومي</div>
         <div id="chat-box" class="chat-area"></div>
         <div style="display:flex; gap:8px;">
-            <input type="text" id="chat-in" placeholder="كلمة طيبة..." style="flex:1; border-radius:8px; border:1px solid #ccc; padding:8px;">
+            <input type="text" id="chat-in" placeholder="اكتب رسالة..." style="flex:1; border-radius:8px; border:1px solid #ccc; padding:8px;">
             <button onclick="sendMsg()" style="background:var(--primary); color:white; border:none; padding:8px 20px; border-radius:8px; cursor:pointer;">إرسال</button>
         </div>
     </div>
@@ -127,27 +139,23 @@
 <script>
     let currentUser = 'محمد';
     const users = ['محمد', 'شيماء', 'أحمد', 'ياسين'];
+    const motivationPhrases = [
+        "سباق الجنة بدأ، استعن بالله!", "بقي القليل، همة حتى القمة", 
+        "نور الله قلبك بالإيمان", "ما شاء الله، إنجاز رائع اليوم!",
+        "لا يزال لسانك رطباً بذكر الله"
+    ];
+
     const dataModel = {
-        fard: [
-            {id:'fajr', name:'الفجر'}, {id:'dhuhr', name:'الظهر'}, {id:'asr', name:'العصر'}, 
-            {id:'maghrib', name:'المغرب'}, {id:'isha', name:'العشاء'}
-        ],
+        fard: [{id:'fajr', name:'الفجر'}, {id:'dhuhr', name:'الظهر'}, {id:'asr', name:'العصر'}, {id:'maghrib', name:'المغرب'}, {id:'isha', name:'العشاء'}],
         sunan: [
-            {id:'s_fajr', name:'سنة الفجر (٢ قبل)', pts:10},
-            {id:'s_dhuhr_b', name:'سنة الظهر (٤ قبل)', pts:10},
-            {id:'s_dhuhr_a', name:'سنة الظهر (٢ بعد)', pts:10},
-            {id:'s_maghrib', name:'سنة المغرب (٢ بعد)', pts:10},
-            {id:'s_isha', name:'سنة العشاء (٢ بعد)', pts:10},
-            {id:'duha', name:'صلاة الضحى', pts:15},
-            {id:'witr', name:'الشفع والوتر', pts:15},
-            {id:'qiyam', name:'قيام الليل', pts:25}
+            {id:'s_fajr', name:'سنة الفجر (٢ قبل)', pts:10}, {id:'s_dhuhr_b', name:'سنة الظهر (٤ قبل)', pts:10},
+            {id:'s_dhuhr_a', name:'سنة الظهر (٢ بعد)', pts:10}, {id:'s_maghrib', name:'سنة المغرب (٢ بعد)', pts:10},
+            {id:'s_isha', name:'سنة العشاء (٢ بعد)', pts:10}, {id:'duha', name:'صلاة الضحى', pts:15}, {id:'witr', name:'الشفع والوتر', pts:15}
         ],
         azkar: [
-            {id:'quran', name:'الورد القرآني', pts:30, link:'https://quran.com'},
-            {id:'morn', name:'أذكار الصباح', pts:20, link:'https://alazkar.today/'},
-            {id:'even', name:'أذكار المساء', pts:20, link:'https://alazkar.today/'},
-            {id:'sleep', name:'أذكار النوم', pts:15, link:'https://alazkar.today/'},
-            {id:'mulk', name:'سورة الملك', pts:30, link:'https://quran.com/67'},
+            {id:'quran', name:'الورد القرآني', pts:40}, {id:'night', name:'قيام الليل', pts:35},
+            {id:'morn', name:'أذكار الصباح', pts:20, link:'https://alazkar.today/'}, {id:'even', name:'أذكار المساء', pts:20, link:'https://alazkar.today/'},
+            {id:'sleep', name:'أذكار النوم', pts:15, link:'https://alazkar.today/'}, {id:'mulk', name:'سورة الملك', pts:30, link:'https://quran.com/67'},
             {id:'kahf', name:'سورة الكهف', pts:50, link:'https://quran.com/18', friday:true}
         ]
     };
@@ -155,6 +163,7 @@
     function updateView() {
         const d = document.getElementById('date-picker').value;
         document.getElementById('h-display').innerText = new Intl.DateTimeFormat('ar-SA-u-ca-islamic-uma', {day:'numeric', month:'long', year:'numeric'}).format(new Date(d));
+        document.getElementById('motivation').innerText = motivationPhrases[Math.floor(Math.random() * motivationPhrases.length)];
         refresh();
     }
 
@@ -168,18 +177,16 @@
 
     function setFard(id, type, pts) {
         const d = document.getElementById('date-picker').value;
-        const k = `v5_${currentUser}_${d}_${id}`;
-        localStorage.setItem(k, type);
-        localStorage.setItem(k+'_pts', pts);
+        const k = `epic_${currentUser}_${d}_${id}`;
+        localStorage.setItem(k, type); localStorage.setItem(k+'_pts', pts);
         refresh();
     }
 
     function toggleHabit(id, pts) {
         const d = document.getElementById('date-picker').value;
-        const k = `v5_${currentUser}_${d}_${id}`;
+        const k = `epic_${currentUser}_${d}_${id}`;
         const done = localStorage.getItem(k) === 'true';
-        localStorage.setItem(k, !done);
-        localStorage.setItem(k+'_pts', !done ? pts : 0);
+        localStorage.setItem(k, !done); localStorage.setItem(k+'_pts', !done ? pts : 0);
         refresh();
     }
 
@@ -191,31 +198,53 @@
         users.forEach(u => {
             let s = 0; let rem = [];
             dataModel.fard.forEach(h => {
-                const v = localStorage.getItem(`v5_${u}_${d}_${h.id}`) || 'none';
-                if(v === 'none') rem.push(h.name);
-                else s += parseInt(localStorage.getItem(`v5_${u}_${d}_${h.id}_pts`) || 0);
+                const v = localStorage.getItem(`epic_${u}_${d}_${h.id}`) || 'none';
+                if(v === 'none') rem.push(h.name); else s += parseInt(localStorage.getItem(`epic_${u}_${d}_${h.id}_pts`) || 0);
             });
             [...dataModel.sunan, ...dataModel.azkar].forEach(h => {
                 if(h.friday && !isFri) return;
-                const done = localStorage.getItem(`v5_${u}_${d}_${h.id}`) === 'true';
+                const done = localStorage.getItem(`epic_${u}_${d}_${h.id}`) === 'true';
                 if(done) s += h.pts; else rem.push(h.name);
             });
             document.getElementById(`sc-${u}`).innerText = s;
-            document.getElementById(`rem-${u}`).innerHTML = "<b>المتبقي:</b><br>" + (rem.length > 0 ? rem.join('، ') : '✅ اكتملت المهام');
-            ranks.push({n: u, s: s});
+            document.getElementById(`rem-${u}`).innerText = "المتبقي: " + (rem.length > 0 ? rem.join('، ') : '✅ تم الإنجاز');
+            ranks.push({n: u, s: s, r: rem.slice(0,2).join('\n')});
         });
 
+        // ترتيب اليوم والبوديوم
         ranks.sort((a,b) => b.s - a.s);
         for(let i=1; i<=4; i++) {
             document.getElementById(`rank-${i}`).innerText = ranks[i-1].n;
             document.getElementById(`ps-${i}`).innerText = ranks[i-1].s;
+            document.getElementById(`pr-${i}`).innerText = "باقي: " + (ranks[i-1].r || "✅");
         }
+
+        updateMonthlyStats();
         renderLists(d, isFri);
+    }
+
+    function updateMonthlyStats() {
+        const dateObj = new Date(document.getElementById('date-picker').value);
+        const year = dateObj.getFullYear(), month = dateObj.getMonth();
+        let monthlyScores = { 'محمد': 0, 'شيماء': 0, 'أحمد': 0, 'ياسين': 0 };
+
+        for (let i = 1; i <= 31; i++) {
+            const dayKey = `${year}-${String(month + 1).padStart(2, '0')}-${String(i).padStart(2, '0')}`;
+            users.forEach(u => {
+                [...dataModel.fard, ...dataModel.sunan, ...dataModel.azkar].forEach(h => {
+                    monthlyScores[u] += parseInt(localStorage.getItem(`epic_${u}_${dayKey}_${h.id}_pts`) || 0);
+                });
+            });
+        }
+        
+        document.getElementById('monthly-rankings').innerHTML = users.map(u => 
+            `<div><b>${u}:</b> ${monthlyScores[u]}ن</div>`
+        ).join('');
     }
 
     function renderLists(d, isFri) {
         document.getElementById('fard-list').innerHTML = dataModel.fard.map(h => {
-            const v = localStorage.getItem(`v5_${currentUser}_${d}_${h.id}`) || 'none';
+            const v = localStorage.getItem(`epic_${currentUser}_${d}_${h.id}`) || 'none';
             return `
             <div class="habit-row">
                 <span>${h.name}</span>
@@ -231,7 +260,7 @@
         const renderH = (items, target) => {
             document.getElementById(target).innerHTML = items.map(h => {
                 if(h.friday && !isFri) return '';
-                const done = localStorage.getItem(`v5_${currentUser}_${d}_${h.id}`) === 'true';
+                const done = localStorage.getItem(`epic_${currentUser}_${d}_${h.id}`) === 'true';
                 return `
                 <div class="habit-row">
                     ${h.link ? `<a href="${h.link}" target="_blank">🔗 ${h.name}</a>` : `<span>${h.name}</span>`}
@@ -248,23 +277,21 @@
 
     function manageChat() {
         const t = new Date().toDateString();
-        if(localStorage.getItem('chat_final_date') !== t) {
-            localStorage.setItem('chat_final_log', JSON.stringify([]));
-            localStorage.setItem('chat_final_date', t);
+        if(localStorage.getItem('chat_epic_date') !== t) {
+            localStorage.setItem('chat_epic_log', JSON.stringify([]));
+            localStorage.setItem('chat_epic_date', t);
         }
         showChat();
     }
     function sendMsg() {
         const i = document.getElementById('chat-in'); if(!i.value) return;
-        let m = JSON.parse(localStorage.getItem('chat_final_log') || "[]");
+        let m = JSON.parse(localStorage.getItem('chat_epic_log') || "[]");
         m.push({ u: currentUser, t: i.value });
-        localStorage.setItem('chat_final_log', JSON.stringify(m));
+        localStorage.setItem('chat_epic_log', JSON.stringify(m));
         i.value = ""; showChat();
     }
     function showChat() {
-        const b = document.getElementById('chat-box');
-        b.innerHTML = JSON.parse(localStorage.getItem('chat_final_log') || "[]").map(m => `<div><b>${m.u}:</b> ${m.t}</div>`).join('');
-        b.scrollTop = b.scrollHeight;
+        document.getElementById('chat-box').innerHTML = JSON.parse(localStorage.getItem('chat_epic_log') || "[]").map(m => `<div><b>${m.u}:</b> ${m.t}</div>`).join('');
     }
 
     window.onload = () => {
