@@ -14,7 +14,6 @@
         .header-bar { background: var(--primary); color: white; padding: 15px; border-radius: 15px; border: 1px solid var(--gold); text-align: center; margin-bottom: 20px; }
         #hijri-display { color: var(--gold); font-weight: bold; margin-top: 5px; }
         
-        /* قسم المنصات (يومي وتراكمي) */
         .podiums-wrapper { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 25px; }
         .podium-title { font-family: 'Reem Kufi'; font-size: 0.9rem; color: var(--primary); text-align: center; margin-bottom: 35px; }
         .podium-container { display: flex; justify-content: center; align-items: flex-end; gap: 5px; height: 120px; border-bottom: 2px solid var(--gold); padding-bottom: 5px; position: relative; }
@@ -62,7 +61,7 @@
     <div id="user-ui" style="display:none; margin-top:20px;">
         <h2 id="current-user-title" style="text-align:center; color:var(--primary);"></h2>
         <div class="section-card">
-            <h3>🕋 الصلوات المفروضة</h3>
+            <h3 id="fard-header">🕋 الصلوات المفروضة</h3>
             <div id="fard-list"></div>
         </div>
         <div class="section-card">
@@ -101,6 +100,7 @@
         fard: [{id:'fajr', n:'الفجر'}, {id:'dhuhr', n:'الظهر'}, {id:'asr', n:'العصر'}, {id:'maghrib', n:'المغرب'}, {id:'isha', n:'العشاء'}],
         extra: [
             {id:'qiyam', n:'صلاة القيام', p:30},
+            {id:'duha', n:'صلاة الضحى', p:15},
             {id:'s_f', n:'سنة الفجر (2 قبلية)', p:10},
             {id:'s_d_b', n:'سنة الظهر (4 قبلية)', p:10},
             {id:'s_d_a', n:'سنة الظهر (2 بعدية)', p:10},
@@ -176,8 +176,8 @@
     function renderUserForms(userData, isFri) {
         document.getElementById('fard-list').innerHTML = model.fard.map(h => {
             const v = userData[h.id] ? userData[h.id].type : 'none';
-            let displayName = (h.id === 'dhuhr' && isFri) ? 'صلاة الجمعة' : h.n;
-            return `<div class="habit-row"><span><b>${displayName}</b></span><div style="display:flex; gap:2px;">
+            const label = (h.id === 'dhuhr' && isFri) ? 'صلاة الجمعة' : h.n;
+            return `<div class="habit-row"><span><b>${label}</b></span><div style="display:flex; gap:2px;">
                 <button class="opt-btn ${v==='m'?'selected':''}" onclick="saveFard('${h.id}','m',50)">مسجد(50)</button>
                 <button class="opt-btn ${v==='f'?'selected':''}" onclick="saveFard('${h.id}','f',25)">فرد(25)</button>
                 <button class="opt-btn ${v==='q'?'selected':''}" onclick="saveFard('${h.id}','q',10)">قضاء(10)</button>
