@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>محراب عائلة محمد 2026 - النسخة الكاملة</title>
+    <title>محراب عائلة محمد 2026 - النسخة الذهبية</title>
     <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Reem+Kufi:wght@400;700&display=swap" rel="stylesheet">
     <style>
         :root { --primary: #1a4d2e; --gold: #c5a059; --bg: #f9f6f0; }
@@ -14,35 +14,46 @@
         }
         .main-container {
             max-width: 700px; margin: auto; background: rgba(255,255,255,0.98);
-            border: 3px double var(--gold); border-radius: 20px; padding: 20px;
+            border: 3px double var(--gold); border-radius: 20px; padding: 15px;
             box-shadow: 0 10px 30px rgba(0,0,0,0.1);
         }
-        h1, h2, h3 { font-family: 'Reem Kufi', sans-serif; color: var(--primary); text-align: center; }
+        h1, h2, h3 { font-family: 'Reem Kufi', sans-serif; color: var(--primary); text-align: center; margin: 10px 0; }
         
-        /* شريط التاريخ والتقويم */
+        /* شريط التاريخ التفاعلي */
         .header-bar {
             background: var(--primary); color: white; padding: 15px;
             border-radius: 15px; border: 1px solid var(--gold); margin-bottom: 20px;
+            text-align: center;
         }
-        .date-display { display: flex; justify-content: space-around; font-size: 0.9rem; margin-bottom: 10px; }
-        .calendar-nav { display: flex; justify-content: center; gap: 10px; align-items: center; }
-        .nav-btn { background: var(--gold); border: none; color: white; padding: 5px 15px; border-radius: 5px; cursor: pointer; }
+        .date-inputs { display: flex; justify-content: center; gap: 10px; flex-wrap: wrap; }
+        .date-inputs input { 
+            background: var(--gold); border: none; color: white; padding: 5px; 
+            border-radius: 5px; font-family: 'Amiri'; cursor: pointer;
+        }
 
-        /* الترتيب النقاط */
-        .leaderboard { background: #fff; border: 2px solid var(--gold); border-radius: 15px; padding: 15px; margin-bottom: 20px; }
-        .rank-item { display: flex; justify-content: space-between; padding: 8px; border-bottom: 1px solid #eee; font-weight: bold; }
-        
-        /* الجداول والقوائم */
+        /* ترتيب المتنافسين والمتبقي */
+        .leaderboard { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px; }
+        .competitor-card { 
+            background: white; border: 2px solid var(--gold); border-radius: 12px; 
+            padding: 10px; text-align: center;
+        }
+        .comp-name { font-weight: bold; color: var(--primary); font-size: 1.1rem; }
+        .remaining-tasks { font-size: 0.85rem; color: #883030; margin-top: 5px; background: #fff5f5; border-radius: 5px; }
+
+        /* الأقسام */
         .section-card { background: white; border: 1px solid #ddd; border-radius: 12px; padding: 15px; margin-bottom: 15px; }
         .section-title { color: var(--primary); border-bottom: 2px solid var(--gold); padding-bottom: 5px; margin-bottom: 10px; font-weight: bold; }
         .habit-row { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px dashed #eee; }
-        .habit-row:last-child { border-bottom: none; }
-        .points-tag { font-size: 0.8rem; color: var(--gold); margin-right: 5px; }
+        
+        /* الروابط الخارجية */
+        .external-link-btn { 
+            color: var(--primary); text-decoration: none; font-weight: bold; 
+            display: flex; align-items: center; gap: 5px;
+        }
+        .external-link-btn:hover { color: var(--gold); }
 
-        /* الدردشة والروابط */
-        .chat-box { height: 150px; overflow-y: auto; border: 1px solid #ccc; padding: 10px; margin-bottom: 10px; background: #fdfdfd; }
-        .ext-links { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 15px 0; }
-        .link-btn { text-decoration: none; background: var(--primary); color: white; text-align: center; padding: 10px; border-radius: 8px; border: 1px solid var(--gold); }
+        /* الدردشة */
+        .chat-box { height: 120px; overflow-y: auto; border: 1px solid #ccc; padding: 10px; margin-bottom: 10px; background: #fdfdfd; font-size: 0.9rem; }
     </style>
 </head>
 <body>
@@ -51,114 +62,123 @@
     <h1>🕌 محراب عائلة محمد</h1>
 
     <div class="header-bar">
-        <div class="date-display">
-            <div><small>ميلادي:</small> <span id="g-date"></span></div>
-            <div><small>هجري:</small> <span id="h-date"></span></div>
+        <div class="date-inputs">
+            <div>
+                <span>الميلادي:</span>
+                <input type="date" id="g-picker" onchange="syncFromGregorian(this.value)">
+            </div>
+            <div>
+                <span>الهجري:</span>
+                <span id="h-display" style="color: var(--gold); font-weight: bold;"></span>
+            </div>
         </div>
-        <div class="calendar-nav">
-            <button class="nav-btn" onclick="changeDate(-1)">◀ السابق</button>
-            <span id="current-view-date">اليوم</span>
-            <button class="nav-btn" onclick="changeDate(1)">التالي ▶</button>
-        </div>
+        <p style="margin: 5px 0 0 0; font-size: 0.8rem;">(اختر التاريخ الميلادي للتنقل بين الأيام)</p>
     </div>
 
-    <div id="hadith-section" class="section-card" style="border-right: 10px solid var(--gold);">
-        <h3>✨ زاد اليوم</h3>
-        <p id="daily-hadith" style="text-align: center; font-style: italic;"></p>
-    </div>
-
+    <h3>🏆 ميدان التنافس</h3>
     <div class="leaderboard">
-        <h3>🏆 ترتيب العائلة</h3>
-        <div id="ranking">
-            <div class="rank-item"><span>الأب محمد</span> <span id="score-papa">0</span></div>
-            <div class="rank-item"><span>الأم شيماء</span> <span id="score-mama">0</span></div>
-            <div class="rank-item"><span>أحمد</span> <span id="score-ahmed">0</span></div>
-            <div class="rank-item"><span>ياسين</span> <span id="score-yassin">0</span></div>
+        <div class="competitor-card">
+            <div class="comp-name">الأب محمد</div>
+            <div>النقاط: <span id="p-papa">0</span></div>
+            <div class="remaining-tasks">المتبقي: <span id="r-papa">الفروض، السنن..</span></div>
+        </div>
+        <div class="competitor-card">
+            <div class="comp-name">الأم شيماء</div>
+            <div>النقاط: <span id="p-mama">0</span></div>
+            <div class="remaining-tasks">المتبقي: <span id="r-mama">الفروض، السنن..</span></div>
+        </div>
+        <div class="competitor-card">
+            <div class="comp-name">أحمد</div>
+            <div>النقاط: <span id="p-ahmed">0</span></div>
+            <div class="remaining-tasks">المتبقي: <span id="r-ahmed">الفروض، السنن..</span></div>
+        </div>
+        <div class="competitor-card">
+            <div class="comp-name">ياسين</div>
+            <div>النقاط: <span id="p-yassin">0</span></div>
+            <div class="remaining-tasks">المتبقي: <span id="r-yassin">الفروض، السنن..</span></div>
         </div>
     </div>
 
     <div class="section-card">
         <div class="section-title">🕋 الفروض الخمسة</div>
-        <div class="habit-row"><span>الفجر <small>(10ن)</small></span> <input type="checkbox" onchange="addPoint('fajr', 10)"></div>
-        <div class="habit-row"><span>الظهر <small>(10ن)</small></span> <input type="checkbox" onchange="addPoint('dhuhr', 10)"></div>
-        <div class="habit-row"><span>العصر <small>(10ن)</small></span> <input type="checkbox" onchange="addPoint('asr', 10)"></div>
-        <div class="habit-row"><span>المغرب <small>(10ن)</small></span> <input type="checkbox" onchange="addPoint('maghrib', 10)"></div>
-        <div class="habit-row"><span>العشاء <small>(10ن)</small></span> <input type="checkbox" onchange="addPoint('isha', 10)"></div>
+        <div class="habit-row"><span>صلاة الفجر</span> <input type="checkbox" onchange="updateScore()"></div>
+        <div class="habit-row"><span>صلاة الظهر</span> <input type="checkbox" onchange="updateScore()"></div>
+        <div class="habit-row"><span>صلاة العصر</span> <input type="checkbox" onchange="updateScore()"></div>
+        <div class="habit-row"><span>صلاة المغرب</span> <input type="checkbox" onchange="updateScore()"></div>
+        <div class="habit-row"><span>صلاة العشاء</span> <input type="checkbox" onchange="updateScore()"></div>
     </div>
 
     <div class="section-card">
-        <div class="section-title">✨ السنن والرواتب (12 ركعة)</div>
-        <div class="habit-row"><span>ركعتي الفجر القبلية</span> <input type="checkbox"></div>
-        <div class="habit-row"><span>4 ركعات قبل الظهر / 2 بعده</span> <input type="checkbox"></div>
-        <div class="habit-row"><span>ركعتين بعد المغرب</span> <input type="checkbox"></div>
-        <div class="habit-row"><span>ركعتين بعد العشاء</span> <input type="checkbox"></div>
-        <div class="habit-row" style="color: var(--gold);"><span>صلاة الضحى / الشفع والوتر</span> <input type="checkbox"></div>
+        <div class="section-title">✨ السنن والرواتب</div>
+        <div class="habit-row"><span>سنة الفجر (ركعتان)</span> <input type="checkbox"></div>
+        <div class="habit-row"><span>سنة الظهر (4 قبل و 2 بعد)</span> <input type="checkbox"></div>
+        <div class="habit-row"><span>سنة المغرب (ركعتان)</span> <input type="checkbox"></div>
+        <div class="habit-row"><span>سنة العشاء (ركعتان)</span> <input type="checkbox"></div>
+        <div class="habit-row"><span>صلاة الضحى</span> <input type="checkbox"></div>
+        <div class="habit-row"><span>الشفع والوتر</span> <input type="checkbox"></div>
     </div>
 
     <div class="section-card">
-        <div class="section-title">📖 الأوراد اليومية والسور</div>
-        <div class="habit-row"><span>سورة الملك (المنجية)</span> <input type="checkbox"></div>
-        <div id="friday-only" class="habit-row" style="display:none; color: green; font-weight: bold;">
-            <span>سورة الكهف (نور الجمعة)</span> <input type="checkbox">
+        <div class="section-title">📖 الأذكار والأوراد</div>
+        <div class="habit-row">
+            <a href="https://alazkar.today/" target="_blank" class="external-link-btn">☀️ أذكار الصباح</a>
+            <input type="checkbox">
         </div>
-        <div class="habit-row"><span>أذكار الصباح والمساء</span> <input type="checkbox"></div>
-    </div>
-
-    <div class="ext-links">
-        <a href="https://alazkar.today/" target="_blank" class="link-btn">📖 الأذكار (رابط خارجي)</a>
-        <a href="https://quran.com" target="_blank" class="link-btn">📜 المصحف الإلكتروني</a>
+        <div class="habit-row">
+            <a href="https://alazkar.today/" target="_blank" class="external-link-btn">🌙 أذكار المساء</a>
+            <input type="checkbox">
+        </div>
+        <div class="habit-row">
+            <a href="https://alazkar.today/" target="_blank" class="external-link-btn">🛌 أذكار النوم</a>
+            <input type="checkbox">
+        </div>
+        <div class="habit-row">
+            <a href="https://quran.com/67" target="_blank" class="external-link-btn">🛡️ سورة الملك</a>
+            <input type="checkbox">
+        </div>
+        <div id="friday-box" class="habit-row" style="display:none; color: #1a4d2e;">
+            <a href="https://quran.com/18" target="_blank" class="external-link-btn">🕯️ سورة الكهف</a>
+            <input type="checkbox">
+        </div>
     </div>
 
     <div class="section-card">
-        <div class="section-title">💬 ملتقى العائلة اليومي</div>
+        <div class="section-title">💬 ملتقى العائلة (تصفير يومي)</div>
         <div id="chat-msgs" class="chat-box"></div>
         <div style="display: flex; gap: 5px;">
-            <input type="text" id="msg-input" placeholder="اكتب رسالة..." style="flex:1;">
-            <button onclick="send()" class="nav-btn">إرسال</button>
+            <input type="text" id="chat-in" placeholder="اكتب رسالة...">
+            <button onclick="sendMsg()" style="background:var(--primary); color:white; border:none; padding:5px 15px; border-radius:5px;">إرسال</button>
         </div>
     </div>
 </div>
 
 <script>
-    let viewDate = new Date();
-
-    function updateAll() {
-        // التواريخ
-        document.getElementById('g-date').innerText = viewDate.toLocaleDateString('ar-EG');
-        document.getElementById('h-date').innerText = new Intl.DateTimeFormat('ar-SA-u-ca-islamic-uma', {day:'numeric', month:'long', year:'numeric'}).format(viewDate);
-        document.getElementById('current-view-date').innerText = viewDate.toDateString() === new Date().toDateString() ? "اليوم" : viewDate.toLocaleDateString('ar-EG');
+    // إعدادات التاريخ والتقويم
+    function syncFromGregorian(dateVal) {
+        let selected = new Date(dateVal);
+        document.getElementById('h-display').innerText = new Intl.DateTimeFormat('ar-SA-u-ca-islamic-uma', {day:'numeric', month:'long', year:'numeric'}).format(selected);
         
-        // إظهار سورة الكهف يوم الجمعة فقط
-        document.getElementById('friday-only').style.display = (viewDate.getDay() === 5) ? "flex" : "none";
-
-        // الحديث
-        const hadiths = ["«من قرأ سورة الملك كل ليلة منعه الله بها من عذاب القبر»", "«الدعاء هو العبادة»", "«خيركم من تعلم القرآن وعلمه»"];
-        document.getElementById('daily-hadith').innerText = hadiths[viewDate.getDate() % hadiths.length];
-
-        // تصفير الدردشة يومياً
-        manageChat();
+        // إظهار الكهف يوم الجمعة
+        document.getElementById('friday-box').style.display = (selected.getDay() === 5) ? "flex" : "none";
+        
+        // هنا يمكن إضافة تحميل بيانات هذا اليوم المحددة من التخزين
     }
 
-    function changeDate(n) {
-        viewDate.setDate(viewDate.getDate() + n);
-        updateAll();
-        // هنا يمكنك ربط تحميل البيانات الخاص بكل يوم من LocalStorage
-    }
-
+    // تصفير الدردشة اليومي
     function manageChat() {
         const todayKey = new Date().toDateString();
-        if (localStorage.getItem('last_chat_reset') !== todayKey) {
+        if (localStorage.getItem('last_reset') !== todayKey) {
             localStorage.setItem('family_chat', JSON.stringify([]));
-            localStorage.setItem('last_chat_reset', todayKey);
+            localStorage.setItem('last_reset', todayKey);
         }
         renderChat();
     }
 
-    function send() {
-        const inp = document.getElementById('msg-input');
+    function sendMsg() {
+        const inp = document.getElementById('chat-in');
         if(!inp.value) return;
         let msgs = JSON.parse(localStorage.getItem('family_chat') || "[]");
-        msgs.push({ t: inp.value, d: new Date().toLocaleTimeString('ar-EG') });
+        msgs.push({ t: inp.value, time: new Date().toLocaleTimeString('ar-EG') });
         localStorage.setItem('family_chat', JSON.stringify(msgs));
         inp.value = ""; renderChat();
     }
@@ -166,11 +186,17 @@
     function renderChat() {
         const box = document.getElementById('chat-msgs');
         let msgs = JSON.parse(localStorage.getItem('family_chat') || "[]");
-        box.innerHTML = msgs.map(m => `<div><small>${m.d}</small> ${m.t}</div>`).join('');
+        box.innerHTML = msgs.map(m => `<div><small>${m.time}</small> ${m.t}</div>`).join('');
         box.scrollTop = box.scrollHeight;
     }
 
-    window.onload = updateAll;
+    // تعيين التاريخ الحالي عند الفتح
+    window.onload = () => {
+        const today = new Date().toISOString().split('T')[0];
+        document.getElementById('g-picker').value = today;
+        syncFromGregorian(today);
+        manageChat();
+    };
 </script>
 </body>
 </html>
