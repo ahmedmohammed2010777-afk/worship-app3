@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>محراب عائلتي 2026</title>
+    <title>محراب عائلتي 2026 - الإصدار النهائي للمزامنة</title>
     <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Reem+Kufi:wght@400;700&display=swap" rel="stylesheet">
     <style>
         :root { --primary: #1a4d2e; --gold: #c5a059; --bg: #f9f6f0; }
@@ -27,18 +27,22 @@
 
         /* بوديوم المتنافسين */
         .podium-container { display: flex; justify-content: center; align-items: flex-end; gap: 8px; margin: 35px 0 10px 0; height: 160px; border-bottom: 2px solid #eee; }
-        .podium-step { background: var(--primary); color: white; width: 70px; text-align: center; border-radius: 10px 10px 2px 2px; position: relative; border: 2px solid var(--gold); transition: height 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
-        .p1 { background: linear-gradient(to top, #b8860b, var(--gold)); }
+        .podium-step { background: var(--primary); color: white; width: 70px; text-align: center; border-radius: 10px 10px 2px 2px; position: relative; border: 2px solid var(--gold); transition: all 0.5s ease; }
+        .p1 { background: linear-gradient(to top, #b8860b, var(--gold)); height: 100%; }
+        .p2 { height: 75%; background: #bdc3c7; }
+        .p3 { height: 55%; background: #cd7f32; }
+        .p4 { height: 35%; background: #34495e; }
         .podium-name { position: absolute; top: -28px; width: 100%; font-weight: bold; color: var(--primary); font-size: 0.8rem; }
         .podium-score { position: absolute; bottom: 5px; width: 100%; font-size: 0.7rem; color: #fff; }
 
         /* بطاقات المتنافسين */
         .competitors-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 10px; margin-bottom: 20px; }
-        .comp-card { background: white; border: 2px solid var(--gold); border-radius: 15px; padding: 10px; cursor: pointer; transition: 0.3s; }
-        .comp-card.active { border-color: var(--primary); background: #f0f7f2; transform: translateY(-3px); }
+        .comp-card { background: white; border: 2px solid var(--gold); border-radius: 15px; padding: 10px; cursor: pointer; transition: 0.3s; position: relative; }
+        .comp-card.active { border-color: var(--primary); background: #f0f7f2; transform: translateY(-3px); box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
         .score-tag { color: var(--gold); font-weight: bold; font-size: 1.1rem; }
-        .rem-detail { font-size: 0.7rem; color: #c0392b; margin-top: 8px; border-top: 1px solid #f1f1f1; padding-top: 4px; height: 45px; overflow-y: auto; }
+        .rem-detail { font-size: 0.7rem; color: #c0392b; margin-top: 8px; border-top: 1px solid #f1f1f1; padding-top: 4px; height: 50px; overflow-y: auto; }
 
+        /* الأزرار والخيارات */
         .section-card { background: white; border: 1px solid #ddd; border-radius: 12px; padding: 12px; margin-bottom: 15px; }
         .habit-row { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px dashed #eee; }
         .prayer-options { display: flex; gap: 3px; }
@@ -60,13 +64,12 @@
     </div>
 
     <div class="monthly-box">
-        <div style="text-align:center; border-bottom:1px solid var(--gold); margin-bottom:5px;">📊 تراكمي الشهر</div>
+        <div style="text-align:center; border-bottom:1px solid var(--gold); margin-bottom:5px;">📊 ترتيب الشهر الحالي</div>
         <div id="monthly-list" style="display:flex; justify-content:space-around; font-weight:bold;"></div>
     </div>
 
-    <div class="podium-container" id="podium-ui">
-        </div>
-    <div id="motivation-text" style="text-align:center; color:var(--gold); font-weight:bold; margin-bottom:15px;"></div>
+    <div class="podium-container" id="podium-ui"></div>
+    <div id="motivation-text" style="text-align:center; color:var(--gold); font-weight:bold; margin-bottom:15px; font-size:0.9rem;"></div>
 
     <div class="competitors-grid" id="cards-ui"></div>
 
@@ -88,10 +91,10 @@
     </div>
 
     <div class="section-card">
-        <div id="chat-box" style="height:80px; overflow-y:auto; border:1px solid #ccc; padding:8px; margin-bottom:8px; background:#fff; border-radius:8px;"></div>
+        <div id="chat-box" style="height:100px; overflow-y:auto; border:1px solid #ccc; padding:8px; margin-bottom:8px; background:#fff; border-radius:8px;"></div>
         <div style="display:flex; gap:5px;">
-            <input type="text" id="chat-in" style="flex:1; padding:5px;">
-            <button onclick="sendMsg()" style="background:var(--primary); color:white; border:none; padding:5px 15px; border-radius:5px;">إرسال</button>
+            <input type="text" id="chat-in" style="flex:1; padding:8px; border-radius:5px; border:1px solid #ccc;">
+            <button onclick="sendMsg()" style="background:var(--primary); color:white; border:none; padding:5px 20px; border-radius:5px; cursor:pointer;">إرسال</button>
         </div>
     </div>
 </div>
@@ -113,34 +116,8 @@
         ]
     };
 
-    function updateView() {
-        const d = document.getElementById('date-picker').value;
-        document.getElementById('h-display').innerText = new Intl.DateTimeFormat('ar-SA-u-ca-islamic-uma', {day:'numeric', month:'long', year:'numeric'}).format(new Date(d));
-        refresh();
-    }
-
-    function selectUser(u) {
-        currentUser = u;
-        refresh();
-    }
-
-    function setScore(id, type, p) {
-        const d = document.getElementById('date-picker').value;
-        localStorage.setItem(`mhrb_${currentUser}_${d}_${id}`, type);
-        localStorage.setItem(`mhrb_${currentUser}_${d}_${id}_p`, p);
-        refresh();
-    }
-
-    function toggle(id, p) {
-        const d = document.getElementById('date-picker').value;
-        const k = `mhrb_${currentUser}_${d}_${id}`;
-        const done = localStorage.getItem(k) === 'true';
-        localStorage.setItem(k, !done);
-        localStorage.setItem(k+'_p', !done ? p : 0);
-        refresh();
-    }
-
-    function refresh() {
+    // سر المزامنة اللحظية: وظيفة التحديث التي تعمل عند كل تغيير
+    function refreshUI() {
         const d = document.getElementById('date-picker').value;
         const isFri = new Date(d).getDay() === 5;
         let dayStats = [];
@@ -148,9 +125,11 @@
 
         users.forEach((u, uIdx) => {
             let sDay = 0; let rem = [];
+            // حساب اليوم
             model.fard.forEach(h => {
                 const v = localStorage.getItem(`mhrb_${u}_${d}_${h.id}`) || 'none';
-                if(v==='none') rem.push(h.n); else sDay += parseInt(localStorage.getItem(`mhrb_${u}_${d}_${h.id}_p`)||0);
+                if(v==='none') rem.push(h.n); 
+                else sDay += parseInt(localStorage.getItem(`mhrb_${u}_${d}_${h.id}_p`)||0);
             });
             [...model.extra, ...model.azkar].forEach(h => {
                 if(h.fri && !isFri) return;
@@ -159,7 +138,7 @@
             });
             dayStats.push({n:u, s:sDay, rem: rem});
 
-            // حساب الشهر سريع
+            // حساب الشهر التراكمي
             const mKey = d.substring(0,7);
             for(let i=1; i<=31; i++){
                 let ds = mKey + "-" + String(i).padStart(2,'0');
@@ -169,43 +148,43 @@
             }
         });
 
-        // 1. تحديث البطاقات
+        // ترتيب البوديوم اللحظي
+        const sorted = [...dayStats].sort((a,b) => b.s - a.s);
+        const order = [1, 0, 2, 3]; // ترتيب العرض (الثاني، الأول، الثالث، الرابع)
+        const styles = ['p2', 'p1', 'p3', 'p4'];
+        
+        document.getElementById('podium-ui').innerHTML = order.map((idx, i) => `
+            <div class="podium-step ${styles[i]}">
+                <div class="podium-name">${sorted[idx].n}</div>
+                <div class="podium-score">${sorted[idx].s}ن</div>
+            </div>
+        `).join('');
+
+        // تحديث البطاقات مع المتبقي
         document.getElementById('cards-ui').innerHTML = dayStats.map(st => `
             <div class="comp-card ${st.n === currentUser ? 'active' : ''}" onclick="selectUser('${st.n}')">
                 <div style="font-weight:bold;">${st.n === 'محمد' ? 'الأب محمد' : st.n === 'شيماء' ? 'الأم شيماء' : st.n}</div>
                 <div class="score-tag">${st.s}</div>
-                <div class="rem-detail">باقي: ${st.rem.length ? st.rem.join('، ') : '✅'}</div>
+                <div class="rem-detail">باقي: ${st.rem.length ? st.rem.join('، ') : '✅ تم'}</div>
             </div>
         `).join('');
 
-        // 2. تحديث البوديوم
-        const sortedDay = [...dayStats].sort((a,b) => b.s - a.s);
-        const heights = [40, 75, 100, 55]; // ترتيب p4, p2, p1, p3
-        const order = [3, 1, 0, 2]; // الربط بين المراكز
-        document.getElementById('podium-ui').innerHTML = order.map((idx, i) => `
-            <div class="podium-step ${idx===0?'p1':''}" style="height:${heights[i]}%">
-                <div class="podium-name">${sortedDay[idx].n}</div>
-                <div class="podium-score">${sortedDay[idx].s}</div>
-                ${4-i}
-            </div>
-        `).join('');
-
-        // 3. تحديث الشهر والعنوان
-        document.getElementById('user-title').innerText = "تسجيل: " + currentUser;
+        document.getElementById('user-title').innerText = "تسجيل: " + (currentUser === 'محمد' ? 'الأب محمد' : currentUser === 'شيماء' ? 'الأم شيماء' : currentUser);
+        
+        // تحديث ترتيب الشهر
         monthStats.sort((a,b) => b.s - a.s);
         document.getElementById('monthly-list').innerHTML = monthStats.map(m => `<span>${m.n}: ${m.s}ن</span>`).join('');
 
-        renderForms(d, isFri);
+        renderActionLists(d, isFri);
     }
 
-    function renderForms(d, isFri) {
+    function renderActionLists(d, isFri) {
         document.getElementById('fard-list').innerHTML = model.fard.map(h => {
             const v = localStorage.getItem(`mhrb_${currentUser}_${d}_${h.id}`) || 'none';
             return `<div class="habit-row"><span>${h.n}</span><div class="prayer-options">
-                <div class="opt-btn ${v==='m'?'selected':''}" onclick="setScore('${h.id}','m',50)">مسجد</div>
-                <div class="opt-btn ${v==='f'?'selected':''}" onclick="setScore('${h.id}','f',25)">فرد</div>
-                <div class="opt-btn ${v==='q'?'selected':''}" onclick="setScore('${h.id}','q',10)">قضاء</div>
-                <div class="opt-btn ${v==='none'?'selected':''}" onclick="setScore('${h.id}','none',0)">✖</div>
+                <div class="opt-btn ${v==='m'?'selected':''}" onclick="updateData('${h.id}','m',50)">مسجد</div>
+                <div class="opt-btn ${v==='f'?'selected':''}" onclick="updateData('${h.id}','f',25)">فرد</div>
+                <div class="opt-btn ${v==='q'?'selected':''}" onclick="updateData('${h.id}','q',10)">قضاء</div>
             </div></div>`;
         }).join('');
 
@@ -215,13 +194,32 @@
                 const done = localStorage.getItem(`mhrb_${currentUser}_${d}_${h.id}`) === 'true';
                 return `<div class="habit-row">
                     ${h.l?`<a href="${h.l}" target="_blank">🔗 ${h.n}</a>`:`<span>${h.n}</span>`}
-                    <span><small>${h.p}ن </small><input type="checkbox" ${done?'checked':''} onchange="toggle('${h.id}',${h.p})"></span>
+                    <input type="checkbox" ${done?'checked':''} onchange="toggleData('${h.id}',${h.p})" style="transform:scale(1.3);">
                 </div>`;
             }).join('');
         };
         draw(model.extra, 'sunan-list');
         draw(model.azkar, 'azkar-list');
     }
+
+    function updateData(id, type, p) {
+        const d = document.getElementById('date-picker').value;
+        localStorage.setItem(`mhrb_${currentUser}_${d}_${id}`, type);
+        localStorage.setItem(`mhrb_${currentUser}_${d}_${id}_p`, p);
+        refreshUI();
+    }
+
+    function toggleData(id, p) {
+        const d = document.getElementById('date-picker').value;
+        const k = `mhrb_${currentUser}_${d}_${id}`;
+        const done = localStorage.getItem(k) === 'true';
+        localStorage.setItem(k, !done);
+        localStorage.setItem(k+'_p', !done ? p : 0);
+        refreshUI();
+    }
+
+    function selectUser(u) { currentUser = u; refreshUI(); }
+    function updateView() { refreshUI(); }
 
     function sendMsg() {
         const i = document.getElementById('chat-in'); if(!i.value) return;
@@ -231,11 +229,15 @@
     }
     function displayChat() {
         document.getElementById('chat-box').innerHTML = JSON.parse(localStorage.getItem('chat_log')||'[]').map(m=>`<div><b>${m.u}:</b> ${m.t}</div>`).join('');
+        const b = document.getElementById('chat-box'); b.scrollTop = b.scrollHeight;
     }
 
     window.onload = () => {
         document.getElementById('date-picker').value = new Date().toISOString().split('T')[0];
-        updateView(); displayChat();
+        refreshUI(); displayChat();
+        // تصفير الدردشة يومياً
+        const today = new Date().toDateString();
+        if(localStorage.getItem('chat_date') !== today) { localStorage.setItem('chat_log', '[]'); localStorage.setItem('chat_date', today); }
     };
 </script>
 </body>
