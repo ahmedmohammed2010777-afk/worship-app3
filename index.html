@@ -3,43 +3,37 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>محراب عائلتي 2026 - النسخة الملحمية النهائية</title>
+    <title>محراب عائلتي 2026 - الإصدار الملحمي</title>
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
-    
     <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Reem+Kufi:wght@400;700&display=swap" rel="stylesheet">
     <style>
-        :root { --primary: #1a4d2e; --gold: #c5a059; --bg: #f9f6f0; --red: #c0392b; }
+        :root { --primary: #1a4d2e; --gold: #c5a059; --bg: #f9f6f0; --silver: #bdc3c7; --bronze: #cd7f32; }
         body { font-family: 'Amiri', serif; background-color: var(--bg); background-image: url('https://www.transparenttextures.com/patterns/islamic-art.png'); margin: 0; padding: 10px; }
         .main-container { max-width: 850px; margin: auto; background: rgba(255,255,255,0.98); border: 3px double var(--gold); border-radius: 20px; padding: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.15); }
         .header-bar { background: var(--primary); color: white; padding: 15px; border-radius: 15px; border: 1px solid var(--gold); text-align: center; margin-bottom: 20px; }
         #hijri-display { color: var(--gold); font-weight: bold; margin-top: 5px; }
-        .hadith-box { background: #fffde7; padding: 12px; border-radius: 10px; border-right: 5px solid var(--gold); margin-bottom: 15px; font-style: italic; }
+        
+        /* تصميم البوديوم (العام واليومي) */
+        .podium-wrapper { background: #fff; border: 2px solid var(--gold); border-radius: 15px; padding: 10px; margin-bottom: 20px; text-align: center; }
+        .podium-container { display: flex; justify-content: center; align-items: flex-end; gap: 8px; height: 120px; margin-top: 25px; border-bottom: 2px solid #eee; padding-bottom: 5px; }
+        .podium-step { background: var(--primary); color: white; width: 65px; text-align: center; border-radius: 8px 8px 0 0; position: relative; border: 1px solid var(--gold); transition: height 0.8s ease; }
+        .p-gold { background: linear-gradient(to top, #b8860b, var(--gold)); height: 100% !important; }
+        .p-silver { height: 70% !important; background: var(--silver); }
+        .p-bronze { height: 50% !important; background: var(--bronze); }
+        .podium-name { position: absolute; top: -25px; width: 100%; font-weight: bold; font-size: 0.75rem; color: var(--primary); white-space: nowrap; }
+        .podium-score { font-size: 0.65rem; display: block; margin-top: 5px; }
 
-        /* البوديوم اليومي المطور */
-        .podium-section { display: flex; flex-direction: column; gap: 20px; margin-bottom: 30px; }
-        .podium-container { display: flex; justify-content: center; align-items: flex-end; gap: 10px; height: 160px; border-bottom: 3px solid var(--gold); padding-bottom: 5px; }
-        .podium-step { background: var(--primary); color: white; width: 70px; text-align: center; border-radius: 10px 10px 0 0; position: relative; border: 2px solid var(--gold); transition: height 0.8s cubic-bezier(0.17, 0.67, 0.83, 0.67); }
-        .p1 { background: linear-gradient(to top, #b8860b, var(--gold)); z-index: 3; }
-        .podium-name { position: absolute; top: -30px; width: 100%; font-weight: bold; font-size: 0.9rem; color: var(--primary); white-space: nowrap; }
-        .podium-score { font-size: 0.8rem; font-weight: bold; margin-top: 10px; display: block; }
-
-        .annual-podium { background: #fff; border: 2px solid var(--gold); border-radius: 15px; padding: 10px; text-align: center; box-shadow: inset 0 0 10px rgba(0,0,0,0.05); }
-
-        /* بطاقات المتنافسين والمتبقي */
         .competitors-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; }
-        .comp-card { background: white; border: 2px solid var(--gold); border-radius: 15px; padding: 10px; cursor: pointer; transition: 0.3s; text-align: center; }
-        .comp-card.active { border-color: var(--primary); background: #f0f7f2; transform: translateY(-5px); }
-        .rem-detail { font-size: 0.75rem; color: var(--red); margin-top: 8px; border-top: 1px solid #eee; padding-top: 5px; min-height: 50px; text-align: right; }
+        .comp-card { background: white; border: 2px solid var(--gold); border-radius: 15px; padding: 12px; cursor: pointer; text-align: center; }
+        .comp-card.active { border-color: var(--primary); background: #f0f7f2; }
+        .rem-detail { font-size: 0.75rem; color: #c0392b; margin-top: 8px; border-top: 1px solid #eee; padding-top: 5px; min-height: 50px; text-align: right; }
 
-        /* الأزرار والعبادات */
         .section-card { background: white; border: 1px solid #ddd; border-radius: 15px; padding: 15px; margin-top: 15px; }
         .habit-row { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px dashed #eee; }
-        .opt-btn { font-size: 0.7rem; padding: 5px 8px; border-radius: 5px; border: 1px solid #ddd; cursor: pointer; background: #fff; min-width: 40px; }
-        .opt-btn.selected { background: var(--primary); color: white; border-color: var(--primary); }
-        .opt-btn.x-btn.selected { background: var(--red); border-color: var(--red); }
-        .pts-tag { font-size: 0.8rem; color: var(--gold); font-weight: bold; }
-        .chat-area { height: 120px; overflow-y: auto; background: #fcfcfc; border: 1px solid #eee; padding: 10px; border-radius: 8px; margin-bottom: 10px; }
+        .opt-btn { font-size: 0.65rem; padding: 5px; border-radius: 5px; border: 1px solid #ddd; cursor: pointer; background: #fff; min-width: 45px; }
+        .opt-btn.selected { background: var(--primary); color: white; }
+        .chat-area { height: 110px; overflow-y: auto; background: #fff; border: 1px solid #eee; padding: 10px; border-radius: 10px; margin-bottom: 10px; border-right: 4px solid var(--primary); }
     </style>
 </head>
 <body>
@@ -47,40 +41,41 @@
 <div class="main-container">
     <div class="header-bar">
         <h1 style="margin:0; font-family:'Reem Kufi';">🕌 محراب عائلتي</h1>
-        <input type="date" id="date-picker">
+        <input type="date" id="date-picker" style="margin-top:10px;">
         <div id="hijri-display"></div>
     </div>
 
-    <div class="hadith-box">✨ <b>حديث اليوم:</b> <span id="hadith-text">جارِ التحميل...</span></div>
+    <div style="background: #fffde7; padding: 10px; border-radius: 10px; border-right: 5px solid var(--gold); margin-bottom: 15px; font-size: 0.9rem;">
+        ✨ <b>حديث اليوم:</b> <span id="hadith-text">...</span>
+    </div>
 
-    <div class="podium-section">
-        <div class="annual-podium">
-            <h3 style="margin:5px 0;">🏆 فرسان العام (الترتيب التراكمي 2026)</h3>
-            <div id="annual-list" style="display:flex; justify-content:space-around; font-weight:bold; font-size: 0.9rem; color: var(--primary);"></div>
-        </div>
-        <div class="podium-container" id="podium-ui"></div>
+    <div class="podium-wrapper">
+        <h3 style="margin:0; color:var(--primary);">🏆 فرسان العام 2026 (تراكمي)</h3>
+        <div class="podium-container" id="annual-podium-ui"></div>
+    </div>
+
+    <div class="podium-wrapper">
+        <h3 style="margin:0; color:var(--primary);">🥇 منافسة اليوم</h3>
+        <div class="podium-container" id="daily-podium-ui"></div>
     </div>
 
     <div class="competitors-grid" id="cards-ui"></div>
 
     <div id="user-ui" style="display:none; margin-top:20px;">
-        <h2 id="current-user-title" style="text-align:center; color: var(--primary);"></h2>
-        
+        <h2 id="current-user-title" style="text-align:center; color:var(--primary);"></h2>
         <div class="section-card">
-            <h3>🕋 الفروض والرواتب (مسجد 50 | فرد 25 | قضاء 10 | X 0)</h3>
+            <h3>🕋 الصلوات المفروضة</h3>
             <div id="fard-list"></div>
         </div>
-
         <div class="section-card">
-            <h3>📖 الأوراد والقيام (روابط خارجية)</h3>
+            <h3>✨ السنن والقيام والأوراد</h3>
             <div id="extra-list"></div>
         </div>
-
         <div class="section-card">
             <h3>💬 مجلس العائلة (يومي)</h3>
             <div id="chat-box" class="chat-area"></div>
             <div style="display:flex; gap:5px;">
-                <input type="text" id="chat-in" placeholder="اكتب رسالة..." style="flex:1; padding:8px; border-radius:5px; border:1px solid #ccc;">
+                <input type="text" id="chat-in" placeholder="رسالة طيبة..." style="flex:1; padding:8px; border:1px solid #ccc; border-radius:5px;">
                 <button onclick="sendMsg()" style="background:var(--primary); color:white; border:none; padding:8px 15px; border-radius:5px; cursor:pointer;">إرسال</button>
             </div>
         </div>
@@ -105,24 +100,17 @@
     let currentUser = null;
     const users = ['محمد', 'شيماء', 'أحمد', 'ياسين'];
     const model = {
-        fard: [
-            {id:'fajr', n:'الفجر', s:'s_f', sn:'سنة الفجر (2 ق)', sp:10},
-            {id:'dhuhr', n:'الظهر', s:'s_dh_b', sn:'الظهر (4 ق)', sp:10, s2:'s_dh_a', sn2:'الظهر (2 ب)', sp2:10},
-            {id:'asr', n:'العصر', s:'s_a', sn:'العصر (4 ق)', sp:10},
-            {id:'maghrib', n:'المغرب', s:'s_m', sn:'المغرب (2 ب)', sp:10},
-            {id:'isha', n:'العشاء', s:'s_i', sn:'العشاء (2 ب)', sp:10}
-        ],
+        fard: [{id:'fajr', n:'الفجر'}, {id:'dhuhr', n:'الظهر'}, {id:'asr', n:'العصر'}, {id:'maghrib', n:'المغرب'}, {id:'isha', n:'العشاء'}],
         extra: [
-            {id:'qiyam', n:'قيام الليل', p:25},
+            {id:'qiyam', n:'صلاة القيام', p:30}, {id:'s_f', n:'سنة الفجر', p:10}, {id:'s_d_b', n:'سنة الظهر (4ق)', p:10},
+            {id:'s_d_a', n:'سنة الظهر (2ب)', p:10}, {id:'s_m', n:'سنة المغرب (2ب)', p:10}, {id:'s_i', n:'سنة العشاء (2ب)', p:10},
             {id:'quran', n:'الورد القرآني', p:40, l:'https://quran.com'},
             {id:'azkar_m', n:'أذكار الصباح', p:20, l:'https://alazkar.today/'},
-            {id:'azkar_e', n:'أذكار المساء', p:20, l:'https://alazkar.today/'},
-            {id:'witr', n:'الوتر والشفع', p:15},
-            {id:'duha', n:'صلاة الضحى', p:15}
+            {id:'azkar_e', n:'أذكار المساء', p:20, l:'https://alazkar.today/'}
         ]
     };
 
-    const hadiths = ["أحب الأعمال إلى الله أدومها وإن قل", "بلغوا عني ولو آية", "من صلى البردين دخل الجنة", "صلاة الجماعة تفضل صلاة الفرد بسبع وعشرين درجة"];
+    const hadiths = ["أحب الأعمال إلى الله أدومها وإن قل", "بلغوا عني ولو آية", "صلاة الجماعة تفضل صلاة الفرد بسبع وعشرين درجة"];
 
     function sync() {
         const d = document.getElementById('date-picker').value;
@@ -130,71 +118,73 @@
         document.getElementById('hijri-display').innerText = new Intl.DateTimeFormat('ar-SA-u-ca-islamic-uma', {day:'numeric', month:'long', year:'numeric'}).format(selDate);
         document.getElementById('hadith-text').innerText = hadiths[selDate.getDate() % hadiths.length];
 
-        db.ref('osraty/' + d).on('value', snap => render(snap.val() || {}));
+        db.ref('osraty/' + d).on('value', snap => renderDaily(snap.val() || {}));
         db.ref('chat/' + d).on('value', snap => {
             const m = snap.val() || [];
             document.getElementById('chat-box').innerHTML = m.map(x => `<div><b>${x.u}:</b> ${x.t}</div>`).join('');
             document.getElementById('chat-box').scrollTop = 9999;
         });
-        updateAnnualRanking();
+        updateAnnualPodium();
     }
 
-    function render(allData) {
+    function renderDaily(allData) {
         let stats = users.map(u => {
             let score = 0; let rem = []; let uData = allData[u] || {};
-            model.fard.forEach(h => {
-                if(uData[h.id]) score += (uData[h.id].p || 0); else rem.push(h.n);
-                if(uData[h.s] && uData[h.s].done) score += h.sp; else rem.push(h.sn);
-                if(h.s2 && uData[h.s2] && uData[h.s2].done) score += h.sp2; else if(h.s2) rem.push(h.sn2);
-            });
-            model.extra.forEach(h => {
-                if(uData[h.id] && uData[h.id].done) score += h.p; else rem.push(h.n);
-            });
+            model.fard.forEach(h => { if(uData[h.id]) score += (uData[h.id].p || 0); else rem.push(h.n); });
+            model.extra.forEach(h => { if(uData[h.id] && uData[h.id].done) score += h.p; else rem.push(h.n); });
             return { n: u, s: score, rem: rem };
         });
 
-        // بوديوم المتنافسين (الأعلى إنجازاً هو الأطول)
-        const sorted = [...stats].sort((a,b) => b.s - a.s);
-        const maxScore = sorted[0].s || 1;
-        const layout = [1, 0, 2, 3]; // ترتيب المراكز في المنصة
-        document.getElementById('podium-ui').innerHTML = layout.map((idx, i) => {
-            const user = sorted[idx];
-            const height = (user.s / maxScore) * 100;
-            return `
-                <div class="podium-step ${idx===0?'p1':''}" style="height: ${height}%;">
-                    <div class="podium-name">${user.n}</div>
-                    <span class="podium-score">${user.s}ن</span>
-                </div>
-            `;
-        }).join('');
-
+        drawPodium(stats, 'daily-podium-ui');
         document.getElementById('cards-ui').innerHTML = stats.map(st => `
             <div class="comp-card ${st.n === currentUser ? 'active' : ''}" onclick="selectUser('${st.n}')">
-                <b>${st.n}</b> | <span class="pts-tag">${st.s}ن</span>
-                <div class="rem-detail">${st.rem.length ? 'المتبقي: ' + st.rem.join('، ') : '✅ كامل الأجر'}</div>
+                <b>${st.n}</b> | <span style="color:var(--gold); font-weight:bold;">${st.s}ن</span>
+                <div class="rem-detail">${st.rem.length ? 'المتبقي: ' + st.rem.join('، ') : '✅ ورد كامل'}</div>
             </div>
         `).join('');
 
         if(currentUser) renderUserForms(allData[currentUser] || {});
     }
 
+    function drawPodium(stats, elementId) {
+        const sorted = [...stats].sort((a,b) => b.s - a.s);
+        const order = [1, 0, 2, 3]; // عرض: الثاني، الأول، الثالث، الرابع
+        const classes = ['p-silver', 'p-gold', 'p-bronze', ''];
+        
+        document.getElementById(elementId).innerHTML = order.map((idx, i) => `
+            <div class="podium-step ${classes[i]}">
+                <div class="podium-name">${sorted[idx].n}</div>
+                <span class="podium-score">${sorted[idx].s}ن</span>
+            </div>
+        `).join('');
+    }
+
+    function updateAnnualPodium() {
+        db.ref('osraty').once('value', snap => {
+            const data = snap.val() || {}; let annual = users.map(u => ({n:u, s:0}));
+            Object.values(data).forEach(day => { users.forEach((u, i) => { if(day[u]) Object.values(day[u]).forEach(t => annual[i].s += (t.p || 0)); }); });
+            drawPodium(annual, 'annual-podium-ui');
+        });
+    }
+
     function renderUserForms(userData) {
         document.getElementById('fard-list').innerHTML = model.fard.map(h => {
             const v = userData[h.id] ? userData[h.id].type : 'none';
-            const s1 = userData[h.s] ? userData[h.s].done : false;
-            const s2 = h.s2 ? (userData[h.s2] ? userData[h.s2].done : false) : null;
-            return `<div class="section-card"><div class="habit-row"><b>${h.n}</b><div style="display:flex; gap:3px;">
-                <button class="opt-btn ${v==='m'?'selected':''}" onclick="saveFard('${h.id}','m',50)">مسجد</button>
-                <button class="opt-btn ${v==='f'?'selected':''}" onclick="saveFard('${h.id}','f',25)">فرد</button>
-                <button class="opt-btn ${v==='q'?'selected':''}" onclick="saveFard('${h.id}','q',10)">قضاء</button>
-                <button class="opt-btn x-btn ${v==='x'?'selected':''}" onclick="saveFard('${h.id}','x',0)">X</button>
-            </div></div><div class="habit-row"><span>${h.sn} (10ن)</span><input type="checkbox" ${s1?'checked':''} onchange="saveExtra('${h.s}', ${h.sp}, this.checked)"></div>
-            ${h.s2 ? `<div class="habit-row"><span>${h.sn2} (10ن)</span><input type="checkbox" ${s2?'checked':''} onchange="saveExtra('${h.s2}', ${h.sp2}, this.checked)"></div>` : ''}</div>`;
+            return `<div class="habit-row"><span><b>${h.n}</b></span><div style="display:flex; gap:3px;">
+                <button class="opt-btn ${v==='m'?'selected':''}" onclick="saveFard('${h.id}','m',50)">مسجد(50)</button>
+                <button class="opt-btn ${v==='f'?'selected':''}" onclick="saveFard('${h.id}','f',25)">فرد(25)</button>
+                <button class="opt-btn ${v==='q'?'selected':''}" onclick="saveFard('${h.id}','q',10)">قضاء(10)</button>
+                <button class="opt-btn ${v==='x'?'selected':''}" onclick="saveFard('${h.id}','x',0)">X(0)</button>
+            </div></div>`;
         }).join('');
 
         document.getElementById('extra-list').innerHTML = model.extra.map(h => {
             const done = userData[h.id] ? userData[h.id].done : false;
-            return `<div class="habit-row">${h.l ? `<a href="${h.l}" target="_blank">🔗 ${h.n}</a>` : `<span>${h.n}</span>`}<div><span class="pts-tag">${h.p}ن</span><input type="checkbox" ${done?'checked':''} onchange="saveExtra('${h.id}', ${h.p}, this.checked)"></div></div>`;
+            return `<div class="habit-row">
+                ${h.l ? `<a href="${h.l}" target="_blank" style="text-decoration:none; color:var(--primary)">🔗 ${h.n}</a>` : `<span>${h.n}</span>`}
+                <div><span style="color:var(--gold); font-size:0.8rem; margin-left:5px;">${h.p}ن</span>
+                <input type="checkbox" ${done?'checked':''} onchange="saveExtra('${h.id}', ${h.p}, this.checked)" style="transform:scale(1.2);"></div>
+            </div>`;
         }).join('');
     }
 
@@ -204,15 +194,6 @@
         const i = document.getElementById('chat-in'); if(!i.value) return;
         const d = document.getElementById('date-picker').value;
         db.ref('chat/' + d).once('value', s => { let m = s.val() || []; m.push({u: currentUser, t: i.value}); db.ref('chat/' + d).set(m); i.value = ""; });
-    }
-
-    function updateAnnualRanking() {
-        db.ref('osraty').once('value', snap => {
-            const data = snap.val() || {}; let annual = users.map(u => ({n:u, s:0}));
-            Object.values(data).forEach(day => { users.forEach((u, i) => { if(day[u]) Object.values(day[u]).forEach(t => annual[i].s += (t.p || 0)); }); });
-            annual.sort((a,b) => b.s - a.s);
-            document.getElementById('annual-list').innerHTML = annual.map(x => `<div>${x.n}: ${x.s}ن</div>`).join('');
-        });
     }
 
     function selectUser(u) { currentUser = u; document.getElementById('user-ui').style.display='block'; document.getElementById('current-user-title').innerText="تسجيل: " + u; sync(); }
