@@ -3,121 +3,61 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>محراب عائلتي 2026 - الإصدار المطور</title>
+    <title>محراب عائلتي 2026 - النسخة الشاملة</title>
     <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Reem+Kufi:wght@400;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --primary-color: #1a4d2e; /* أخضر إسلامي عميق */
-            --accent-color: #d4af37;  /* ذهبي */
-            --bg-color: #f9f6f0;      /* بيج فاتح (ورق قديم) */
-            --text-color: #2c3e50;
+            --primary: #1a4d2e; --gold: #d4af37; --bg: #f9f6f0;
         }
-
         body {
-            font-family: 'Amiri', serif;
-            background-color: var(--bg-color);
-            color: var(--text-color);
-            margin: 0;
-            padding: 20px;
-            background-image: url('https://www.transparenttextures.com/patterns/islamic-art.png'); /* زخرفة خلفية خفيفة */
+            font-family: 'Amiri', serif; background-color: var(--bg); color: #2c3e50;
+            margin: 0; padding: 15px; background-image: url('https://www.transparenttextures.com/patterns/islamic-art.png');
         }
-
         .container {
-            max-width: 800px;
-            margin: 0 auto;
-            border: 3px solid var(--accent-color);
-            padding: 25px;
-            border-radius: 15px;
-            background: rgba(255, 255, 255, 0.9);
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-            position: relative;
+            max-width: 600px; margin: auto; border: 2px solid var(--gold);
+            padding: 20px; border-radius: 15px; background: rgba(255,255,255,0.95);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
         }
-
-        /* زخارف الزوايا */
-        .container::before, .container::after {
-            content: "❁";
-            position: absolute;
-            color: var(--accent-color);
-            font-size: 2rem;
-        }
-        .container::before { top: 5px; right: 10px; }
-        .container::after { bottom: 5px; left: 10px; }
-
-        h1, h2, h3 {
-            font-family: 'Reem Kufi', sans-serif;
-            color: var(--primary-color);
-            text-align: center;
-        }
-
+        h1, h2, h3 { font-family: 'Reem Kufi', sans-serif; color: var(--primary); text-align: center; margin-top: 5px; }
+        
         /* قسم التاريخ */
-        .date-container {
-            display: flex;
-            justify-content: center;
-            gap: 20px;
-            background: var(--primary-color);
-            color: white;
-            padding: 10px;
-            border-radius: 10px;
-            margin-bottom: 20px;
-            border: 1px solid var(--accent-color);
+        .date-bar {
+            display: flex; justify-content: space-around; background: var(--primary);
+            color: white; padding: 10px; border-radius: 10px; margin-bottom: 20px; border: 1px solid var(--gold);
+        }
+        .date-item { text-align: center; font-size: 0.9rem; }
+        .date-label { color: var(--gold); font-size: 0.75rem; display: block; }
+
+        /* الحديث اليومي */
+        .hadith-card {
+            background: #fff; border-right: 5px solid var(--gold); padding: 15px;
+            margin-bottom: 20px; border-radius: 5px; box-shadow: 2px 2px 5px rgba(0,0,0,0.05);
         }
 
-        .date-box { text-align: center; }
-        .date-label { font-size: 0.8rem; color: var(--accent-color); }
-
-        .hadith-section {
-            background: #fff;
-            border-right: 5px solid var(--accent-color);
-            padding: 15px;
-            margin: 20px 0;
-            font-style: italic;
-            border-radius: 0 10px 10px 0;
+        /* أقسام الطاعات */
+        .worship-section { margin-bottom: 25px; border: 1px solid #e0e0e0; padding: 15px; border-radius: 10px; }
+        .habit-row {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 8px 0; border-bottom: 1px dashed #ddd;
         }
+        .habit-row:last-child { border-bottom: none; }
+        input[type="checkbox"] { width: 20px; height: 20px; cursor: pointer; }
 
-        .btn {
-            background: var(--primary-color);
-            color: white;
-            border: 1px solid var(--accent-color);
-            padding: 10px 20px;
-            border-radius: 5px;
-            cursor: pointer;
-            font-family: 'Amiri', serif;
-            transition: 0.3s;
+        /* الروابط الخارجية */
+        .links-container { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 20px 0; }
+        .ext-btn {
+            text-decoration: none; background: #fff; color: var(--primary);
+            border: 1px solid var(--primary); padding: 10px; text-align: center;
+            border-radius: 8px; font-weight: bold; transition: 0.3s;
         }
+        .ext-btn:hover { background: var(--gold); color: white; border-color: var(--gold); }
 
-        .btn:hover {
-            background: var(--accent-color);
-            color: var(--primary-color);
-        }
-
-        .links-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 15px;
-            margin-top: 20px;
-        }
-
-        a.external-link {
-            text-decoration: none;
-            color: var(--primary-color);
-            font-weight: bold;
-            border: 1px solid #ddd;
-            padding: 10px;
-            text-align: center;
-            border-radius: 8px;
-            display: block;
-            background: #fdfdfd;
-        }
-
-        /* ستايل الدردشة */
-        #chat-box {
-            height: 200px;
-            border: 1px solid var(--accent-color);
-            overflow-y: auto;
-            margin-bottom: 10px;
-            padding: 10px;
-            background: white;
-        }
+        /* الدردشة */
+        #chat-area { height: 150px; border: 1px solid #ccc; overflow-y: auto; background: #fefefe; padding: 10px; margin-bottom: 10px; border-radius: 5px; }
+        .chat-input-group { display: flex; gap: 5px; }
+        input[type="text"] { flex: 1; padding: 8px; border: 1px solid #ccc; border-radius: 5px; }
+        
+        .btn-gold { background: var(--primary); color: white; border: none; padding: 8px 15px; border-radius: 5px; cursor: pointer; }
     </style>
 </head>
 <body>
@@ -125,108 +65,109 @@
 <div class="container">
     <h1>🕌 محراب عائلتي 2026</h1>
 
-    <div class="date-container">
-        <div class="date-box">
-            <div class="date-label">التاريخ الميلادي</div>
-            <div id="gregorian-date"></div>
-        </div>
-        <div class="date-box" style="border-right: 1px solid var(--accent-color); padding-right: 20px;">
-            <div class="date-label">التاريخ الهجري</div>
-            <div id="hijri-date"></div>
-        </div>
+    <div class="date-bar">
+        <div class="date-item"><span class="date-label">ميلادي</span><span id="g-date"></span></div>
+        <div class="date-item"><span class="date-label">هجري</span><span id="h-date"></span></div>
     </div>
 
-    <div class="hadith-section">
+    <div class="hadith-card">
         <h3>✨ حديث اليوم</h3>
-        <p id="daily-hadith">جاري تحميل الحديث الشريف...</p>
+        <p id="daily-hadith" style="text-align: center; font-size: 1.1rem;"></p>
     </div>
 
-    <div id="habits-section">
-        <h3>🏆 حصاد الطاعات</h3>
-        <div id="user-stats">
-            <p>مرحباً بك في سباق الطاعات!</p>
+    <div class="worship-section">
+        <h3>🕋 الفروض الخمسة</h3>
+        <div id="fajr" class="habit-row"><span>الفجر</span><input type="checkbox" onchange="saveHabit('fajr')"></div>
+        <div id="dhuhr" class="habit-row"><span>الظهر</span><input type="checkbox" onchange="saveHabit('dhuhr')"></div>
+        <div id="asr" class="habit-row"><span>العصر</span><input type="checkbox" onchange="saveHabit('asr')"></div>
+        <div id="maghrib" class="habit-row"><span>المغرب</span><input type="checkbox" onchange="saveHabit('maghrib')"></div>
+        <div id="isha" class="habit-row"><span>العشاء</span><input type="checkbox" onchange="saveHabit('isha')"></div>
+    </div>
+
+    <div class="worship-section">
+        <h3>✨ السنن والرواتب</h3>
+        <div id="sunan" class="habit-row"><span>السنن الرواتب (12 ركعة)</span><input type="checkbox" onchange="saveHabit('sunan')"></div>
+        <div id="duha" class="habit-row"><span>صلاة الضحى</span><input type="checkbox" onchange="saveHabit('duha')"></div>
+        <div id="witr" class="habit-row"><span>صلاة الوتر</span><input type="checkbox" onchange="saveHabit('witr')"></div>
+    </div>
+
+    <div class="links-container">
+        <a href="https://alazkar.today/" target="_blank" class="ext-btn">📖 أذكار اليوم</a>
+        <a href="https://quran.com" target="_blank" class="ext-btn">📜 ورد القرآن</a>
+    </div>
+
+    <div class="worship-section" style="border-color: var(--gold);">
+        <h3>💬 ملتقى العائلة</h3>
+        <div id="chat-area"></div>
+        <div class="chat-input-group">
+            <input type="text" id="chat-msg" placeholder="اكتب رسالة إيمانية...">
+            <button class="btn-gold" onclick="sendMsg()">إرسال</button>
         </div>
     </div>
-
-    <div class="links-grid">
-        <a href="https://alazkar.today/" target="_blank" class="external-link">📖 الأذكار والأوراد</a>
-        <a href="https://quran.com" target="_blank" class="external-link">📜 سور القرآن الكريم</a>
-    </div>
-
-    <hr style="border: 0; border-top: 1px solid var(--accent-color); margin: 25px 0;">
-
-    <h3>💬 ملتقى العائلة (يتجدد يومياً)</h3>
-    <div id="chat-box"></div>
-    <input type="text" id="chat-input" placeholder="اكتب رسالتك هنا..." style="width: 70%; padding: 8px;">
-    <button class="btn" onclick="sendMessage()">إرسال</button>
 </div>
 
 <script>
-    // 1. تحديث التاريخ (ميلادي وهجري)
-    function updateDates() {
+    // 1. التواريخ
+    function loadDates() {
         const now = new Date();
-        
-        // ميلادي
-        const options = { year: 'numeric', month: 'long', day: 'numeric' };
-        document.getElementById('gregorian-date').innerText = now.toLocaleDateString('ar-EG', options);
-
-        // هجري (باستخدام Intl.DateTimeFormat لدعم التقويم الإسلامي)
-        const hijriOptions = { day: 'numeric', month: 'long', year: 'numeric' };
-        document.getElementById('hijri-date').innerText = new Intl.DateTimeFormat('ar-SA-u-ca-islamic-uma', hijriOptions).format(now);
+        document.getElementById('g-date').innerText = now.toLocaleDateString('ar-EG');
+        document.getElementById('h-date').innerText = new Intl.DateTimeFormat('ar-SA-u-ca-islamic-uma', {day:'numeric', month:'long', year:'numeric'}).format(now);
     }
 
-    // 2. إدارة الحديث اليومي (يتغير كل يوم)
+    // 2. الحديث اليومي (يتغير تلقائياً)
     const hadiths = [
-        "قال ﷺ: «من سلك طريقًا يلتمس فيه علمًا، سهل الله له به طريقًا إلى الجنة».",
-        "قال ﷺ: «كلمتان خفيفتان على اللسان، ثقيلتان في الميزان: سبحان الله وبحمده، سبحان الله العظيم».",
-        "قال ﷺ: «أحب الأعمال إلى الله أدومها وإن قل».",
-        "قال ﷺ: «تبسمك في وجه أخيك لك صدقة»."
+        "قال ﷺ: «من صام رمضان إيماناً واحتساباً غفر له ما تقدم من ذنبه»",
+        "قال ﷺ: «الدال على الخير كفاعله»",
+        "قال ﷺ: «أحب الكلام إلى الله: سبحان الله، والحمد لله، ولا إله إلا الله، والله أكبر»",
+        "قال ﷺ: «اتق الله حيثما كنت»"
     ];
-
-    function setDailyHadith() {
-        const dayOfYear = Math.floor((new Date() - new Date(new Date().getFullYear(), 0, 0)) / (1000 * 60 * 60 * 24));
-        const hadithIndex = dayOfYear % hadiths.length;
-        document.getElementById('daily-hadith').innerText = hadiths[hadithIndex];
+    function loadHadith() {
+        const day = new Date().getDate();
+        document.getElementById('daily-hadith').innerText = hadiths[day % hadiths.length];
     }
 
-    // 3. تصفير الدردشة يومياً
-    function checkAndResetChat() {
-        const lastResetDate = localStorage.getItem('lastChatReset');
-        const today = new Date().toDateString();
+    // 3. حفظ العادات (مع الحفاظ على البيانات القديمة)
+    function saveHabit(id) {
+        const isChecked = document.querySelector(`#${id} input`).checked;
+        localStorage.setItem(id + '_' + new Date().toDateString(), isChecked);
+    }
 
-        if (lastResetDate !== today) {
+    function loadHabits() {
+        const today = new Date().toDateString();
+        ['fajr','dhuhr','asr','maghrib','isha','sunan','duha','witr'].forEach(id => {
+            const saved = localStorage.getItem(id + '_' + today);
+            if(saved === 'true') document.querySelector(`#${id} input`).checked = true;
+        });
+    }
+
+    // 4. الدردشة (تصفير يومي)
+    function manageChat() {
+        const today = new Date().toDateString();
+        if (localStorage.getItem('chatDate') !== today) {
             localStorage.setItem('familyChat', JSON.stringify([]));
-            localStorage.setItem('lastChatReset', today);
+            localStorage.setItem('chatDate', today);
         }
         displayChat();
     }
 
-    function sendMessage() {
-        const input = document.getElementById('chat-input');
-        if (input.value.trim() === "") return;
-        
-        let messages = JSON.parse(localStorage.getItem('familyChat') || "[]");
-        messages.push({ text: input.value, time: new Date().toLocaleTimeString('ar-EG') });
-        localStorage.setItem('familyChat', JSON.stringify(messages));
-        input.value = "";
+    function sendMsg() {
+        const msgInput = document.getElementById('chat-msg');
+        if (!msgInput.value) return;
+        let msgs = JSON.parse(localStorage.getItem('familyChat') || "[]");
+        msgs.push({ text: msgInput.value, time: new Date().toLocaleTimeString('ar-EG', {hour:'2-digit', minute:'2-digit'}) });
+        localStorage.setItem('familyChat', JSON.stringify(msgs));
+        msgInput.value = "";
         displayChat();
     }
 
     function displayChat() {
-        const chatBox = document.getElementById('chat-box');
-        let messages = JSON.parse(localStorage.getItem('familyChat') || "[]");
-        chatBox.innerHTML = messages.map(m => `<div><strong>[${m.time}]</strong>: ${m.text}</div>`).join('');
-        chatBox.scrollTop = chatBox.scrollHeight;
+        const area = document.getElementById('chat-area');
+        let msgs = JSON.parse(localStorage.getItem('familyChat') || "[]");
+        area.innerHTML = msgs.map(m => `<div style="margin-bottom:5px; font-size:0.9rem;"><strong>${m.time}:</strong> ${m.text}</div>`).join('');
+        area.scrollTop = area.scrollHeight;
     }
 
-    // تشغيل الوظائف عند التحميل
-    window.onload = () => {
-        updateDates();
-        setDailyHadith();
-        checkAndResetChat();
-        // ملاحظة: بيانات "حصاد الطاعات" تظل محفوظة في LocalStorage 
-        // لأننا لم نقم بتنفيذ أي كود يمسح مفاتيح البيانات الخاصة بالمتنافسين.
-    };
+    window.onload = () => { loadDates(); loadHadith(); loadHabits(); manageChat(); };
 </script>
 
 </body>
