@@ -89,13 +89,16 @@
             {id:'asr', n:'العصر (50ن)'}, {id:'maghrib', n:'المغرب (50ن)'}, {id:'isha', n:'العشاء (50ن)'}
         ],
         extra: [
-            {id:'qiyam', n:'صلاة القيام', p:30}, {id:'duha', n:'صلاة الضحى', p:15},
+            {id:'qiyam', n:'صلاة القيام', p:30}, {id:'shafa_witr', n:'الشفع والوتر', p:20}, {id:'duha', n:'صلاة الضحى', p:15},
             {id:'s_f', n:'سنة الفجر (2 قبلية)', p:10}, {id:'s_d_b', n:'سنة الظهر (4 قبلية)', p:10},
             {id:'s_d_a', n:'سنة الظهر (2 بعدية)', p:10}, {id:'s_m', n:'سنة المغرب (2 بعدية)', p:10},
-            {id:'s_i', n:'سنة العشاء (2 بعدية)', p:10}, {id:'mulk', n:'سورة الملك', p:30, l:'https://quran.com/67'},
+            {id:'s_i', n:'سنة العشاء (2 بعدية)', p:10}, 
+            {id:'mulk', n:'سورة الملك + خواتيم البقرة', p:30, l:'https://quran.com/67'},
             {id:'kahf', n:'سورة الكهف', p:50, l:'https://quran.com/18', friday: true},
             {id:'quran', n:'الورد القرآني', p:40, l:'https://quran.com'},
-            {id:'azkar_m', n:'أذكار الصباح', p:20, l:'https://alazkar.today/'}, {id:'azkar_e', n:'أذكار المساء', p:20, l:'https://alazkar.today/'}
+            {id:'azkar_m', n:'أذكار الصباح', p:20, l:'https://alazkar.today/'}, 
+            {id:'azkar_e', n:'أذكار المساء', p:20, l:'https://alazkar.today/'},
+            {id:'azkar_sleep', n:'أذكار النوم', p:20, l:'https://alazkar.today/'}
         ]
     };
 
@@ -150,7 +153,6 @@
             Object.values(data).forEach(dayData => {
                 users.forEach((userName, i) => {
                     const uD = dayData[userName]; if(!uD) return;
-                    // فحص صارم: نجمع فقط الحقول المعرفة في الموديل لضمان عدم تكرار أي نقاط
                     model.fard.forEach(f => { if(uD[f.id] && uD[f.id].p) annual[i].s += Number(uD[f.id].p); });
                     model.extra.forEach(e => { if(uD[e.id] && uD[e.id].done) annual[i].s += Number(e.p); });
                     if(uD.weekly_challenge && uD.weekly_challenge.done) annual[i].s += Number(uD.weekly_challenge.p || 0);
